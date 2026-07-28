@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>TC1.RepairShop.Api</RootNamespace>
+    <UserSecretsId>8c96181e-c057-4995-b10e-0abb5bfc1d2f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TC1.RepairShop.Domain\TC1.RepairShop.Domain.csproj" />
+    <ProjectReference Include="..\TC1.RepairShop.Application\TC1.RepairShop.Application.csproj" />
+    <ProjectReference Include="..\TC1.RepairShop.Infrastructure\TC1.RepairShop.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

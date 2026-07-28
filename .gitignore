@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+TC1.RepairShop/src/TC1.RepairShop.Api/appsettings.Development.json
