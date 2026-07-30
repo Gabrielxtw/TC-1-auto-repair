@@ -11,7 +11,8 @@ public class CreateUsers : Migration
             .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_Users")
             .WithColumn("Username").AsString(100).NotNullable().Unique("UQ_Users_Username")
             .WithColumn("PasswordHash").AsString(200).NotNullable()
-            .WithColumn("Role").AsString(20).NotNullable();
+            .WithColumn("Role").AsString(20).NotNullable()
+            .WithColumn("Status").AsString(20).NotNullable().WithDefaultValue("Active");
     }
 
     public override void Down()

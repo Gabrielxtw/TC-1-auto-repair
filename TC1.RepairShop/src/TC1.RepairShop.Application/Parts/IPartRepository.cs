@@ -1,4 +1,4 @@
-namespace TC1.RepairShop.Infrastructure.Repositories;
+namespace TC1.RepairShop.Application.Parts;
 
 public interface IPartRepository
 {

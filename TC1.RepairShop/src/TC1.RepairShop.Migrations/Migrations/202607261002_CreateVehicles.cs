@@ -12,9 +12,10 @@ public class CreateVehicles : Migration
             .WithColumn("CustomerId").AsGuid().NotNullable()
                 .ForeignKey("FK_Vehicles_Customers", "Customers", "Id")
             .WithColumn("LicensePlate").AsString(7).NotNullable().Unique("UQ_Vehicles_LicensePlate")
-            .WithColumn("Make").AsString(100).NotNullable()
+            .WithColumn("Brand").AsString(100).NotNullable()
             .WithColumn("Model").AsString(100).NotNullable()
-            .WithColumn("Year").AsInt32().NotNullable();
+            .WithColumn("Year").AsInt32().NotNullable()
+            .WithColumn("Status").AsString(20).NotNullable().WithDefaultValue("Active");
     }
 
     public override void Down()

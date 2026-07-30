@@ -12,7 +12,8 @@ public class CreateParts : Migration
             .WithColumn("Name").AsString(200).NotNullable()
             .WithColumn("UnitPrice").AsDecimal(10, 2).NotNullable()
             .WithColumn("StockQuantity").AsInt32().NotNullable().WithDefaultValue(0)
-            .WithColumn("MinimumQuantity").AsInt32().NotNullable().WithDefaultValue(0);
+            .WithColumn("MinimumQuantity").AsInt32().NotNullable().WithDefaultValue(0)
+            .WithColumn("Status").AsString(20).NotNullable().WithDefaultValue("Active");
     }
 
     public override void Down()

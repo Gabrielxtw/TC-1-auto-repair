@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using TC1.RepairShop.Application.Auth;
+using TC1.RepairShop.Application.Clients.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers;
 

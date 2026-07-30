@@ -12,8 +12,11 @@ public class CreateQuotes : Migration
             .WithColumn("ServiceOrderId").AsGuid().NotNullable()
                 .ForeignKey("FK_Quotes_ServiceOrders", "ServiceOrders", "Id")
             .WithColumn("TotalAmount").AsDecimal(10, 2).NotNullable()
-            .WithColumn("Status").AsString(30).NotNullable()
-            .WithColumn("RejectionCount").AsInt32().NotNullable().WithDefaultValue(0);
+            .WithColumn("Discount").AsDecimal(5, 2).NotNullable().WithDefaultValue(0)
+            .WithColumn("FinalPrice").AsDecimal(10, 2).NotNullable()
+            .WithColumn("QuoteStatusValue").AsString(30).NotNullable()
+            .WithColumn("RejectionCount").AsInt32().NotNullable().WithDefaultValue(0)
+            .WithColumn("Status").AsString(20).NotNullable().WithDefaultValue("Active");
 
         Create.ForeignKey("FK_ServiceOrders_Quotes")
             .FromTable("ServiceOrders").ForeignColumn("QuoteId")

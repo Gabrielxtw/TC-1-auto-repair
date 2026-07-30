@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using TC1.RepairShop.Domain.Clients;
 
 namespace TC1.RepairShop.Migrations;
 
@@ -28,17 +29,18 @@ public static class DatabaseSeeder
             return;
         }
 
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(seedPassword);
+        var admin = User.Create(SeedUsername, seedPassword, "Admin");
 
         using var insertCommand = connection.CreateCommand();
         insertCommand.CommandText = """
-            INSERT INTO Users (Id, Username, PasswordHash, Role)
-            VALUES (@Id, @Username, @PasswordHash, @Role)
+            INSERT INTO Users (Id, Username, PasswordHash, Role, Status)
+            VALUES (@Id, @Username, @PasswordHash, @Role, @Status)
             """;
-        insertCommand.Parameters.AddWithValue("@Id", Guid.NewGuid());
-        insertCommand.Parameters.AddWithValue("@Username", SeedUsername);
-        insertCommand.Parameters.AddWithValue("@PasswordHash", passwordHash);
-        insertCommand.Parameters.AddWithValue("@Role", "Admin");
+        insertCommand.Parameters.AddWithValue("@Id", admin.Id);
+        insertCommand.Parameters.AddWithValue("@Username", admin.Username);
+        insertCommand.Parameters.AddWithValue("@PasswordHash", admin.PasswordHash);
+        insertCommand.Parameters.AddWithValue("@Role", admin.Role);
+        insertCommand.Parameters.AddWithValue("@Status", admin.Status.ToString());
         insertCommand.ExecuteNonQuery();
 
         Console.WriteLine("Seed admin user created.");

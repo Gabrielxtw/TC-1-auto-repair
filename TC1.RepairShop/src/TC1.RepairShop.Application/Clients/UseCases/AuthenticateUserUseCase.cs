@@ -1,4 +1,6 @@
-namespace TC1.RepairShop.Application.Auth;
+using TC1.RepairShop.Application.Clients;
+
+namespace TC1.RepairShop.Application.Clients.UseCases;
 
 public record AuthenticateUserRequest(string Username, string Password);
 
@@ -19,7 +21,7 @@ public class AuthenticateUserUseCase
     {
         var user = await _userRepository.GetByUsernameAsync(request.Username);
 
-        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        if (user is null || !user.VerifyPassword(request.Password))
         {
             return new AuthenticateUserResult(false, null);
         }

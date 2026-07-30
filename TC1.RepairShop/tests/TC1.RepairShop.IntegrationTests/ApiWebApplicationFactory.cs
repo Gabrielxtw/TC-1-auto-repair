@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using TC1.RepairShop.Application.Auth;
+using TC1.RepairShop.Application.Clients;
 
 namespace TC1.RepairShop.IntegrationTests;
 

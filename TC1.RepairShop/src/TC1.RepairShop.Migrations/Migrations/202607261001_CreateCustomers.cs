@@ -13,7 +13,8 @@ public class CreateCustomers : Migration
             .WithColumn("NationalId").AsString(14).NotNullable().Unique("UQ_Customers_NationalId")
             .WithColumn("Phone").AsString(20).NotNullable()
             .WithColumn("Email").AsString(200).NotNullable()
-            .WithColumn("RegisteredAt").AsDateTime2().NotNullable();
+            .WithColumn("RegisteredAt").AsDateTime2().NotNullable()
+            .WithColumn("Status").AsString(20).NotNullable().WithDefaultValue("Active");
     }
 
     public override void Down()

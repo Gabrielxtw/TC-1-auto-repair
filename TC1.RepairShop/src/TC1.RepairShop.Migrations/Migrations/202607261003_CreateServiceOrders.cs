@@ -13,10 +13,11 @@ public class CreateServiceOrders : Migration
                 .ForeignKey("FK_ServiceOrders_Customers", "Customers", "Id")
             .WithColumn("VehicleId").AsGuid().NotNullable()
                 .ForeignKey("FK_ServiceOrders_Vehicles", "Vehicles", "Id")
-            .WithColumn("Status").AsString(30).NotNullable()
+            .WithColumn("OrderStatusValue").AsString(30).NotNullable()
             .WithColumn("OpenedAt").AsDateTime2().NotNullable()
             .WithColumn("CompletedAt").AsDateTime2().Nullable()
-            .WithColumn("QuoteId").AsGuid().Nullable();
+            .WithColumn("QuoteId").AsGuid().Nullable()
+            .WithColumn("Status").AsString(20).NotNullable().WithDefaultValue("Active");
     }
 
     public override void Down()

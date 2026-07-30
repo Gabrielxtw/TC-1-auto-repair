@@ -3,9 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using TC1.RepairShop.Domain.Auth;
+using TC1.RepairShop.Domain.Clients;
 
-namespace TC1.RepairShop.Application.Auth;
+namespace TC1.RepairShop.Application.Clients;
 
 public class TokenService : ITokenService
 {

@@ -1,10 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Options;
-using TC1.RepairShop.Application.Auth;
-using TC1.RepairShop.Domain.Auth;
+using TC1.RepairShop.Application.Clients;
+using TC1.RepairShop.Domain.Clients;
 using Xunit;
 
-namespace TC1.RepairShop.UnitTests.Auth;
+namespace TC1.RepairShop.UnitTests.Clients;
 
 public class TokenServiceTests
 {
@@ -21,13 +21,7 @@ public class TokenServiceTests
     public void GenerateToken_ShouldGenerateTokenWithExpectedClaims()
     {
         var tokenService = CreateTokenService();
-        var user = new User
-        {
-            Id = Guid.NewGuid(),
-            Username = "admin",
-            PasswordHash = "hash",
-            Role = "Admin",
-        };
+        var user = User.Create("admin", "Passw0rd!", "Admin");
 
         var token = tokenService.GenerateToken(user);
 

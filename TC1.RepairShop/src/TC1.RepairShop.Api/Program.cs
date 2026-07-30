@@ -2,7 +2,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using TC1.RepairShop.Application.Auth;
+using TC1.RepairShop.Application.Clients;
+using TC1.RepairShop.Application.Clients.UseCases;
 using TC1.RepairShop.Infrastructure.Data;
 using TC1.RepairShop.Infrastructure.Repositories;
 
@@ -58,11 +59,19 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+DapperTypeHandlers.Register();
+
 builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<AuthenticateUserUseCase>();
+builder.Services.AddScoped<CreateUserUseCase>();
+builder.Services.AddScoped<GetUserUseCase>();
+builder.Services.AddScoped<ListUsersUseCase>();
+builder.Services.AddScoped<UpdateUserUseCase>();
+builder.Services.AddScoped<ChangeUserPasswordUseCase>();
+builder.Services.AddScoped<DeleteUserUseCase>();
 
 var app = builder.Build();
 

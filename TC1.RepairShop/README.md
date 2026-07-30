@@ -10,6 +10,8 @@ management arrive in later prompts, one per bounded context.
 
 The domain was modeled via Event Storming into these bounded contexts:
 
+- **Clients** (generic subdomain) — `User` aggregate (system login/accounts;
+  not to be confused with the shop's own customers, see Registration below).
 - **Registration** (generic subdomain) — `Customer` and `Vehicle` aggregates.
 - **ServiceOrders** (core domain) — `ServiceOrder` aggregate root, references
   `Customer` and `Vehicle` only by Id.
@@ -17,6 +19,11 @@ The domain was modeled via Event Storming into these bounded contexts:
   history (the "rejection limit" rule).
 - **Parts** / inventory (supporting subdomain) — `Part` and `PartRequest`
   aggregates (the latter arrives in a future prompt).
+- **Services** (supporting subdomain) — `Service` catalog aggregate (name,
+  description, and its standard `Part` list), consumed by `ServiceOrder`.
+
+`Domain/Common/` is a cross-cutting folder (shared `Status` enum, password
+hashing), not a bounded context of its own.
 
 ## Architecture
 
@@ -182,11 +189,14 @@ endpoint's 401/200 behavior) outside of the automated test suite.
   conceptual meaning from the original Event Storming.
 - The seed `admin` user's password comes from configuration
   (`SeedAdmin:Password`) or the `SEED_ADMIN_PASSWORD` environment variable —
-  never hardcoded — and is hashed with BCrypt before being stored.
-- Repository interfaces for `Customer`, `Vehicle`, `ServiceOrder`, `Quote` and
-  `Part` are stubbed (no implementation) in `Infrastructure/Repositories`;
-  only `IUserRepository`/`UserRepository` are implemented, since login is the
-  only flow in scope for this step.
+  never hardcoded — and is hashed with PBKDF2 (`Rfc2898DeriveBytes`, native to
+  .NET via `Domain.Common.PasswordHasher`) before being stored.
+- Repository interfaces for every bounded context live in
+  `Application/<Context>/` (e.g. `Application/Clients/IUserRepository.cs`,
+  `Application/Registration/ICustomerRepository.cs`), next to the use cases
+  that consume them. Only `IUserRepository`/`UserRepository` are implemented
+  (in `Infrastructure/Repositories`), since login is the only flow in scope
+  for this step — the rest are stubbed with no implementation yet.
 - `docker-compose.yml` lives under `docker/` (per the requested layout) with
   its build `context` pointing at the repository root; run it with
   `docker compose -f docker/docker-compose.yml up`.
