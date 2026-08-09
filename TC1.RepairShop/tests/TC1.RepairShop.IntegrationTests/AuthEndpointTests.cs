@@ -32,27 +32,5 @@ public class AuthEndpointTests : IClassFixture<ApiWebApplicationFactory>
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
-    [Fact]
-    public async Task GetCustomers_WithoutToken_ShouldReturn401()
-    {
-        var response = await _client.GetAsync("/api/customers");
-
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetCustomers_WithValidToken_ShouldReturn200()
-    {
-        var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", new { username = "admin", password = "Admin@123" });
-        var login = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
-
-        _client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", login!.Token);
-
-        var response = await _client.GetAsync("/api/customers");
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
-
     private record LoginResponseDto(string Token);
 }

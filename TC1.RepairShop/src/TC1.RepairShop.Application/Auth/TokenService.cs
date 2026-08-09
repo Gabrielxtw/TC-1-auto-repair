@@ -4,8 +4,10 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using TC1.RepairShop.Domain.Clients;
+using TC1.RepairShop.Domain.Common;
+using TC1.RepairShop.Domain.Registration;
 
-namespace TC1.RepairShop.Application.Clients;
+namespace TC1.RepairShop.Application.Auth;
 
 public class TokenService : ITokenService
 {
@@ -16,15 +18,32 @@ public class TokenService : ITokenService
         _jwtOptions = jwtOptions.Value;
     }
 
-    public string GenerateToken(User user)
+    public string GenerateStaffToken(User user)
     {
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role),
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
+        return GenerateToken(claims);
+    }
+
+    public string GenerateCustomerToken(Customer customer)
+    {
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, customer.Id.ToString()),
+            new Claim(ClaimTypes.Role, Role.Customer.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+        return GenerateToken(claims);
+    }
+
+    private string GenerateToken(IEnumerable<Claim> claims)
+    {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

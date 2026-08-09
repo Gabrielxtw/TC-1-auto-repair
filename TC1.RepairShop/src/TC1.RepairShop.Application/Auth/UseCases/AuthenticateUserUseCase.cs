@@ -1,6 +1,6 @@
 using TC1.RepairShop.Application.Clients;
 
-namespace TC1.RepairShop.Application.Clients.UseCases;
+namespace TC1.RepairShop.Application.Auth.UseCases;
 
 public record AuthenticateUserRequest(string Username, string Password);
 
@@ -26,7 +26,7 @@ public class AuthenticateUserUseCase
             return new AuthenticateUserResult(false, null);
         }
 
-        var token = _tokenService.GenerateToken(user);
+        var token = _tokenService.GenerateStaffToken(user);
         return new AuthenticateUserResult(true, token);
     }
 }

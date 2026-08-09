@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TC1.RepairShop.Application.Clients.UseCases;
 using TC1.RepairShop.Domain.Clients;
+using TC1.RepairShop.Domain.Common;
 
 namespace TC1.RepairShop.Api.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Policy = "AdminOnly")]
 [Route("api/users")]
 public class UsersController : ControllerBase
 {
@@ -33,9 +34,9 @@ public class UsersController : ControllerBase
         _deleteUserUseCase = deleteUserUseCase;
     }
 
-    public record CreateRequest(string Username, string Password, string Role);
+    public record CreateRequest(string Username, string Password, Role Role);
 
-    public record UpdateRequest(string Username, string Role);
+    public record UpdateRequest(string Username, Role Role);
 
     public record ChangePasswordRequest(string NewPassword);
 
@@ -119,5 +120,5 @@ public class UsersController : ControllerBase
     }
 
     private static UserResponse ToResponse(User user) =>
-        new(user.Id, user.Username, user.Role, user.Status.ToString());
+        new(user.Id, user.Username, user.Role.ToString(), user.Status.ToString());
 }

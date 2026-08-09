@@ -7,14 +7,14 @@ public class User
     public Guid Id { get; private set; }
     public string Username { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
-    public string Role { get; private set; } = string.Empty;
+    public Role Role { get; private set; }
     public Status Status { get; private set; }
 
     private User()
     {
     }
 
-    public static User Create(string username, string password, string role)
+    public static User Create(string username, string password, Role role)
     {
         return new User
         {
@@ -28,7 +28,7 @@ public class User
 
     public bool VerifyPassword(string password) => PasswordHasher.Verify(password, PasswordHash);
 
-    public void UpdateProfile(string username, string role)
+    public void UpdateProfile(string username, Role role)
     {
         Username = username;
         Role = role;
