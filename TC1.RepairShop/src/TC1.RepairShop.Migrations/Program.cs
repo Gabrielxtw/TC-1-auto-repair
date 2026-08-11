@@ -53,6 +53,7 @@ public class Program
 
                 Log.Information("Seeding initial data...");
                 DatabaseSeeder.SeedAdminUser(configuration, connectionString);
+                DatabaseSeeder.SeedSampleCustomer(connectionString);
             }
 
             Log.Information("Done.");

@@ -7,7 +7,7 @@ namespace TC1.RepairShop.IntegrationTests;
 
 public class FakeUserRepository : IUserRepository
 {
-    public static readonly User SeedAdmin = User.Create("admin", "Admin@123", "Admin");
+    public static readonly User SeedAdmin = User.Create("admin", "Admin@123", Role.Admin);
 
     private static readonly ConcurrentDictionary<Guid, User> Users = new([
         new KeyValuePair<Guid, User>(SeedAdmin.Id, SeedAdmin),

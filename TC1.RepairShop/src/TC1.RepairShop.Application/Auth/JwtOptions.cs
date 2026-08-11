@@ -1,4 +1,4 @@
-namespace TC1.RepairShop.Application.Clients;
+namespace TC1.RepairShop.Application.Auth;
 
 public class JwtOptions
 {

@@ -1,9 +1,16 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TC1.RepairShop.Application.Auth;
+using TC1.RepairShop.Application.Auth.UseCases;
 using TC1.RepairShop.Application.Clients;
 using TC1.RepairShop.Application.Clients.UseCases;
+using TC1.RepairShop.Application.Registration;
+using TC1.RepairShop.Application.Registration.UseCases;
+using TC1.RepairShop.Domain.Common;
 using TC1.RepairShop.Infrastructure.Data;
 using TC1.RepairShop.Infrastructure.Repositories;
 
@@ -13,7 +20,8 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptio
 var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()
     ?? throw new InvalidOperationException("Configuration section 'Jwt' was not found.");
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -57,21 +65,42 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole(nameof(Role.Admin)));
+    options.AddPolicy("StaffOnly", policy => policy.RequireRole(nameof(Role.Admin), nameof(Role.Mechanic)));
+    options.AddPolicy("CustomerOnly", policy => policy.RequireRole(nameof(Role.Customer)));
+});
 
 DapperTypeHandlers.Register();
 
 builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<AuthenticateUserUseCase>();
 builder.Services.AddScoped<CreateUserUseCase>();
 builder.Services.AddScoped<GetUserUseCase>();
 builder.Services.AddScoped<ListUsersUseCase>();
 builder.Services.AddScoped<UpdateUserUseCase>();
 builder.Services.AddScoped<ChangeUserPasswordUseCase>();
 builder.Services.AddScoped<DeleteUserUseCase>();
+
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<CreateCustomerUseCase>();
+builder.Services.AddScoped<GetCustomerUseCase>();
+builder.Services.AddScoped<ListCustomersUseCase>();
+builder.Services.AddScoped<UpdateCustomerUseCase>();
+builder.Services.AddScoped<DeleteCustomerUseCase>();
+builder.Services.AddScoped<ChangeCustomerPasswordUseCase>();
+builder.Services.AddScoped<CreateVehicleUseCase>();
+builder.Services.AddScoped<GetVehicleUseCase>();
+builder.Services.AddScoped<ListVehiclesUseCase>();
+builder.Services.AddScoped<ListVehiclesByCustomerUseCase>();
+builder.Services.AddScoped<DeleteVehicleUseCase>();
+
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<AuthenticateUserUseCase>();
+builder.Services.AddScoped<AuthenticateCustomerUseCase>();
 
 var app = builder.Build();
 

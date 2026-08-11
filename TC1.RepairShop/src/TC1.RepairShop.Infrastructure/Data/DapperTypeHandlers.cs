@@ -10,6 +10,7 @@ public static class DapperTypeHandlers
     public static void Register()
     {
         SqlMapper.AddTypeHandler(new EnumStringTypeHandler<Status>());
+        SqlMapper.AddTypeHandler(new EnumStringTypeHandler<Role>());
         SqlMapper.AddTypeHandler(new EnumStringTypeHandler<QuoteStatus>());
         SqlMapper.AddTypeHandler(new EnumStringTypeHandler<ServiceOrderStatus>());
     }

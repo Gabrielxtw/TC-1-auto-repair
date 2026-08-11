@@ -75,14 +75,14 @@ public class UsersEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var newUsername = $"user.{Guid.NewGuid():N}";
         var updateResponse = await _client.PutAsJsonAsync(
             $"/api/users/{created!.Id}",
-            new { username = newUsername, role = "Supervisor" });
+            new { username = newUsername, role = "Admin" });
 
         Assert.Equal(HttpStatusCode.NoContent, updateResponse.StatusCode);
 
         var getResponse = await _client.GetAsync($"/api/users/{created.Id}");
         var updated = await getResponse.Content.ReadFromJsonAsync<UserResponseDto>();
         Assert.Equal(newUsername, updated!.Username);
-        Assert.Equal("Supervisor", updated.Role);
+        Assert.Equal("Admin", updated.Role);
     }
 
     [Fact]
