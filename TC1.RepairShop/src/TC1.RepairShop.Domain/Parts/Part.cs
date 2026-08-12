@@ -1,4 +1,5 @@
 using TC1.RepairShop.Domain.Common;
+using TC1.RepairShop.Domain.CustomExceptions.BusinessException;
 
 namespace TC1.RepairShop.Domain.Parts;
 
@@ -28,14 +29,30 @@ public class Part
         };
     }
 
+    private bool IsActive() => Status == Status.Active;
+
     public void ReceiveStock(int quantity)
     {
+        if (!IsActive())
+            throw new BusinessException("Não é possível alterar o estoque de um peça que não esteja ativa");
+
         StockQuantity += quantity;
     }
 
     public void ConsumeStock(int quantity)
     {
+        if (!IsActive())
+            throw new BusinessException("Não é possível alterar o estoque de um peça que não esteja ativa");
+
         StockQuantity -= quantity;
+    }
+
+    public void Deactivate()
+    {
+        if (!IsActive())
+            throw new BusinessException("Não é possível inativar uma peça que não esteja ativa");
+
+        Status = Status.Inactive;
     }
 
     public void Delete()
