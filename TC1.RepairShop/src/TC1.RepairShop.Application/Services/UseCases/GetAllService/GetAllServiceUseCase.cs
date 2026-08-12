@@ -1,0 +1,28 @@
+﻿using TC1.RepairShop.Domain.CustomExceptions.BusinessException;
+using TC1.RepairShop.Domain.Services;
+
+namespace TC1.RepairShop.Application.Services.UseCases.GetAllService
+{
+    public class GetAllServiceUseCase(IServiceRepository serviceRepository) : BaseUseCase<IEnumerable<GetAllServiceViewModel>>
+    {
+        public async Task<BaseResponse<IEnumerable<GetAllServiceViewModel>>> ExecuteAsync()
+        {
+            try
+            {
+                IEnumerable<Service> services = await serviceRepository.GetAllAsync();
+
+                return new BaseResponse<IEnumerable<GetAllServiceViewModel>>(
+                    data: services.Select(s => new GetAllServiceViewModel(id: s.Id, name: s.Name, description: s.Description))
+                );
+            }
+            catch (BusinessException ex)
+            {
+                return new BaseResponse<IEnumerable<GetAllServiceViewModel>>(data: [], success: false, error: ex.Message);
+            }
+            catch (Exception)
+            {
+                return new BaseResponse<IEnumerable<GetAllServiceViewModel>>(data: [], success: false);
+            }
+        }
+    }
+}
