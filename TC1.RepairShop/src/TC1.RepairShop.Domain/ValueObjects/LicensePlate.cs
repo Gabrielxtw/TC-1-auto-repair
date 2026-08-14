@@ -1,21 +1,18 @@
 using System.Text.RegularExpressions;
+using TC1.RepairShop.Domain.CustomExceptions;
 
 namespace TC1.RepairShop.Domain.Registration;
 
 public sealed partial class LicensePlate
 {
+    public LicensePlate(string value) => Value = value;
     public string Value { get; }
-
-    private LicensePlate(string value)
-    {
-        Value = value;
-    }
 
     public static LicensePlate Create(string value)
     {
         if (!IsValid(value))
         {
-            throw new ArgumentException($"Invalid license plate: '{value}'.", nameof(value));
+            throw new BusinessException(BusinessErrors.LicensePlate.InvalidFormat);
         }
 
         return new LicensePlate(Normalize(value));

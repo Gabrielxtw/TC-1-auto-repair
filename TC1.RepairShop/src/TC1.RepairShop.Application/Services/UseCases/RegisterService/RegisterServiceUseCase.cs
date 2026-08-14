@@ -1,4 +1,4 @@
-﻿using TC1.RepairShop.Domain.Entities.CustomExceptions;
+﻿using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Services;
 using TC1.RepairShop.Domain.Entities.Services.Interfaces;
 

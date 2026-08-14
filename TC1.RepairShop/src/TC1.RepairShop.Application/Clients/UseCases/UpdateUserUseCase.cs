@@ -1,9 +1,9 @@
 using TC1.RepairShop.Application.Clients;
-using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.Clients.UseCases;
 
-public record UpdateUserRequest(Guid Id, string Username, Role Role);
+public record UpdateUserRequest(Guid Id, string Username, UserRole Role);
 
 public record UpdateUserResult(bool Success, string? Error);
 

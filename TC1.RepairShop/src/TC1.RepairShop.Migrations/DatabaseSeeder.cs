@@ -6,6 +6,7 @@ using TC1.RepairShop.Domain.Entities.Quotes;
 using TC1.RepairShop.Domain.Entities.Registration;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Entities.Services;
+using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Migrations;
 
@@ -31,7 +32,7 @@ public static class DatabaseSeeder
             return;
         }
 
-        var admin = User.Create(SeedUsername, seedPassword, Role.Admin);
+        var admin = User.Create(SeedUsername, seedPassword, UserRole.Admin);
 
         connection.Execute(
             """

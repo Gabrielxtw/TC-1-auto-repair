@@ -1,4 +1,4 @@
-﻿namespace TC1.RepairShop.Domain.Entities.CustomExceptions
+﻿namespace TC1.RepairShop.Domain.CustomExceptions
 {
     public class BusinessException : Exception
     {

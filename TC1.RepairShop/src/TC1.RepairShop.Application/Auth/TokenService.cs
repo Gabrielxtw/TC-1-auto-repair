@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using TC1.RepairShop.Domain.Entities.Clients;
 using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.Auth;
 
@@ -34,7 +35,7 @@ public class TokenService : ITokenService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, customer.Id.ToString()),
-            new Claim(ClaimTypes.Role, Role.Customer.ToString()),
+            new Claim(ClaimTypes.Role, UserRole.Customer.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 

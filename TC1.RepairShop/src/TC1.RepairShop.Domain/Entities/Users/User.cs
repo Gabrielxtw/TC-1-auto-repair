@@ -1,4 +1,6 @@
 using TC1.RepairShop.Domain.Entities.Common;
+using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.ValueObjects;
 
 namespace TC1.RepairShop.Domain.Entities.Clients;
 
@@ -8,14 +10,13 @@ public class User: BaseEntity
     public string PasswordHash { get; private set; } = string.Empty;
     public Document Document { get; private set; } = null!;
     public Email Email { get; private set; } = null!;
-    public Role Role { get; private set; }
-    public Status Status { get; private set; }
+    public UserRole Role { get; private set; }
 
     private User()
     {
     }
 
-    public static User Create(string username, string password, string document, string email, Role role)
+    public static User Create(string username, string password, string document, string email, UserRole role)
     {
         return new User
         {
@@ -24,13 +25,12 @@ public class User: BaseEntity
             Document = Document.Create(document),
             Email = Email.Create(email),
             Role = role,
-            Status = Status.Active,
         };
     }
 
     public bool VerifyPassword(string password) => PasswordHasher.Verify(password, PasswordHash);
 
-    public void UpdateProfile(string username, Role role)
+    public void UpdateProfile(string username, UserRole role)
     {
         Username = username;
         Role = role;
@@ -39,10 +39,5 @@ public class User: BaseEntity
     public void ChangePassword(string newPassword)
     {
         PasswordHash = PasswordHasher.Hash(newPassword);
-    }
-
-    public void Delete()
-    {
-        Status = Status.Deleted;
     }
 }

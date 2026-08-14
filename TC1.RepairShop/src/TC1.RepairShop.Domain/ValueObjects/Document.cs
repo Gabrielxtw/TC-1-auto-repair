@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using TC1.RepairShop.Domain.Entities.CustomExceptions;
+using TC1.RepairShop.Domain.CustomExceptions;
 
-namespace TC1.RepairShop.Domain.Entities.Clients
+namespace TC1.RepairShop.Domain.ValueObjects
 {
     public sealed class Document
     {

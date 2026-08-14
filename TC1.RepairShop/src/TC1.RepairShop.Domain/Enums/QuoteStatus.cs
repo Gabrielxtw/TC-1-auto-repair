@@ -1,4 +1,4 @@
-namespace TC1.RepairShop.Domain.Entities.Quotes;
+namespace TC1.RepairShop.Domain.Enums;
 
 public enum QuoteStatus
 {

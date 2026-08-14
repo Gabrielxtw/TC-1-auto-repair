@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using TC1.RepairShop.Application.Auth;
 using TC1.RepairShop.Domain.Entities.Clients;
 using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Enums;
 using Xunit;
 
 namespace TC1.RepairShop.UnitTests.Auth;
@@ -22,7 +23,7 @@ public class TokenServiceTests
     public void GenerateStaffToken_ShouldGenerateTokenWithExpectedClaims()
     {
         var tokenService = CreateTokenService();
-        var user = User.Create("admin", "Passw0rd!", Role.Admin);
+        var user = User.Create("admin", "Passw0rd!", UserRole.Admin);
 
         var token = tokenService.GenerateStaffToken(user);
 

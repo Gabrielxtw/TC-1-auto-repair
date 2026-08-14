@@ -1,32 +1,29 @@
 using TC1.RepairShop.Domain.Entities.Common;
+using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Domain.Entities.ServiceOrders;
 
-public class ServiceOrder
+public class ServiceOrder: BaseEntity
 {
-    public Guid Id { get; private set; }
-    public Guid CustomerId { get; private set; }
+    public Guid UserId { get; private set; }
     public Guid VehicleId { get; private set; }
     public ServiceOrderStatus OrderStatusValue { get; private set; }
     public DateTime OpenedAt { get; private set; }
     public DateTime? CompletedAt { get; private set; }
     public Guid? QuoteId { get; private set; }
-    public Status Status { get; private set; }
 
     private ServiceOrder()
     {
     }
 
-    public static ServiceOrder Create(Guid customerId, Guid vehicleId)
+    public static ServiceOrder Create(Guid userId, Guid vehicleId)
     {
         return new ServiceOrder
         {
-            Id = Guid.NewGuid(),
-            CustomerId = customerId,
+            UserId = userId,
             VehicleId = vehicleId,
             OrderStatusValue = ServiceOrderStatus.Received,
             OpenedAt = DateTime.UtcNow,
-            Status = Status.Active,
         };
     }
 
@@ -43,10 +40,5 @@ public class ServiceOrder
         {
             CompletedAt = DateTime.UtcNow;
         }
-    }
-
-    public void Delete()
-    {
-        Status = Status.Deleted;
     }
 }

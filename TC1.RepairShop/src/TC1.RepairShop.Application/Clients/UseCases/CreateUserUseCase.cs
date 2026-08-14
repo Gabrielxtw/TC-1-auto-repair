@@ -1,9 +1,10 @@
 using TC1.RepairShop.Application.Clients;
 using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.Clients.UseCases;
 
-public record CreateUserRequest(string Username, string Password, Role Role);
+public record CreateUserRequest(string Username, string Password, UserRole Role);
 
 public record CreateUserResult(bool Success, string? Error, User? User);
 

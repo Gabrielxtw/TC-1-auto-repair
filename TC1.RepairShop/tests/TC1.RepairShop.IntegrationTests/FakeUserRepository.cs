@@ -1,13 +1,13 @@
 using System.Collections.Concurrent;
 using TC1.RepairShop.Application.Clients;
 using TC1.RepairShop.Domain.Entities.Clients;
-using TC1.RepairShop.Domain.Entities.Common;
+using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.IntegrationTests;
 
 public class FakeUserRepository : IUserRepository
 {
-    public static readonly User SeedAdmin = User.Create("admin", "Admin@123", Role.Admin);
+    public static readonly User SeedAdmin = User.Create("admin", "Admin@123", UserRole.Admin);
 
     private static readonly ConcurrentDictionary<Guid, User> Users = new([
         new KeyValuePair<Guid, User>(SeedAdmin.Id, SeedAdmin),

@@ -1,4 +1,4 @@
-namespace TC1.RepairShop.Domain.Entities.Common;
+namespace TC1.RepairShop.Domain.Enums;
 
 public enum Status
 {
