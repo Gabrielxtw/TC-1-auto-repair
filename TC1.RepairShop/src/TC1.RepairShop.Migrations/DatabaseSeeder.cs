@@ -1,7 +1,5 @@
-using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using TC1.RepairShop.Domain.Entities.Costumers;
 using TC1.RepairShop.Domain.Entities.Quotes;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Entities.Services;
@@ -94,7 +92,7 @@ public static class DatabaseSeeder
         //Console.WriteLine("Seed sample customer, vehicle, services, and quotes created.");
     }
 
-    private static void InsertCustomer(SqlConnection connection, Costumer customer)
+    private static void InsertCustomer(SqlConnection connection)
     {
         //connection.Execute(
         //    """

@@ -1,4 +1,5 @@
 using TC1.RepairShop.Domain.Entities.Vehicles;
+using TC1.RepairShop.Domain.Interfaces.Users;
 
 namespace TC1.RepairShop.Application.Registration.UseCases;
 
@@ -6,11 +7,11 @@ public record CreateVehicleRequest(Guid CustomerId, string LicensePlate, string 
 
 public record CreateVehicleResult(bool Success, string? Error, Vehicle? Vehicle);
 
-public class CreateVehicleUseCase(ICostumerRepository _customerRepository, IVehicleRepository _vehicleRepository)
+public class CreateVehicleUseCase(IUserRepository _userRepository, IVehicleRepository _vehicleRepository)
 {
     public async Task<CreateVehicleResult> ExecuteAsync(CreateVehicleRequest request)
     {
-        var customer = await _customerRepository.GetByIdAsync(request.CustomerId);
+        var customer = await _userRepository.GetByIdAsync(request.CustomerId);
         if (customer is null)
         {
             return new CreateVehicleResult(false, "Customer not found.", null);

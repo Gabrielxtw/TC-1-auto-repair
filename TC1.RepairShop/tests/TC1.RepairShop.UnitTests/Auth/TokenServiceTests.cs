@@ -1,8 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Options;
 using TC1.RepairShop.Application.Auth;
-using TC1.RepairShop.Domain.Entities.Clients;
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
 using Xunit;
 
@@ -23,7 +22,7 @@ public class TokenServiceTests
     public void GenerateStaffToken_ShouldGenerateTokenWithExpectedClaims()
     {
         var tokenService = CreateTokenService();
-        var user = User.Create("admin", "Passw0rd!", UserRole.Admin);
+        var user = User.Create("admin", "Passw0rd!", "", "", UserRole.Admin);
 
         var token = tokenService.GenerateStaffToken(user);
 
@@ -36,22 +35,5 @@ public class TokenServiceTests
         Assert.Contains(jwt.Claims, c => c.Value == "Admin" && c.Type.EndsWith("role", StringComparison.OrdinalIgnoreCase));
         Assert.Equal("TC1.RepairShop.Tests", jwt.Issuer);
         Assert.Contains("TC1.RepairShop.Tests.Clients", jwt.Audiences);
-    }
-
-    [Fact]
-    public void GenerateCustomerToken_ShouldGenerateTokenWithCustomerRoleClaim()
-    {
-        var tokenService = CreateTokenService();
-        var customer = Customer.Create("Jane Doe", "52998224725", "11999999999", "jane@example.com");
-
-        var token = tokenService.GenerateCustomerToken(customer);
-
-        Assert.False(string.IsNullOrWhiteSpace(token));
-
-        var handler = new JwtSecurityTokenHandler();
-        var jwt = handler.ReadJwtToken(token);
-
-        Assert.Equal(customer.Id.ToString(), jwt.Subject);
-        Assert.Contains(jwt.Claims, c => c.Value == "Customer" && c.Type.EndsWith("role", StringComparison.OrdinalIgnoreCase));
     }
 }

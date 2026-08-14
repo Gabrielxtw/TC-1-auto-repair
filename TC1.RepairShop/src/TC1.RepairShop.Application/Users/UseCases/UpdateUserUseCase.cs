@@ -1,5 +1,5 @@
-using TC1.RepairShop.Application.Clients;
 using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.Interfaces.Users;
 
 namespace TC1.RepairShop.Application.Clients.UseCases;
 
@@ -7,15 +7,8 @@ public record UpdateUserRequest(Guid Id, string Username, UserRole Role);
 
 public record UpdateUserResult(bool Success, string? Error);
 
-public class UpdateUserUseCase
+public class UpdateUserUseCase(IUserRepository _userRepository)
 {
-    private readonly IUserRepository _userRepository;
-
-    public UpdateUserUseCase(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-
     public async Task<UpdateUserResult> ExecuteAsync(UpdateUserRequest request)
     {
         var user = await _userRepository.GetByIdAsync(request.Id);

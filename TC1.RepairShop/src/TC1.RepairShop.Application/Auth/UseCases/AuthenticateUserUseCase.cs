@@ -1,4 +1,4 @@
-using TC1.RepairShop.Application.Clients;
+using TC1.RepairShop.Domain.Interfaces.Users;
 
 namespace TC1.RepairShop.Application.Auth.UseCases;
 

@@ -1,5 +1,5 @@
 using TC1.RepairShop.Application.Registration;
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.UnitTests.Registration;
@@ -10,7 +10,7 @@ public class FakeVehicleRepository : IVehicleRepository
 
     public Task<Vehicle?> GetByLicensePlateAsync(string licensePlate)
     {
-        var vehicle = _vehicles.Values.SingleOrDefault(v => v.LicensePlate == licensePlate && v.Status != Status.Deleted);
+        var vehicle = _vehicles.Values.SingleOrDefault(v => v.LicensePlate.Value == licensePlate && v.Status != Status.Deleted);
         return Task.FromResult(vehicle);
     }
 
@@ -21,7 +21,7 @@ public class FakeVehicleRepository : IVehicleRepository
     }
 
     public Task<IEnumerable<Vehicle>> GetByCustomerIdAsync(Guid customerId) =>
-        Task.FromResult(_vehicles.Values.Where(v => v.CustomerId == customerId && v.Status != Status.Deleted));
+        Task.FromResult(_vehicles.Values.Where(v => v.UserId == customerId && v.Status != Status.Deleted));
 
     public Task<IEnumerable<Vehicle>> GetAllAsync() =>
         Task.FromResult(_vehicles.Values.Where(v => v.Status != Status.Deleted));

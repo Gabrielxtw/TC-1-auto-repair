@@ -1,6 +1,6 @@
 using Dapper;
 using TC1.RepairShop.Application.Registration;
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Infrastructure.Data;
 
 namespace TC1.RepairShop.Infrastructure.Repositories;
@@ -90,5 +90,25 @@ public class VehicleRepository : IVehicleRepository
             """;
 
         await connection.ExecuteAsync(sql, vehicle);
+    }
+
+    Task<Vehicle?> IVehicleRepository.GetByLicensePlateAsync(string licensePlate)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<Vehicle?> IVehicleRepository.GetByIdAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<IEnumerable<Vehicle>> IVehicleRepository.GetByCustomerIdAsync(Guid customerId)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<IEnumerable<Vehicle>> IVehicleRepository.GetAllAsync()
+    {
+        throw new NotImplementedException();
     }
 }

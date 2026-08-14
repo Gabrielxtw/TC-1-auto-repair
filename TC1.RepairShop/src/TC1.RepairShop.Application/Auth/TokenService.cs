@@ -3,9 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using TC1.RepairShop.Domain.Entities.Costumers;
 using TC1.RepairShop.Domain.Entities.Users;
-using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.Auth;
 
@@ -24,18 +22,6 @@ public class TokenService : ITokenService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        };
-
-        return GenerateToken(claims);
-    }
-
-    public string GenerateCustomerToken(Costumer customer)
-    {
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, customer.Id.ToString()),
-            new Claim(ClaimTypes.Role, UserRole.Customer.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 

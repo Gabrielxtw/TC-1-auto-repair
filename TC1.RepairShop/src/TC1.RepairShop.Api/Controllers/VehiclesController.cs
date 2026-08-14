@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TC1.RepairShop.Application.Registration.UseCases;
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 
 namespace TC1.RepairShop.Api.Controllers;
 
@@ -87,5 +87,5 @@ public class VehiclesController : ControllerBase
     }
 
     private static VehicleResponse ToResponse(Vehicle vehicle) =>
-        new(vehicle.Id, vehicle.CustomerId, vehicle.LicensePlate, vehicle.Brand, vehicle.Model, vehicle.Year, vehicle.Status.ToString());
+        new(vehicle.Id, vehicle.UserId, vehicle.LicensePlate.Value, vehicle.Brand, vehicle.Model, vehicle.Year, vehicle.Status.ToString());
 }

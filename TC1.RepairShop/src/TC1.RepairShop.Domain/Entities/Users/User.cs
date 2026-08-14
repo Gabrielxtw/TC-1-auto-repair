@@ -10,6 +10,7 @@ public class User: BaseEntity
     public string PasswordHash { get; private set; } = string.Empty;
     public Document Document { get; private set; } = null!;
     public Email Email { get; private set; } = null!;
+    public string Phone { get; private set; } = string.Empty;
     public UserRole Role { get; private set; }
 
     private User()

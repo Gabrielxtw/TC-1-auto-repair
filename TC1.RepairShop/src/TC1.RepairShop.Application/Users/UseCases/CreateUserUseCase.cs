@@ -1,5 +1,6 @@
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.Interfaces.Users;
 
 namespace TC1.RepairShop.Application.Clients.UseCases;
 
@@ -7,15 +8,8 @@ public record CreateUserRequest(string Username, string Password, string Documen
 
 public record CreateUserResult(bool Success, string? Error, User? User);
 
-public class CreateUserUseCase
+public class CreateUserUseCase(IUserRepository _userRepository)
 {
-    private readonly IUserRepository _userRepository;
-
-    public CreateUserUseCase(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-
     public async Task<CreateUserResult> ExecuteAsync(CreateUserRequest request)
     {
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);

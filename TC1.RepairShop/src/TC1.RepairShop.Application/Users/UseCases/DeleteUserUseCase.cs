@@ -1,18 +1,11 @@
-using TC1.RepairShop.Application.Clients;
+using TC1.RepairShop.Domain.Interfaces.Users;
 
 namespace TC1.RepairShop.Application.Clients.UseCases;
 
 public record DeleteUserResult(bool Success, string? Error);
 
-public class DeleteUserUseCase
+public class DeleteUserUseCase(IUserRepository _userRepository)
 {
-    private readonly IUserRepository _userRepository;
-
-    public DeleteUserUseCase(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-
     public async Task<DeleteUserResult> ExecuteAsync(Guid id)
     {
         var user = await _userRepository.GetByIdAsync(id);

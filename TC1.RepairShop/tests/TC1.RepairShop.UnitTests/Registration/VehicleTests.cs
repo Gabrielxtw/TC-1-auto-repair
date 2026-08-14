@@ -1,7 +1,6 @@
-using System;
 using Xunit;
-using TC1.RepairShop.Domain.Entities.Registration;
 using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 
 namespace TC1.RepairShop.UnitTests.Registration;
 
@@ -14,8 +13,8 @@ public class VehicleTests
         var vehicle = Vehicle.Create(customerId, "abc-1234", "Toyota", "Corolla", 2020);
 
         Assert.NotEqual(Guid.Empty, vehicle.Id);
-        Assert.Equal(customerId, vehicle.CustomerId);
-        Assert.Equal("ABC1234", vehicle.LicensePlate);
+        Assert.Equal(customerId, vehicle.UserId);
+        Assert.Equal("ABC1234", vehicle.LicensePlate.Value);
         Assert.Equal("Toyota", vehicle.Brand);
         Assert.Equal("Corolla", vehicle.Model);
         Assert.Equal(2020, vehicle.Year);

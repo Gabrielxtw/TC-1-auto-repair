@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TC1.RepairShop.Application.Clients.UseCases;
-using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Api.Controllers;
@@ -34,8 +34,6 @@ public class UsersController : ControllerBase
         _deleteUserUseCase = deleteUserUseCase;
     }
 
-    public record CreateRequest(string Username, string Password, UserRole Role);
-
     public record UpdateRequest(string Username, UserRole Role);
 
     public record ChangePasswordRequest(string NewPassword);
@@ -62,10 +60,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
     {
-        var result = await _createUserUseCase.ExecuteAsync(
-            new CreateUserRequest(request.Username, request.Password, request.Role));
+        var result = await _createUserUseCase.ExecuteAsync(request);
 
         if (!result.Success)
         {
