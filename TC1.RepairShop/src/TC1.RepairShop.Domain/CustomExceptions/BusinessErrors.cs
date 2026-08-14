@@ -30,5 +30,19 @@ namespace TC1.RepairShop.Domain.CustomExceptions
                 Message: "The license plate value must be a valid Brazilian license plate.",
                 StatusCode: 400);
         }
+
+        public static class Part
+        {
+            public static readonly BusinessError CannotAlterStockFromInactivePart = new(
+                Message: "Cannot alter stock from an inactive part.",
+                StatusCode: 400);
+        }
+
+        public static class ServiceOrder
+        {
+            public static readonly BusinessError InvalidStatusTransition = new(
+                Message: "Cannot transition from the current status to the new status.",
+                StatusCode: 400);
+        }
     }
 }

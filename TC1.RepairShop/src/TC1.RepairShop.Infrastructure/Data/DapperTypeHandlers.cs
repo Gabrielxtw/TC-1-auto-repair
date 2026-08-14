@@ -1,5 +1,4 @@
 using Dapper;
-using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Infrastructure.Data;

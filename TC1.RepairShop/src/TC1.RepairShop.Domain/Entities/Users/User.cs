@@ -17,7 +17,7 @@ public class User: BaseEntity
     {
     }
 
-    public static User Create(string username, string password, string document, string email, UserRole role)
+    public static User Create(string username, string password, string document, string email, UserRole role, string phone)
     {
         return new User
         {
@@ -25,6 +25,7 @@ public class User: BaseEntity
             PasswordHash = PasswordHasher.Hash(password),
             Document = Document.Create(document),
             Email = Email.Create(email),
+            Phone = phone,
             Role = role,
         };
     }

@@ -13,13 +13,10 @@ public class Part : BaseEntity
     {
     }
 
-    private bool IsActive() => Status == Enums.Status.Active;
-
     public void ReceiveStock(int quantity)
     {
         if (!IsActive())
-            ///ToDo exception para esse caso
-            throw new Exception();
+            throw new BusinessException(BusinessErrors.Part.CannotAlterStockFromInactivePart);
 
         StockQuantity += quantity;
     }
@@ -27,8 +24,7 @@ public class Part : BaseEntity
     public void ConsumeStock(int quantity)
     {
         if (!IsActive())
-            ///ToDo exception para esse caso
-            throw new Exception();
+            throw new BusinessException(BusinessErrors.Part.CannotAlterStockFromInactivePart);
 
         StockQuantity -= quantity;
     }

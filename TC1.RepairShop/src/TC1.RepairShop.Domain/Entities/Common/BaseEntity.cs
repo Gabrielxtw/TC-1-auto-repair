@@ -18,7 +18,7 @@ namespace TC1.RepairShop.Domain.Entities.Common
             UpdatedAt = DateTime.UtcNow;
             Status = Status.Active;
         }
-        private bool IsActive() => Status == Status.Active;
+        protected bool IsActive() => Status == Status.Active;
 
         public virtual void Delete()
         {
