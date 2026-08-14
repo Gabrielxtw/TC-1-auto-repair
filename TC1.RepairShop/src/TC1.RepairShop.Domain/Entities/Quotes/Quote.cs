@@ -1,4 +1,5 @@
 using TC1.RepairShop.Domain.Entities.Common;
+using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Domain.Entities.Quotes;
@@ -6,9 +7,8 @@ namespace TC1.RepairShop.Domain.Entities.Quotes;
 public class Quote: BaseEntity
 {
     public Guid ServiceOrderId { get; private set; }
-    public decimal TotalAmount { get; private set; }
-    public decimal Discount { get; private set; }
-    public decimal FinalPrice { get; private set; }
+    public ServiceOrder ServiceOrder { get; private set; } = null!;
+    public decimal Price { get; private set; }
     public QuoteStatus QuoteStatusValue { get; private set; }
     public int RejectionCount { get; private set; }
 
@@ -16,25 +16,17 @@ public class Quote: BaseEntity
     {
     }
 
-    public static Quote Create(Guid serviceOrderId, decimal totalAmount, decimal discount = 0)
+    public static Quote Create(Guid serviceOrderId, decimal price)
     {
         var quote = new Quote
         {
             ServiceOrderId = serviceOrderId,
             QuoteStatusValue = QuoteStatus.Draft,
             RejectionCount = 0,
+            Price = price
         };
 
-        quote.SetAmount(totalAmount, discount);
-
         return quote;
-    }
-
-    public void SetAmount(decimal totalAmount, decimal discount)
-    {
-        TotalAmount = totalAmount;
-        Discount = discount;
-        FinalPrice = totalAmount - totalAmount * discount / 100;
     }
 
     public void Reject()

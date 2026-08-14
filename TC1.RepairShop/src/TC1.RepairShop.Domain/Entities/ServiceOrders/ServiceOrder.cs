@@ -1,4 +1,7 @@
 using TC1.RepairShop.Domain.Entities.Common;
+using TC1.RepairShop.Domain.Entities.Quotes;
+using TC1.RepairShop.Domain.Entities.Users;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Domain.Entities.ServiceOrders;
@@ -6,11 +9,14 @@ namespace TC1.RepairShop.Domain.Entities.ServiceOrders;
 public class ServiceOrder: BaseEntity
 {
     public Guid UserId { get; private set; }
+    public User User { get; private set; } = null!;
     public Guid VehicleId { get; private set; }
+    public Vehicle Vehicle { get; private set; } = null!;
     public ServiceOrderStatus OrderStatusValue { get; private set; }
     public DateTime OpenedAt { get; private set; }
     public DateTime? CompletedAt { get; private set; }
     public Guid? QuoteId { get; private set; }
+    public Quote? Quote { get; private set; } = null!;
 
     private ServiceOrder()
     {

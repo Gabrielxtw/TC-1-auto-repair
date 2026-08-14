@@ -2,7 +2,7 @@ using TC1.RepairShop.Domain.Entities.Common;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.ValueObjects;
 
-namespace TC1.RepairShop.Domain.Entities.Clients;
+namespace TC1.RepairShop.Domain.Entities.Users;
 
 public class User: BaseEntity
 {
