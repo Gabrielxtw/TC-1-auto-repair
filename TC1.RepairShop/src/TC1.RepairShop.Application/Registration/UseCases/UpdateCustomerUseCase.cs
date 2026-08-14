@@ -4,14 +4,8 @@ public record UpdateCustomerRequest(Guid Id, string Phone, string Email);
 
 public record UpdateCustomerResult(bool Success, string? Error);
 
-public class UpdateCustomerUseCase
+public class UpdateCustomerUseCase(ICostumerRepository _customerRepository)
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public UpdateCustomerUseCase(ICustomerRepository customerRepository)
-    {
-        _customerRepository = customerRepository;
-    }
 
     public async Task<UpdateCustomerResult> ExecuteAsync(UpdateCustomerRequest request)
     {

@@ -1,15 +1,8 @@
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Costumers;
 
 namespace TC1.RepairShop.Application.Registration.UseCases;
 
-public class GetCustomerUseCase
+public class GetCustomerUseCase (ICostumerRepository _customerRepository)
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public GetCustomerUseCase(ICustomerRepository customerRepository)
-    {
-        _customerRepository = customerRepository;
-    }
-
-    public Task<Customer?> ExecuteAsync(Guid id) => _customerRepository.GetByIdAsync(id);
+    public async Task<Costumer?> ExecuteAsync(Guid id) => await _customerRepository.GetByIdAsync(id);
 }

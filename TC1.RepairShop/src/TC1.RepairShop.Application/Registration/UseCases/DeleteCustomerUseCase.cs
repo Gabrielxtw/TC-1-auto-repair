@@ -2,15 +2,8 @@ namespace TC1.RepairShop.Application.Registration.UseCases;
 
 public record DeleteCustomerResult(bool Success, string? Error);
 
-public class DeleteCustomerUseCase
+public class DeleteCustomerUseCase(ICostumerRepository _customerRepository)
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public DeleteCustomerUseCase(ICustomerRepository customerRepository)
-    {
-        _customerRepository = customerRepository;
-    }
-
     public async Task<DeleteCustomerResult> ExecuteAsync(Guid id)
     {
         var customer = await _customerRepository.GetByIdAsync(id);

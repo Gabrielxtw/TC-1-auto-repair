@@ -1,4 +1,4 @@
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 
 namespace TC1.RepairShop.Application.Registration.UseCases;
 
@@ -6,17 +6,8 @@ public record CreateVehicleRequest(Guid CustomerId, string LicensePlate, string 
 
 public record CreateVehicleResult(bool Success, string? Error, Vehicle? Vehicle);
 
-public class CreateVehicleUseCase
+public class CreateVehicleUseCase(ICostumerRepository _customerRepository, IVehicleRepository _vehicleRepository)
 {
-    private readonly ICustomerRepository _customerRepository;
-    private readonly IVehicleRepository _vehicleRepository;
-
-    public CreateVehicleUseCase(ICustomerRepository customerRepository, IVehicleRepository vehicleRepository)
-    {
-        _customerRepository = customerRepository;
-        _vehicleRepository = vehicleRepository;
-    }
-
     public async Task<CreateVehicleResult> ExecuteAsync(CreateVehicleRequest request)
     {
         var customer = await _customerRepository.GetByIdAsync(request.CustomerId);

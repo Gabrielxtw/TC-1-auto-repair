@@ -1,5 +1,3 @@
-using TC1.RepairShop.Domain.Enums;
-using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Common;
 
 namespace TC1.RepairShop.Domain.Entities.Services;

@@ -1,6 +1,6 @@
 ﻿using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Parts;
-using TC1.RepairShop.Domain.Entities.Parts.Interfaces;
+using TC1.RepairShop.Domain.Interfaces.Parts;
 
 namespace TC1.RepairShop.Application.Parts.UseCases.ReceiveStock
 {

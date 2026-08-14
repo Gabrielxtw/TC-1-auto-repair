@@ -1,21 +1,13 @@
-using TC1.RepairShop.Application.Registration;
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Costumers;
 
 namespace TC1.RepairShop.Application.Registration.UseCases;
 
 public record CreateCustomerRequest(string Name, string NationalId, string Phone, string Email);
 
-public record CreateCustomerResult(bool Success, string? Error, Customer? Customer);
+public record CreateCustomerResult(bool Success, string? Error, Costumer? Customer);
 
-public class CreateCustomerUseCase
+public class CreateCustomerUseCase (ICostumerRepository _customerRepository)
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public CreateCustomerUseCase(ICustomerRepository customerRepository)
-    {
-        _customerRepository = customerRepository;
-    }
-
     public async Task<CreateCustomerResult> ExecuteAsync(CreateCustomerRequest request)
     {
         var existingCustomer = await _customerRepository.GetByNationalIdAsync(request.NationalId);
@@ -24,7 +16,7 @@ public class CreateCustomerUseCase
             return new CreateCustomerResult(false, "National ID is already registered.", null);
         }
 
-        var customer = Customer.Create(request.Name, request.NationalId, request.Phone, request.Email);
+        var customer = Costumer.Create(request.Name, request.NationalId, request.Phone, request.Email);
 
         await _customerRepository.AddAsync(customer);
 

@@ -1,10 +1,9 @@
-using TC1.RepairShop.Application.Clients;
-using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.Clients.UseCases;
 
-public record CreateUserRequest(string Username, string Password, UserRole Role);
+public record CreateUserRequest(string Username, string Password, string Document, string Email, UserRole Role);
 
 public record CreateUserResult(bool Success, string? Error, User? User);
 
@@ -25,7 +24,7 @@ public class CreateUserUseCase
             return new CreateUserResult(false, "Username is already taken.", null);
         }
 
-        var user = User.Create(request.Username, request.Password, request.Role);
+        var user = User.Create(request.Username, request.Password, request.Document, request.Email, request.Role);
 
         await _userRepository.AddAsync(user);
 

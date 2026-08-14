@@ -1,6 +1,6 @@
 ﻿using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Services;
-using TC1.RepairShop.Domain.Entities.Services.Interfaces;
+using TC1.RepairShop.Domain.Interfaces.Services;
 
 namespace TC1.RepairShop.Application.Services.UseCases.RegisterService
 {
@@ -13,7 +13,7 @@ namespace TC1.RepairShop.Application.Services.UseCases.RegisterService
                 if (!await serviceRepository.Exist(request.name))
                     return new BaseResponse<bool>(data: false, success: false, error: "Serviço já está cadastrado no sistema.");
 
-                Service part = Service.Create(request.name, request.description);
+                Service part = Service.Create(request.name, request.description, request.price);
 
                 await serviceRepository.AddAsync(part);
 

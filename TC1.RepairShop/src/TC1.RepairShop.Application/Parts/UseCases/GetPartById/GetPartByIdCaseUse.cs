@@ -1,7 +1,7 @@
 ﻿using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Parts;
-using TC1.RepairShop.Domain.Entities.Parts.Interfaces;
 using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.Interfaces.Parts;
 
 namespace TC1.RepairShop.Application.Parts.UseCases.GetPartById
 {
@@ -17,9 +17,8 @@ namespace TC1.RepairShop.Application.Parts.UseCases.GetPartById
                     data: new GetPartByIdResponse(
                         id: part.Id,
                         name: part.Name,
-                        unitPrice: part.UnitPrice,
+                        price: part.Price,
                         stockQuantity: part.StockQuantity,
-                        minimumQuantity: part.MinimumQuantity,
                         status: part.Status
                         )
                 );
@@ -27,7 +26,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases.GetPartById
             catch (BusinessException ex)
             {
                 return new BaseResponse<GetPartByIdResponse>(
-                    data: new GetPartByIdResponse(Guid.Empty, "", 0, 0, 0, Status.Deleted),
+                    data: new GetPartByIdResponse(Guid.Empty, "", 0, 0, Status.Deleted),
                     success: false,
                     error: ex.Message
                 );
@@ -35,7 +34,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases.GetPartById
             catch (Exception)
             {
                 return new BaseResponse<GetPartByIdResponse>(
-                    data: new GetPartByIdResponse(Guid.Empty, "", 0, 0, 0, Status.Deleted),
+                    data: new GetPartByIdResponse(Guid.Empty, "", 0, 0, Status.Deleted),
                     success: false
                 );
             }

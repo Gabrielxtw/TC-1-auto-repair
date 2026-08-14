@@ -1,4 +1,4 @@
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 
 namespace TC1.RepairShop.Application.Registration.UseCases;
 

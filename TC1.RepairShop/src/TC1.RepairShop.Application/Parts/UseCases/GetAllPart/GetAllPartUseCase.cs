@@ -1,5 +1,4 @@
-﻿using TC1.RepairShop.Application.Parts.UseCases.DeletePart;
-using TC1.RepairShop.Domain.Entities.Parts.Interfaces;
+﻿using TC1.RepairShop.Domain.Interfaces.Parts;
 
 namespace TC1.RepairShop.Application.Parts.UseCases.GetAllPart
 {
@@ -12,7 +11,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases.GetAllPart
                 var parts = await partRepository.GetAllAsync();
 
                 return new BaseResponse<IEnumerable<GetAllPartViewModel>>(
-                    data: parts.Select(p => new GetAllPartViewModel(id: p.Id, name: p.Name, stockQuantity: p.StockQuantity, UnitPrice: p.UnitPrice)),
+                    data: parts.Select(p => new GetAllPartViewModel(id: p.Id, name: p.Name, stockQuantity: p.StockQuantity, UnitPrice: p.Price)),
                     success: true
                 );
             }

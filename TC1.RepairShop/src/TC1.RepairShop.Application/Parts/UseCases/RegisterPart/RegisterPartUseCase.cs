@@ -1,6 +1,6 @@
 ﻿using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Parts;
-using TC1.RepairShop.Domain.Entities.Parts.Interfaces;
+using TC1.RepairShop.Domain.Interfaces.Parts;
 
 namespace TC1.RepairShop.Application.Parts.UseCases.RegisterPart
 {
@@ -13,7 +13,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases.RegisterPart
                 if (!await partRepository.Exist(request.Name))
                     return new BaseResponse<bool>(data: false, success: false, error: "Peça já está cadastrada no sistema.");
 
-                Part part = Part.Create(request.Name, request.UnitPrice, request.MinimumQuantity);
+                Part part = Part.Create(request.Name, request.UnitPrice);
 
                 await partRepository.AddAsync(part);
 

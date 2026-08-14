@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TC1.RepairShop.Domain.CustomExceptions;
+﻿using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Domain.Entities.Common

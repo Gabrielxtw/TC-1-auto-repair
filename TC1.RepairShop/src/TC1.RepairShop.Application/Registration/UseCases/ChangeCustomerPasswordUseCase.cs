@@ -4,18 +4,11 @@ public record ChangeCustomerPasswordRequest(Guid Id, string CurrentPassword, str
 
 public record ChangeCustomerPasswordResult(bool Success, string? Error);
 
-public class ChangeCustomerPasswordUseCase
+public class ChangeCustomerPasswordUseCase(ICostumerRepository _costumerRepository)
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public ChangeCustomerPasswordUseCase(ICustomerRepository customerRepository)
-    {
-        _customerRepository = customerRepository;
-    }
-
     public async Task<ChangeCustomerPasswordResult> ExecuteAsync(ChangeCustomerPasswordRequest request)
     {
-        var customer = await _customerRepository.GetByIdAsync(request.Id);
+        var customer = await _costumerRepository.GetByIdAsync(request.Id);
         if (customer is null)
         {
             return new ChangeCustomerPasswordResult(false, "Customer not found.");
@@ -28,7 +21,7 @@ public class ChangeCustomerPasswordUseCase
 
         customer.ChangePassword(request.NewPassword);
 
-        await _customerRepository.UpdateAsync(customer);
+        await _costumerRepository.UpdateAsync(customer);
 
         return new ChangeCustomerPasswordResult(true, null);
     }

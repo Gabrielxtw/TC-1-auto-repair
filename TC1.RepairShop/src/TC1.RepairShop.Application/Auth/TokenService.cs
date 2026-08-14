@@ -1,10 +1,10 @@
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using TC1.RepairShop.Domain.Entities.Clients;
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Costumers;
+using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.Auth;
@@ -30,7 +30,7 @@ public class TokenService : ITokenService
         return GenerateToken(claims);
     }
 
-    public string GenerateCustomerToken(Customer customer)
+    public string GenerateCustomerToken(Costumer customer)
     {
         var claims = new[]
         {
