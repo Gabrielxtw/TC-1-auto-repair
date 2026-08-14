@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TC1.RepairShop.Application.Clients.UseCases;
-using TC1.RepairShop.Domain.Clients;
-using TC1.RepairShop.Domain.Common;
+using TC1.RepairShop.Domain.Entities.Clients;
 
 namespace TC1.RepairShop.Api.Controllers;
 

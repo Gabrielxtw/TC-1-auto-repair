@@ -1,5 +1,5 @@
 using System;
-using TC1.RepairShop.Domain.Services;
+using TC1.RepairShop.Domain.Entities.Services;
 using Xunit;
 
 namespace TC1.RepairShop.UnitTests.Services;

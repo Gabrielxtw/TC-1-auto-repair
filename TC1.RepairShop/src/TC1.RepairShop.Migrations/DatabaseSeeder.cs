@@ -1,12 +1,11 @@
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using TC1.RepairShop.Domain.Clients;
-using TC1.RepairShop.Domain.Common;
-using TC1.RepairShop.Domain.Quotes;
-using TC1.RepairShop.Domain.Registration;
-using TC1.RepairShop.Domain.ServiceOrders;
-using TC1.RepairShop.Domain.Services;
+using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Entities.Quotes;
+using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.ServiceOrders;
+using TC1.RepairShop.Domain.Entities.Services;
 
 namespace TC1.RepairShop.Migrations;
 

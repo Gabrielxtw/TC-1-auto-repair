@@ -1,6 +1,6 @@
-﻿using TC1.RepairShop.Domain.CustomExceptions.BusinessException;
-using TC1.RepairShop.Domain.Parts;
-using TC1.RepairShop.Domain.Parts.Interfaces;
+﻿using TC1.RepairShop.Domain.Entities.CustomExceptions;
+using TC1.RepairShop.Domain.Entities.Parts;
+using TC1.RepairShop.Domain.Entities.Parts.Interfaces;
 
 namespace TC1.RepairShop.Application.Parts.UseCases.DeletePart
 {

@@ -1,9 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Options;
 using TC1.RepairShop.Application.Auth;
-using TC1.RepairShop.Domain.Clients;
-using TC1.RepairShop.Domain.Common;
-using TC1.RepairShop.Domain.Registration;
+using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Entities.Registration;
 using Xunit;
 
 namespace TC1.RepairShop.UnitTests.Auth;

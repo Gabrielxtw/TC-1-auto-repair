@@ -1,5 +1,6 @@
-﻿using TC1.RepairShop.Domain.CustomExceptions.BusinessException;
-using TC1.RepairShop.Domain.Services;
+﻿using TC1.RepairShop.Domain.Entities.CustomExceptions;
+using TC1.RepairShop.Domain.Entities.Services;
+using TC1.RepairShop.Domain.Entities.Services.Interfaces;
 
 namespace TC1.RepairShop.Application.Services.UseCases.RegisterService
 {

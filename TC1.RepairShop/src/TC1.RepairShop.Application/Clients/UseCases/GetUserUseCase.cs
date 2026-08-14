@@ -1,5 +1,5 @@
 using TC1.RepairShop.Application.Clients;
-using TC1.RepairShop.Domain.Clients;
+using TC1.RepairShop.Domain.Entities.Clients;
 
 namespace TC1.RepairShop.Application.Clients.UseCases;
 

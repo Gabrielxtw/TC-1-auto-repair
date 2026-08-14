@@ -1,4 +1,4 @@
-using TC1.RepairShop.Domain.Registration;
+using TC1.RepairShop.Domain.Entities.Registration;
 
 namespace TC1.RepairShop.Application.Registration;
 

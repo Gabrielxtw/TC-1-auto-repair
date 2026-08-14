@@ -10,7 +10,7 @@ using TC1.RepairShop.Application.Clients;
 using TC1.RepairShop.Application.Clients.UseCases;
 using TC1.RepairShop.Application.Registration;
 using TC1.RepairShop.Application.Registration.UseCases;
-using TC1.RepairShop.Domain.Common;
+using TC1.RepairShop.Domain.Entities.Clients;
 using TC1.RepairShop.Infrastructure.Data;
 using TC1.RepairShop.Infrastructure.Repositories;
 
@@ -68,7 +68,7 @@ builder.Services
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole(nameof(Role.Admin)));
-    options.AddPolicy("StaffOnly", policy => policy.RequireRole(nameof(Role.Admin), nameof(Role.Mechanic)));
+    options.AddPolicy("StaffOnly", policy => policy.RequireRole(nameof(Role.Admin), nameof(Role.Staff)));
     options.AddPolicy("CustomerOnly", policy => policy.RequireRole(nameof(Role.Customer)));
 });
 

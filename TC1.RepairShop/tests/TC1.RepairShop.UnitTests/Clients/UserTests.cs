@@ -1,6 +1,6 @@
 using System;
-using TC1.RepairShop.Domain.Clients;
-using TC1.RepairShop.Domain.Common;
+using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Entities.Common;
 using Xunit;
 
 namespace TC1.RepairShop.UnitTests.Clients;

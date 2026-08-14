@@ -1,7 +1,7 @@
 using System;
-using TC1.RepairShop.Domain.Services;
-using TC1.RepairShop.Domain.Common;
 using Xunit;
+using TC1.RepairShop.Domain.Entities.Common;
+using TC1.RepairShop.Domain.Entities.Services;
 
 namespace TC1.RepairShop.UnitTests.Services;
 

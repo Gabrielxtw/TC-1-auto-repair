@@ -1,7 +1,8 @@
 using Dapper;
-using TC1.RepairShop.Domain.Common;
-using TC1.RepairShop.Domain.Quotes;
-using TC1.RepairShop.Domain.ServiceOrders;
+using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Entities.Common;
+using TC1.RepairShop.Domain.Entities.Quotes;
+using TC1.RepairShop.Domain.Entities.ServiceOrders;
 
 namespace TC1.RepairShop.Infrastructure.Data;
 

@@ -3,9 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using TC1.RepairShop.Domain.Clients;
-using TC1.RepairShop.Domain.Common;
-using TC1.RepairShop.Domain.Registration;
+using TC1.RepairShop.Domain.Entities.Clients;
+using TC1.RepairShop.Domain.Entities.Registration;
 
 namespace TC1.RepairShop.Application.Auth;
 

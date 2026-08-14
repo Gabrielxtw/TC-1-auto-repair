@@ -1,6 +1,6 @@
 using Dapper;
 using TC1.RepairShop.Application.Registration;
-using TC1.RepairShop.Domain.Registration;
+using TC1.RepairShop.Domain.Entities.Registration;
 using TC1.RepairShop.Infrastructure.Data;
 
 namespace TC1.RepairShop.Infrastructure.Repositories;
