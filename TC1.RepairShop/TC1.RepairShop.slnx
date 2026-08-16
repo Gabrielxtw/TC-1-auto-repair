@@ -4,7 +4,6 @@
     <Project Path="src/TC1.RepairShop.Application/TC1.RepairShop.Application.csproj" />
     <Project Path="src/TC1.RepairShop.Domain/TC1.RepairShop.Domain.csproj" />
     <Project Path="src/TC1.RepairShop.Infrastructure/TC1.RepairShop.Infrastructure.csproj" />
-    <Project Path="src/TC1.RepairShop.Migrations/TC1.RepairShop.Migrations.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/TC1.RepairShop.IntegrationTests/TC1.RepairShop.IntegrationTests.csproj" />

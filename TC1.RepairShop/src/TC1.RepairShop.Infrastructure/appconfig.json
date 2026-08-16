@@ -1,0 +1,21 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost,1433;Database=RepairShopDb;User Id=sa;Password=YourStrong!Pass123;TrustServerCertificate=True;"
+  },
+  "Provider": "SqlServer",
+
+  "SeedAdmin": {
+    "Password": "__CHANGE_ME__",
+    "Email": "admin@example.com",
+    "Document": "01098843371",
+    "Phone": "11999999999"
+  },
+
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  }
+}
