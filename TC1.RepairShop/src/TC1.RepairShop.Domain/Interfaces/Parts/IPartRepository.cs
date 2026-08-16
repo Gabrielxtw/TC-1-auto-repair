@@ -2,12 +2,8 @@
 
 namespace TC1.RepairShop.Domain.Interfaces.Parts
 {
-    public interface IPartRepository
+    public interface IPartRepository: IRepository<Part, Guid>
     {
-        Task<IEnumerable<Part>> GetAllAsync();
-        Task<Part> GetByIdsAsync(Guid id);
-        Task AddAsync(Part part);
-        Task UpdateAsync(Part part);
-        Task<bool> Exist(string nome);
+        Task<bool> ExistsByNameAsync(string name);
     }
 }

@@ -2,12 +2,8 @@
 
 namespace TC1.RepairShop.Domain.Interfaces.Services
 {
-    public interface IServiceRepository
+    public interface IServiceRepository : IRepository<Service, Guid>
     {
-        Task<IEnumerable<Service>> GetAllAsync();
-        Task<Service> GetByIdsAsync(Guid id);
-        Task AddAsync(Service part);
-        Task UpdateAsync(Service part);
-        Task<bool> Exist(string nome);
+        Task<bool> ExistsByNameAsync(string name);
     }
 }

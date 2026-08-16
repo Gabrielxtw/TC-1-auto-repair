@@ -2,12 +2,8 @@
 
 namespace TC1.RepairShop.Domain.Interfaces.Users
 {
-    public interface IUserRepository
+    public interface IUserRepository: IRepository<User, Guid>
     {
         Task<User?> GetByUsernameAsync(string username);
-        Task<User?> GetByIdAsync(Guid id);
-        Task<IEnumerable<User>> GetAllAsync();
-        Task AddAsync(User user);
-        Task UpdateAsync(User user);
     }
 }
