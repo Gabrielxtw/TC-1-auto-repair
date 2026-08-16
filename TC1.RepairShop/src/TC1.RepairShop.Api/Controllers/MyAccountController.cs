@@ -1,20 +1,21 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TC1.RepairShop.Application.Clients.UseCases;
 using TC1.RepairShop.Application.Registration.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers;
 
 [ApiController]
-[Authorize(Policy = "CustomerOnly")]
-[Route("api/customers/me")]
+[Authorize(Policy = "UserOnly")]
+[Route("api/users/me")]
 public class MyAccountController : ControllerBase
 {
-    private readonly ChangeCustomerPasswordUseCase _changeCustomerPasswordUseCase;
+    private readonly ChangeUserPasswordUseCase _changeUserPasswordUseCase;
 
-    public MyAccountController(ChangeCustomerPasswordUseCase changeCustomerPasswordUseCase)
+    public MyAccountController(ChangeUserPasswordUseCase changeUserPasswordUseCase)
     {
-        _changeCustomerPasswordUseCase = changeCustomerPasswordUseCase;
+        _changeUserPasswordUseCase = changeUserPasswordUseCase;
     }
 
     public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
@@ -22,14 +23,14 @@ public class MyAccountController : ControllerBase
     [HttpPut("password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub")!);
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub")!);
 
-        var result = await _changeCustomerPasswordUseCase.ExecuteAsync(
-            new ChangeCustomerPasswordRequest(customerId, request.CurrentPassword, request.NewPassword));
+        var result = await _changeUserPasswordUseCase.ExecuteAsync(
+            new ChangeUserPasswordRequest(userId, request.NewPassword));
 
         if (!result.Success)
         {
-            return result.Error == "Customer not found."
+            return result.Error == "User not found."
                 ? NotFound(new { message = result.Error })
                 : BadRequest(new { message = result.Error });
         }

@@ -5,7 +5,7 @@
   "Provider": "SqlServer",
 
   "SeedAdmin": {
-    "Password": "__CHANGE_ME__",
+    "Password": "admin123",
     "Email": "admin@example.com",
     "Document": "01098843371",
     "Phone": "11999999999"

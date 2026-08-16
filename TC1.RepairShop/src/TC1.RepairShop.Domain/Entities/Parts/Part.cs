@@ -29,12 +29,13 @@ public class Part : BaseEntity
         StockQuantity -= quantity;
     }
 
-    public static Part Create(string name, decimal price)
+    public static Part Create(string name, decimal price, int stockQuantity = 0)
     {
         return new Part
         {
             Name = name,
             Price = price,
+            StockQuantity = stockQuantity,
         };
     }
 }
