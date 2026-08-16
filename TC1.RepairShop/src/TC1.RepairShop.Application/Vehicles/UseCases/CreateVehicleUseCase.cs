@@ -1,5 +1,6 @@
 using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Interfaces.Users;
+using TC1.RepairShop.Domain.Interfaces.Vehicles;
 
 namespace TC1.RepairShop.Application.Registration.UseCases;
 

@@ -10,7 +10,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases.DeactivePart
         {
 			try
 			{
-                Part part = await partRepository.GetByIdsAsync(request.Id);
+                Part part = await partRepository.GetByIdAsync(request.Id);
 
                 part.Deactivate();
 

@@ -10,7 +10,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases.RegisterPart
         {
             try
             {
-                if (!await partRepository.Exist(request.Name))
+                if (await partRepository.ExistsByNameAsync(request.Name))
                     return new BaseResponse<bool>(data: false, success: false, error: "Peça já está cadastrada no sistema.");
 
                 Part part = Part.Create(request.Name, request.UnitPrice);

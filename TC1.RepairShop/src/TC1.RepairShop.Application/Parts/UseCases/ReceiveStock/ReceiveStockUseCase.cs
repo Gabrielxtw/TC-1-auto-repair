@@ -10,7 +10,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases.ReceiveStock
         {
             try
             {
-                Part part = await partRepository.GetByIdsAsync(request.Id);
+                Part part = await partRepository.GetByIdAsync(request.Id);
 
                 part.ReceiveStock(request.Quantity);
 

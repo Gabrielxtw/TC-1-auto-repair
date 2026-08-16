@@ -10,7 +10,7 @@ namespace TC1.RepairShop.Application.Services.UseCases.RegisterService
         {
             try
             {
-                if (!await serviceRepository.Exist(request.name))
+                if (!await serviceRepository.ExistsByNameAsync(request.name))
                     return new BaseResponse<bool>(data: false, success: false, error: "Serviço já está cadastrado no sistema.");
 
                 Service part = Service.Create(request.name, request.description, request.price);

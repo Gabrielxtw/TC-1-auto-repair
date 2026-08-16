@@ -11,7 +11,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases.GetPartById
         {
             try
             {
-                Part part = await partRepository.GetByIdsAsync(id);
+                Part part = await partRepository.GetByIdAsync(id);
 
                 return new BaseResponse<GetPartByIdResponse>(
                     data: new GetPartByIdResponse(

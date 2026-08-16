@@ -10,7 +10,7 @@ namespace TC1.RepairShop.Application.Services.UseCases.DeactiveService
         {
             try
             {
-                Service service = await serviceRepository.GetByIdsAsync(request.id);
+                Service service = await serviceRepository.GetByIdAsync(request.id);
 
                 service.Deactivate();
 
