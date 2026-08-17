@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Entities.Users;
 
 namespace TC1.RepairShop.Infrastructure.Data.Configurations;
@@ -31,5 +32,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         b.HasIndex(u => u.Email).IsUnique();
         b.Property(u => u.PasswordHash).HasMaxLength(200).IsRequired();
         b.Property(u => u.Status).IsRequired();
+
+        b.HasMany(u => u.Vehicles)
+            .WithOne(v => v.User)
+            .HasForeignKey(v => v.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        b.HasMany(u => u.ServiceOrders)
+            .WithOne(s => s.User)
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

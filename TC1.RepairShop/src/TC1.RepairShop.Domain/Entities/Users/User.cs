@@ -1,4 +1,6 @@
 using TC1.RepairShop.Domain.Entities.Common;
+using TC1.RepairShop.Domain.Entities.ServiceOrders;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.ValueObjects;
 
@@ -12,6 +14,9 @@ public class User: BaseEntity
     public Email Email { get; private set; } = null!;
     public string Phone { get; private set; } = string.Empty;
     public UserRole Role { get; private set; }
+
+    public ICollection<Vehicle> Vehicles { get; } = new List<Vehicle>();
+    public ICollection<ServiceOrder> ServiceOrders { get; } = new List<ServiceOrder>();
 
     private User()
     {

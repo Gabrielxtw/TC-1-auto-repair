@@ -26,6 +26,10 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
         b.HasIndex(v => v.LicensePlate).IsUnique();
 
         b.Property(v => v.UserId).IsRequired();
-        b.HasOne<User>().WithMany().HasForeignKey(v => v.UserId).OnDelete(DeleteBehavior.Cascade);
+
+        b.HasMany(v => v.ServiceOrders)
+            .WithOne(s => s.Vehicle)
+            .HasForeignKey(s => s.VehicleId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -17,8 +17,6 @@ public class AuthController : ControllerBase
 
     public record LoginRequest(string Username, string Password);
 
-    public record CustomerLoginRequest(string NationalId, string Password);
-
     public record LoginResponse(string Token);
 
     [HttpPost("login")]

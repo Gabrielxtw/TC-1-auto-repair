@@ -21,6 +21,7 @@ using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
 using TC1.RepairShop.Domain.Interfaces.Services;
 using TC1.RepairShop.Domain.Interfaces.Parts;
 using TC1.RepairShop.Infrastructure.Data.Repositories;
+using TC1.RepairShop.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +81,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CustomerOnly", policy => policy.RequireRole(nameof(UserRole.Customer)));
 });
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'Default' not found.");
+builder.Services.AddRepairShopDbContext(connectionString);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
@@ -114,6 +118,7 @@ using (var scope = app.Services.CreateScope())
             var context = services.GetRequiredService<RepairShopDbContext>();
             var config = services.GetRequiredService<IConfiguration>();
             // Apply migrations and seed admin user (will no-op if password not provided or admin exists)
+            context.Database.EnsureCreated();
             await context.Database.MigrateAsync();
             await RepairShopSeeder.SeedAdminAsync(context, config);
         }

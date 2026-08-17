@@ -10,14 +10,13 @@ public class ServiceOrderPart
     public Guid PartId { get; private set; }
     public Part Part { get; private set; } = null!;
     public int Quantity { get; private set; }
-    public decimal UnitPrice { get; private set; }
     public bool SuppliedByCustomer { get; private set; }
 
     private ServiceOrderPart()
     {
     }
 
-    public static ServiceOrderPart Create(Guid serviceOrderId, Guid partId, int quantity, decimal unitPrice, bool suppliedByCustomer)
+    public static ServiceOrderPart Create(Guid serviceOrderId, Guid partId, int quantity, bool suppliedByCustomer)
     {
         return new ServiceOrderPart
         {
@@ -25,7 +24,6 @@ public class ServiceOrderPart
             ServiceOrderId = serviceOrderId,
             PartId = partId,
             Quantity = quantity,
-            UnitPrice = suppliedByCustomer ? 0 : unitPrice,
             SuppliedByCustomer = suppliedByCustomer,
         };
     }
