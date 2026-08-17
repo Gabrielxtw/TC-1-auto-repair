@@ -9,7 +9,7 @@ public class UserTests
     [Fact]
     public void Create_ShouldInitializeUser()
     {
-        var user = User.Create("alice", "Passw0rd!", "", "", UserRole.Staff);
+        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
 
         Assert.NotEqual(Guid.Empty, user.Id);
         Assert.Equal("alice", user.Username);
@@ -22,7 +22,7 @@ public class UserTests
     [Fact]
     public void VerifyPassword_WithIncorrectPassword_ShouldReturnFalse()
     {
-        var user = User.Create("alice", "Passw0rd!", "", "", UserRole.Staff);
+        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
 
         Assert.False(user.VerifyPassword("WrongPassword"));
     }
@@ -30,9 +30,9 @@ public class UserTests
     [Fact]
     public void UpdateProfile_ShouldChangeUsernameAndRole()
     {
-        var user = User.Create("alice", "Passw0rd!", "", "", UserRole.Admin);
+        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
 
-        user.UpdateProfile("bob", "Admin");
+        user.UpdateProfile("bob", UserRole.Admin);
 
         Assert.Equal("bob", user.Username);
         Assert.Equal(UserRole.Admin, user.Role);
@@ -41,7 +41,7 @@ public class UserTests
     [Fact]
     public void ChangePassword_ShouldUpdateHashAndVerification()
     {
-        var user = User.Create("alice", "Passw0rd!", "", "", UserRole.Staff);
+        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
         var oldHash = user.PasswordHash;
 
         user.ChangePassword("NewPass2!");
@@ -54,7 +54,7 @@ public class UserTests
     [Fact]
     public void Delete_ShouldSetStatusDeleted()
     {
-        var user = User.Create("alice", "Passw0rd!", "", "", UserRole.Staff);
+        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
 
         user.Delete();
 

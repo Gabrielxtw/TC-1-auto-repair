@@ -1,6 +1,6 @@
-using TC1.RepairShop.Application.Registration;
 using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.Interfaces.Vehicles;
 
 namespace TC1.RepairShop.UnitTests.Registration;
 
@@ -36,5 +36,20 @@ public class FakeVehicleRepository : IVehicleRepository
     {
         _vehicles[vehicle.Id] = vehicle;
         return Task.CompletedTask;
+    }
+
+    public Task DeleteAsync(Guid id)
+    {
+        if (_vehicles.TryGetValue(id, out var vehicle))
+        {
+            vehicle.Delete();
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> ExistsAsync(Guid id)
+    {
+
+        return Task.FromResult(_vehicles.TryGetValue(id, out var vehicle));
     }
 }

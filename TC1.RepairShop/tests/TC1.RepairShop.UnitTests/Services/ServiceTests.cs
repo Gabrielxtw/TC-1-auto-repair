@@ -10,29 +10,19 @@ public class ServiceTests
     [Fact]
     public void Create_ShouldInitializeService()
     {
-        var service = Service.Create("Oil Change", "Change engine oil and filter");
+        var service = Service.Create("Oil Change", "Change engine oil and filter", 59.99m);
 
         Assert.NotEqual(Guid.Empty, service.Id);
         Assert.Equal("Oil Change", service.Name);
         Assert.Equal("Change engine oil and filter", service.Description);
+        Assert.Equal(59.99m, service.Price);
         Assert.Equal(Status.Active, service.Status);
-    }
-
-    [Fact]
-    public void AddPart_ShouldAddServicePart()
-    {
-        var service = Service.Create("Wheel Alignment", "Align wheels");
-        var partId = Guid.NewGuid();
-
-        service.AddPart(partId, 2);
-
-        Assert.Contains(service.Parts, p => p.PartId == partId && p.Quantity == 2);
     }
 
     [Fact]
     public void Delete_ShouldSetStatusDeleted()
     {
-        var service = Service.Create("Battery Replacement", "Replace battery");
+        var service = Service.Create("Battery Replacement", "Replace battery", 120m);
 
         service.Delete();
 

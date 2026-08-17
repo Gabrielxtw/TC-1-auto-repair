@@ -15,7 +15,7 @@ public class ServiceOrderTests
         var order = ServiceOrder.Create(customerId, vehicleId);
 
         Assert.NotEqual(Guid.Empty, order.Id);
-        Assert.Equal(customerId, order.CustomerId);
+        Assert.Equal(customerId, order.UserId);
         Assert.Equal(vehicleId, order.VehicleId);
         Assert.Equal(ServiceOrderStatus.Received, order.OrderStatusValue);
         Assert.Equal(Status.Active, order.Status);

@@ -1,45 +1,56 @@
-using System.Collections.Concurrent;
 using TC1.RepairShop.Application.Registration;
-using TC1.RepairShop.Domain.Entities.Registration;
+using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.Interfaces.Vehicles;
 
-namespace TC1.RepairShop.IntegrationTests;
+namespace TC1.RepairShop.UnitTests.Registration;
 
 public class FakeVehicleRepository : IVehicleRepository
 {
-    private static readonly ConcurrentDictionary<Guid, Vehicle> Vehicles = new();
+    private readonly Dictionary<Guid, Vehicle> _vehicles = [];
 
     public Task<Vehicle?> GetByLicensePlateAsync(string licensePlate)
     {
-        var vehicle = Vehicles.Values.SingleOrDefault(v => v.LicensePlate == licensePlate && v.Status != Status.Deleted);
+        var vehicle = _vehicles.Values.SingleOrDefault(v => v.LicensePlate.Value == licensePlate && v.Status != Status.Deleted);
         return Task.FromResult(vehicle);
     }
 
     public Task<Vehicle?> GetByIdAsync(Guid id)
     {
-        Vehicles.TryGetValue(id, out var vehicle);
+        _vehicles.TryGetValue(id, out var vehicle);
         return Task.FromResult(vehicle is not null && vehicle.Status != Status.Deleted ? vehicle : null);
     }
 
-    public Task<IEnumerable<Vehicle>> GetByCustomerIdAsync(Guid customerId)
-    {
-        return Task.FromResult(Vehicles.Values.Where(v => v.CustomerId == customerId && v.Status != Status.Deleted));
-    }
+    public Task<IEnumerable<Vehicle>> GetByCustomerIdAsync(Guid customerId) =>
+        Task.FromResult(_vehicles.Values.Where(v => v.UserId == customerId && v.Status != Status.Deleted));
 
-    public Task<IEnumerable<Vehicle>> GetAllAsync()
-    {
-        return Task.FromResult(Vehicles.Values.Where(v => v.Status != Status.Deleted));
-    }
+    public Task<IEnumerable<Vehicle>> GetAllAsync() =>
+        Task.FromResult(_vehicles.Values.Where(v => v.Status != Status.Deleted));
 
     public Task AddAsync(Vehicle vehicle)
     {
-        Vehicles[vehicle.Id] = vehicle;
+        _vehicles[vehicle.Id] = vehicle;
         return Task.CompletedTask;
     }
 
     public Task UpdateAsync(Vehicle vehicle)
     {
-        Vehicles[vehicle.Id] = vehicle;
+        _vehicles[vehicle.Id] = vehicle;
         return Task.CompletedTask;
+    }
+
+    public Task DeleteAsync(Guid id)
+    {
+        if (_vehicles.TryGetValue(id, out var vehicle))
+        {
+            vehicle.Delete();
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> ExistsAsync(Guid id)
+    {
+
+        return Task.FromResult(_vehicles.TryGetValue(id, out var vehicle));
     }
 }
