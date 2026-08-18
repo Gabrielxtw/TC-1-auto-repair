@@ -3,9 +3,7 @@ using TC1.RepairShop.Application.Auth.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers;
 
-[ApiController]
-[Route("api/auth")]
-public class AuthController : ControllerBase
+public class AuthController : BaseController
 {
     private readonly AuthenticateUserUseCase _authenticateUserUseCase;
 

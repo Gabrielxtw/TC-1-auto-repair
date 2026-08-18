@@ -7,8 +7,8 @@ using TC1.RepairShop.Application.Services.UseCases.RegisterService;
 
 namespace TC1.RepairShop.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    //[Route("api/[controller]")]
+    //[ApiController]
     public class ServicesController(
         DeactiveServiceUseCase deactiveServiceUseCase,
         DeleteServiceUseCase deleteServiceUseCase,

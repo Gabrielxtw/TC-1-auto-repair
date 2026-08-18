@@ -23,6 +23,7 @@ public class CreateUserUseCase(IUserRepository _userRepository)
         {
             var user = User.Create(request.Username, request.Password, request.Document, request.Email, request.Role, request.Phone);
             await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
             return new CreateUserResult(true, null, user);
         }
         catch (BusinessException ex)

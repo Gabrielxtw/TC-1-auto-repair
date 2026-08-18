@@ -82,7 +82,7 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<RepairShopDbContext>();
         var config = services.GetRequiredService<IConfiguration>();
-
+        context.Database.EnsureCreated();
         await context.Database.MigrateAsync();
         await RepairShopSeeder.SeedAdminAsync(context, config);
     }
@@ -93,11 +93,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseAuthentication();
 app.UseAuthorization();

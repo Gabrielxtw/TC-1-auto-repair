@@ -47,4 +47,10 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
         var e = await GetByIdAsync(id);
         return e is not null;
     }
+
+    public virtual async Task<T> SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
+        return default!;
+    }
 }

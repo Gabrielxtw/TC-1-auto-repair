@@ -6,10 +6,10 @@ using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Api.Controllers;
 
-[ApiController]
+//[ApiController]
 [Authorize(Policy = "AdminOnly")]
-[Route("api/users")]
-public class UsersController : ControllerBase
+//[Route("api/users")]
+public class UsersController : BaseController
 {
     private readonly CreateUserUseCase _createUserUseCase;
     private readonly GetUserUseCase _getUserUseCase;

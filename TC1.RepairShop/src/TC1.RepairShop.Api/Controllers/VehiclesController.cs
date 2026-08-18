@@ -5,10 +5,8 @@ using TC1.RepairShop.Domain.Entities.Vehicles;
 
 namespace TC1.RepairShop.Api.Controllers;
 
-[ApiController]
 [Authorize(Policy = "StaffOnly")]
-[Route("api/vehicles")]
-public class VehiclesController : ControllerBase
+public class VehiclesController : BaseController
 {
     private readonly CreateVehicleUseCase _createVehicleUseCase;
     private readonly GetVehicleUseCase _getVehicleUseCase;

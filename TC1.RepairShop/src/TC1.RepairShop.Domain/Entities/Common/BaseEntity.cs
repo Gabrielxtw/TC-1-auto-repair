@@ -9,7 +9,7 @@ namespace TC1.RepairShop.Domain.Entities.Common
         public Status Status { get; private set; }
         public DateTime RegisteredAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
-        public DateTime DeletedAt { get; private set; }
+        public DateTime? DeletedAt { get; private set; }
 
         protected BaseEntity()
         {

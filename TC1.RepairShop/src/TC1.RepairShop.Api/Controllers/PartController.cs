@@ -8,8 +8,8 @@ using TC1.RepairShop.Application.Parts.UseCases.RegisterPart;
 
 namespace TC1.RepairShop.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    //[ApiController]
+    //[Route("api/[controller]")]
     public class PartController(
         DeactivatePartUseCase deactivatePartUseCase,
         DeletePartUseCase deletePartUseCase,

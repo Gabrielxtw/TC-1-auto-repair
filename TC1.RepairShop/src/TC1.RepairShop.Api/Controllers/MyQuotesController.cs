@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TC1.RepairShop.Api.Controllers;
 
-[ApiController]
-[Authorize(Policy = "CustomerOnly")]
-[Route("api/customers/me/quotes")]
+//[ApiController]
+//[Authorize(Policy = "CustomerOnly")]
+//[Route("api/customers/me/quotes")]
 public class MyQuotesController : ControllerBase
 {
     [HttpGet]

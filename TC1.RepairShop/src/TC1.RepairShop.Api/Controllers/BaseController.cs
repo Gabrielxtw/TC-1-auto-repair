@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TC1.RepairShop.Application;
 
 namespace TC1.RepairShop.Api.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
-    public class BaseController : ControllerBase
+    public abstract class BaseController : ControllerBase
     {
         protected new IActionResult Response<T>(BaseResponse<T> response)
         {
@@ -16,17 +14,21 @@ namespace TC1.RepairShop.Api.Controllers
                 return Ok(response.data);
             }
 
-            switch (response.StatusCode)
+            if (int.TryParse(response.StatusCode, out var code))
             {
-                case "400":
-                    return BadRequest(response.error);
-                case "401":
-                    return Unauthorized();
-                case "500":
-                    return BadRequest(response.error);
-                default:
-                    return BadRequest(response.error);
+                return code switch
+                {
+                    400 => BadRequest(response.error),
+                    401 => Unauthorized(),
+                    403 => Forbid(),
+                    404 => NotFound(response.error),
+                    500 => StatusCode(500, response.error),
+                    _ => StatusCode(code, response.error),
+                };
             }
+
+            // fallback
+            return BadRequest(response.error);
         }
     }
 }
