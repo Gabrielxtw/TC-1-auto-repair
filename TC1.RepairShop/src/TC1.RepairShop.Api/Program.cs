@@ -1,27 +1,14 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TC1.RepairShop.Application.Auth;
-using TC1.RepairShop.Application.Auth.UseCases;
-using TC1.RepairShop.Application.Clients;
-using TC1.RepairShop.Application.Clients.UseCases;
-using TC1.RepairShop.Application.Registration;
-using TC1.RepairShop.Application.Registration.UseCases;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Infrastructure.Data;
-using TC1.RepairShop.Domain.Interfaces;
-using TC1.RepairShop.Domain.Interfaces.Users;
-using TC1.RepairShop.Domain.Interfaces.Vehicles;
-using TC1.RepairShop.Domain.Interfaces.Quotes;
-using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
-using TC1.RepairShop.Domain.Interfaces.Services;
-using TC1.RepairShop.Domain.Interfaces.Parts;
-using TC1.RepairShop.Infrastructure.Data.Repositories;
-using TC1.RepairShop.Infrastructure.Extensions;
+using TC1.RepairShop.Infrastructure;
+using TC1.RepairShop.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,31 +68,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CustomerOnly", policy => policy.RequireRole(nameof(UserRole.Customer)));
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'Default' not found.");
-builder.Services.AddRepairShopDbContext(connectionString);
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
-builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
-builder.Services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
-builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-builder.Services.AddScoped<IPartRepository, PartRepository>();
-builder.Services.AddScoped<CreateUserUseCase>();
-builder.Services.AddScoped<GetUserUseCase>();
-builder.Services.AddScoped<ListUsersUseCase>();
-builder.Services.AddScoped<UpdateUserUseCase>();
-builder.Services.AddScoped<ChangeUserPasswordUseCase>();
-builder.Services.AddScoped<DeleteUserUseCase>();
-
-builder.Services.AddScoped<CreateVehicleUseCase>();
-builder.Services.AddScoped<GetVehicleUseCase>();
-builder.Services.AddScoped<ListVehiclesUseCase>();
-builder.Services.AddScoped<ListVehiclesByCustomerUseCase>();
-builder.Services.AddScoped<DeleteVehicleUseCase>();
-
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<AuthenticateUserUseCase>();
 
 var app = builder.Build();
 
@@ -113,15 +78,14 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-        try
-        {
-            var context = services.GetRequiredService<RepairShopDbContext>();
-            var config = services.GetRequiredService<IConfiguration>();
-            // Apply migrations and seed admin user (will no-op if password not provided or admin exists)
-            context.Database.EnsureCreated();
-            await context.Database.MigrateAsync();
-            await RepairShopSeeder.SeedAdminAsync(context, config);
-        }
+    try
+    {
+        var context = services.GetRequiredService<RepairShopDbContext>();
+        var config = services.GetRequiredService<IConfiguration>();
+
+        await context.Database.MigrateAsync();
+        await RepairShopSeeder.SeedAdminAsync(context, config);
+    }
     catch (Exception ex)
     {
         var logger = services.GetService<ILogger<Program>>();
