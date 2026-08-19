@@ -19,8 +19,8 @@ namespace TC1.RepairShop.Domain.CustomExceptions
 
         public static class Entity
         {
-            public static readonly BusinessError CannotDeactivateInactiveEntity = new(
-                Message: "Cannot deactivate an inactive entity.",
+            public static readonly BusinessError CannotDoActionInactiveEntity = new(
+                Message: "Cannot do action on an inactive entity.",
                 StatusCode: 400);
         }
 
@@ -42,6 +42,10 @@ namespace TC1.RepairShop.Domain.CustomExceptions
         {
             public static readonly BusinessError InvalidStatusTransition = new(
                 Message: "Cannot transition from the current status to the new status.",
+                StatusCode: 400);
+
+            public static readonly BusinessError QuantityMustBePositive = new(
+                Message: "Quantity must be greater than zero.",
                 StatusCode: 400);
         }
     }

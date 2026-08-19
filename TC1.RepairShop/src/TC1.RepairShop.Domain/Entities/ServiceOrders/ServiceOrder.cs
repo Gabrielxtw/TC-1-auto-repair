@@ -45,6 +45,33 @@ public class ServiceOrder: BaseEntity
         QuoteId = quoteId;
     }
 
+    public void AttachServices(ICollection<Guid> serviceIds)
+    {
+        if (!IsActive())
+            throw new BusinessException(BusinessErrors.Entity.CannotDoActionInactiveEntity);
+
+        foreach (var serviceId in serviceIds)
+        {
+            if (ServiceOrderServices.Any(s => s.ServiceId == serviceId))
+                continue;
+
+            ServiceOrderServices.Add(ServiceOrderService.Create(Id, serviceId));
+        }
+    }
+    public void AttachParts(ICollection<(Guid PartId, int Quantity, bool SuppliedByCustomer)> parts)
+    {
+        if (!IsActive())
+            throw new BusinessException(BusinessErrors.Entity.CannotDoActionInactiveEntity);
+
+        foreach (var (partId, quantity, suppliedByCustomer) in parts)
+        {
+            if (quantity <= 0)
+                throw new BusinessException(BusinessErrors.ServiceOrder.QuantityMustBePositive);
+
+            ServiceOrderParts.Add(ServiceOrderPart.Create(Id, partId, quantity, suppliedByCustomer));
+        }
+    }
+
     public void AdvanceTo(ServiceOrderStatus newStatus)
     {
         if(!OrderStatusValue.CanTransitionTo(newStatus))

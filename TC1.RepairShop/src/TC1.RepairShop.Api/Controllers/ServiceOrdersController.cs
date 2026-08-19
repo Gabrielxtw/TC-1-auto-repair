@@ -21,24 +21,19 @@ public class ServiceOrdersController : BaseController
         _cancelServiceOrderUseCase = cancelServiceOrderUseCase;
     }
 
-    public record CreateRequest(Guid UserId, Guid VehicleId);
-    public record AdvanceRequest(Guid ServiceOrderId, string NewStatus);
-
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateServiceOrderRequest request)
     {
-        var result = await _createServiceOrderUseCase.ExecuteAsync(new CreateServiceOrderRequest(request.UserId, request.VehicleId));
+        var result = await _createServiceOrderUseCase.ExecuteAsync(request);
         return Response(result);
     }
 
     [HttpPut("Advance")]
-    public async Task<IActionResult> Advance([FromBody] AdvanceRequest request)
+    public async Task<IActionResult> Advance([FromBody] AdvanceServiceOrderRequest request)
     {
-        // Parse status from string to ServiceOrderStatus enum-like type
         try
         {
-            var status = TC1.RepairShop.Domain.Enums.ServiceOrderStatus.FromName(request.NewStatus);
-            var result = await _advanceServiceOrderUseCase.ExecuteAsync(new AdvanceServiceOrderRequest(request.ServiceOrderId, status));
+            var result = await _advanceServiceOrderUseCase.ExecuteAsync(request);
             return Response(result);
         }
         catch
