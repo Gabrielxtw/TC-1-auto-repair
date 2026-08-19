@@ -2,7 +2,7 @@
 using TC1.RepairShop.Domain.Entities.Services;
 using TC1.RepairShop.Domain.Interfaces.Services;
 
-namespace TC1.RepairShop.Application.Services.UseCases.GetServiceById
+namespace TC1.RepairShop.Application.Services.UseCases
 {
     public class GetServiceByIdUseCase(IServiceRepository serviceRepository) : BaseUseCase<Guid, GetServiceByIdResponse>
     {

@@ -1,4 +1,4 @@
-﻿namespace TC1.RepairShop.Application.Services.UseCases.DeactiveService
+﻿namespace TC1.RepairShop.Application.Services.UseCases
 {
     public record DeactiveServiceRequest(Guid id);
 }

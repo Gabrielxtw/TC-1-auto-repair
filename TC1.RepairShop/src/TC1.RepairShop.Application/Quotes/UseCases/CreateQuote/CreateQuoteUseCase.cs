@@ -3,7 +3,7 @@ using TC1.RepairShop.Domain.Entities.Quotes;
 using TC1.RepairShop.Domain.Interfaces.Quotes;
 using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
 
-namespace TC1.RepairShop.Application.Quotes.UseCases.CreateQuote;
+namespace TC1.RepairShop.Application.Quotes.UseCases;
 
 public record CreateQuoteRequest(Guid ServiceOrderId, decimal Price);
 

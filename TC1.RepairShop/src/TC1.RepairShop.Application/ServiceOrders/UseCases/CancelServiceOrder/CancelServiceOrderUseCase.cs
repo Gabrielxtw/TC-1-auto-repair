@@ -3,7 +3,7 @@ using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
 using TC1.RepairShop.Domain.Enums;
 
-namespace TC1.RepairShop.Application.ServiceOrders.UseCases.CancelServiceOrder;
+namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
 public record CancelServiceOrderRequest(Guid id);
 

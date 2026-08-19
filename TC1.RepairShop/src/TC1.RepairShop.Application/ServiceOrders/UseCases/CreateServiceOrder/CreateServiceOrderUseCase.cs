@@ -2,7 +2,7 @@ using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
 
-namespace TC1.RepairShop.Application.ServiceOrders.UseCases.CreateServiceOrder;
+namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
 public record CreateServiceOrderRequest(Guid UserId, Guid VehicleId);
 

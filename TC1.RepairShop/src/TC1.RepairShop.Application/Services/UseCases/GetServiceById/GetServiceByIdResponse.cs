@@ -1,4 +1,4 @@
-﻿namespace TC1.RepairShop.Application.Services.UseCases.GetServiceById
+﻿namespace TC1.RepairShop.Application.Services.UseCases
 {
     public record GetServiceByIdResponse(Guid Id, string Name, string description);
 }

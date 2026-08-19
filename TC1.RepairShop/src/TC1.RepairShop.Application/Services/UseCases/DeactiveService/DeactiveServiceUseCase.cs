@@ -2,7 +2,7 @@
 using TC1.RepairShop.Domain.Entities.Services;
 using TC1.RepairShop.Domain.Interfaces.Services;
 
-namespace TC1.RepairShop.Application.Services.UseCases.DeactiveService
+namespace TC1.RepairShop.Application.Services.UseCases
 {
     public class DeactiveServiceUseCase(IServiceRepository serviceRepository) : BaseUseCase<DeactiveServiceRequest, bool>
     {

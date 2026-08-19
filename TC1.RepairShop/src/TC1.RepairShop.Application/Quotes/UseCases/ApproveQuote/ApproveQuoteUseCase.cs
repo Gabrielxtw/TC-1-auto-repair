@@ -2,7 +2,7 @@ using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Quotes;
 using TC1.RepairShop.Domain.Interfaces.Quotes;
 
-namespace TC1.RepairShop.Application.Quotes.UseCases.ApproveQuote;
+namespace TC1.RepairShop.Application.Quotes.UseCases;
 
 public record ApproveQuoteRequest(Guid QuoteId);
 

@@ -3,7 +3,7 @@ using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
 
-namespace TC1.RepairShop.Application.ServiceOrders.UseCases.AdvanceServiceOrder;
+namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
 public record AdvanceServiceOrderRequest(Guid ServiceOrderId, ServiceOrderStatus NewStatus);
 
