@@ -21,7 +21,9 @@ using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
 using TC1.RepairShop.Domain.Interfaces.Services;
 using TC1.RepairShop.Domain.Interfaces.Parts;
 using TC1.RepairShop.Infrastructure.Data.Repositories;
+using TC1.RepairShop.Infrastructure.Email;
 using TC1.RepairShop.Infrastructure.Extensions;
+using TC1.RepairShop.Application.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -106,6 +108,11 @@ builder.Services.AddScoped<DeleteVehicleUseCase>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<AuthenticateUserUseCase>();
+
+builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection(SendGridOptions.SectionName));
+builder.Services.AddSingleton<EmailQueue>();
+builder.Services.AddSingleton<IEmailSender>(sp => sp.GetRequiredService<EmailQueue>());
+builder.Services.AddHostedService<EmailQueueBackgroundService>();
 
 var app = builder.Build();
 
