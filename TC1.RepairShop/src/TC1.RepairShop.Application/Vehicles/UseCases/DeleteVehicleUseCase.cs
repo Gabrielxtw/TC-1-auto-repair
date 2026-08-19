@@ -1,4 +1,4 @@
-namespace TC1.RepairShop.Application.Registration.UseCases;
+namespace TC1.RepairShop.Application.Vehicles.UseCases;
 using TC1.RepairShop.Domain.Interfaces.Vehicles;
 
 public record DeleteVehicleResult(bool Success, string? Error);

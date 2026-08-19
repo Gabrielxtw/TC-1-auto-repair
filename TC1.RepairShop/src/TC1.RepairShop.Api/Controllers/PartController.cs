@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TC1.RepairShop.Application.Parts.UseCases.DeactivePart;
-using TC1.RepairShop.Application.Parts.UseCases.DeletePart;
-using TC1.RepairShop.Application.Parts.UseCases.GetAllPart;
-using TC1.RepairShop.Application.Parts.UseCases.GetPartById;
-using TC1.RepairShop.Application.Parts.UseCases.ReceiveStock;
-using TC1.RepairShop.Application.Parts.UseCases.RegisterPart;
+using TC1.RepairShop.Application.Parts.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers
 {
@@ -14,9 +9,9 @@ namespace TC1.RepairShop.Api.Controllers
         DeactivatePartUseCase deactivatePartUseCase,
         DeletePartUseCase deletePartUseCase,
         GetAllPartUseCase getAllPartUseCase,
-        GetPartByIdCaseUse getPartByIdCaseUse,
+        GetPartByIdUseCase getPartByIdUseCase,
         ReceiveStockUseCase receiveStockUseCase,
-        RegisterPartUseCase registerPartUseCase
+        CreatePartUseCase registerPartUseCase
         ) : BaseController
     {
         [HttpGet]
@@ -29,12 +24,12 @@ namespace TC1.RepairShop.Api.Controllers
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await getPartByIdCaseUse.ExecuteAsync(id);
+            var result = await getPartByIdUseCase.ExecuteAsync(id);
             return Response(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterPartRequest request)
+        public async Task<IActionResult> Register([FromBody] CreatePartRequest request)
         {
             var result = await registerPartUseCase.ExecuteAsync(request);
             return Response(result);

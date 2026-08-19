@@ -12,7 +12,7 @@ using TC1.RepairShop.Infrastructure.Data;
 namespace TC1.RepairShop.Infrastructure.Migrations
 {
     [DbContext(typeof(RepairShopDbContext))]
-    [Migration("20260817151229_InitialMigration")]
+    [Migration("20260819105841_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -31,7 +31,7 @@ namespace TC1.RepairShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -65,7 +65,7 @@ namespace TC1.RepairShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Price")
@@ -107,7 +107,7 @@ namespace TC1.RepairShop.Infrastructure.Migrations
                     b.Property<DateTime?>("CompletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("OpenedAt")
@@ -199,7 +199,7 @@ namespace TC1.RepairShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -235,7 +235,7 @@ namespace TC1.RepairShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Document")
@@ -297,7 +297,7 @@ namespace TC1.RepairShop.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LicensePlate")

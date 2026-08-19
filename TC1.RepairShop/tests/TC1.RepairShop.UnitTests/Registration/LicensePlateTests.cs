@@ -1,7 +1,7 @@
-using TC1.RepairShop.Domain.Registration;
+using TC1.RepairShop.Domain.Vehicles;
 using Xunit;
 
-namespace TC1.RepairShop.UnitTests.Registration;
+namespace TC1.RepairShop.UnitTests.Vehicles;
 
 public class LicensePlateTests
 {

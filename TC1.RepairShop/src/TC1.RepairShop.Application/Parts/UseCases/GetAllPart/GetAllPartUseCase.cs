@@ -1,6 +1,6 @@
 ﻿using TC1.RepairShop.Domain.Interfaces.Parts;
 
-namespace TC1.RepairShop.Application.Parts.UseCases.GetAllPart
+namespace TC1.RepairShop.Application.Parts.UseCases
 {
     public class GetAllPartUseCase(IPartRepository partRepository) : BaseUseCase<IEnumerable<GetAllPartViewModel>>
     {

@@ -2,7 +2,7 @@ using Xunit;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Entities.Vehicles;
 
-namespace TC1.RepairShop.UnitTests.Registration;
+namespace TC1.RepairShop.UnitTests.Vehicles;
 
 public class VehicleTests
 {

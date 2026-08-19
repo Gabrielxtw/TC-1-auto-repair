@@ -3,7 +3,7 @@ using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces.Users;
 using TC1.RepairShop.Domain.CustomExceptions;
 
-namespace TC1.RepairShop.Application.Clients.UseCases;
+namespace TC1.RepairShop.Application.Users.UseCases;
 
 public record CreateUserRequest(string Username, string Password, string Document, string Email, UserRole Role, string Phone);
 
@@ -23,7 +23,6 @@ public class CreateUserUseCase(IUserRepository _userRepository)
         {
             var user = User.Create(request.Username, request.Password, request.Document, request.Email, request.Role, request.Phone);
             await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
             return new CreateUserResult(true, null, user);
         }
         catch (BusinessException ex)

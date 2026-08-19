@@ -1,7 +1,7 @@
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces.Users;
 
-namespace TC1.RepairShop.Application.Clients.UseCases;
+namespace TC1.RepairShop.Application.Users.UseCases;
 
 public record UpdateUserRequest(Guid Id, string Username, UserRole Role);
 

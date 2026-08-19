@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using TC1.RepairShop.Domain.CustomExceptions;
 
-namespace TC1.RepairShop.Domain.Registration;
+namespace TC1.RepairShop.Domain.Vehicles;
 
 public sealed partial class LicensePlate
 {

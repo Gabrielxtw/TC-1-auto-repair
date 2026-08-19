@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TC1.RepairShop.Application.Clients.UseCases;
+using TC1.RepairShop.Application.Users.UseCases;
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
 

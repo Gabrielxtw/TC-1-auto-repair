@@ -2,7 +2,7 @@ using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Interfaces.Users;
 using TC1.RepairShop.Domain.Interfaces.Vehicles;
 
-namespace TC1.RepairShop.Application.Registration.UseCases;
+namespace TC1.RepairShop.Application.Vehicles.UseCases;
 
 public record CreateVehicleRequest(Guid CustomerId, string LicensePlate, string Brand, string Model, int Year);
 

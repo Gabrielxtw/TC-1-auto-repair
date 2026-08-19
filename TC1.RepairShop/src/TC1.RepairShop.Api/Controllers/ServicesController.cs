@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TC1.RepairShop.Application.Services.UseCases.DeactiveService;
-using TC1.RepairShop.Application.Services.UseCases.DeleteService;
-using TC1.RepairShop.Application.Services.UseCases.GetAllService;
-using TC1.RepairShop.Application.Services.UseCases.GetServiceById;
-using TC1.RepairShop.Application.Services.UseCases.RegisterService;
+using TC1.RepairShop.Application.Services.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers
 {
@@ -14,7 +10,7 @@ namespace TC1.RepairShop.Api.Controllers
         DeleteServiceUseCase deleteServiceUseCase,
         GetAllServiceUseCase getAllServiceUseCase,
         GetServiceByIdUseCase getServiceByIdUseCase,
-        RegisterServiceUseCase registerServiceUseCase
+        CreateServiceUseCase registerServiceUseCase
         ) : BaseController
     {
         [HttpGet]
@@ -32,7 +28,7 @@ namespace TC1.RepairShop.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterServiceRequest request)
+        public async Task<IActionResult> Register([FromBody] CreateServiceRequest request)
         {
             var result = await registerServiceUseCase.ExecuteAsync(request);
             return Response(result);

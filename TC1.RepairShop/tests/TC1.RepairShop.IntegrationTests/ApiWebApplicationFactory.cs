@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using TC1.RepairShop.Domain.Interfaces.Users;
 using TC1.RepairShop.Domain.Interfaces.Vehicles;
-using TC1.RepairShop.UnitTests.Registration;
+using TC1.RepairShop.UnitTests.Vehicles;
 
 namespace TC1.RepairShop.IntegrationTests;
 

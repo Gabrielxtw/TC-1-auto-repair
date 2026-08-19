@@ -2,7 +2,7 @@ using TC1.RepairShop.Domain.Entities.Common;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
-using TC1.RepairShop.Domain.Registration;
+using TC1.RepairShop.Domain.Vehicles;
 
 namespace TC1.RepairShop.Domain.Entities.Vehicles;
 

@@ -4,27 +4,28 @@ using TC1.RepairShop.Domain.Interfaces.Parts;
 
 namespace TC1.RepairShop.Application.Parts.UseCases
 {
-    public class DeactivatePartUseCase(IPartRepository partRepository)
+    public class ConsumeStockUseCase(IPartRepository partRepository) : BaseUseCase<ConsumeStockRequest, bool>
     {
-        public async Task<BaseResponse<bool>> ExecuteAsync(DeactivePartRequest request)
+        public async Task<BaseResponse<bool>> ExecuteAsync(ConsumeStockRequest request)
         {
-			try
-			{
+            try
+            {
                 Part part = await partRepository.GetByIdAsync(request.Id);
 
-                part.Deactivate();
+                part.ReceiveStock(request.Quantity);
 
                 await partRepository.UpdateAsync(part);
 
                 return new BaseResponse<bool>(true);
             }
-            catch (BusinessException ex) {
+            catch (BusinessException ex)
+            {
                 return new BaseResponse<bool>(data: false, success: false, error: ex.Message);
             }
             catch (Exception)
-			{
+            {
                 return new BaseResponse<bool>(data: false, success: false);
-			}
+            }
         }
     }
 }

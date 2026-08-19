@@ -1,9 +1,9 @@
-using TC1.RepairShop.Application.Registration;
+using TC1.RepairShop.Application.Vehicles;
 using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces.Vehicles;
 
-namespace TC1.RepairShop.UnitTests.Registration;
+namespace TC1.RepairShop.UnitTests.Vehicles;
 
 public class FakeVehicleRepository : IVehicleRepository
 {

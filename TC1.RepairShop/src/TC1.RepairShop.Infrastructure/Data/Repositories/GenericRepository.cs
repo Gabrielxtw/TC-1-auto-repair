@@ -18,6 +18,7 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
     public virtual async Task AddAsync(T entity)
     {
         await _set.AddAsync(entity);
+        await _context.SaveChangesAsync();
     }
 
     public virtual async Task DeleteAsync(Guid id)
@@ -25,6 +26,7 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
         var entity = await GetByIdAsync(id);
         if (entity is null) return;
         entity.GetType().GetProperty("Status")?.SetValue(entity, Enum.Parse(entity.GetType().GetProperty("Status")!.PropertyType, "Deleted"));
+        await _context.SaveChangesAsync();
     }
 
     public virtual async Task<IEnumerable<T>> GetAllAsync()
@@ -40,17 +42,12 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
     public virtual async Task UpdateAsync(T entity)
     {
         _set.Update(entity);
+        await _context.SaveChangesAsync();
     }
 
     public virtual async Task<bool> ExistsAsync(Guid id)
     {
         var e = await GetByIdAsync(id);
         return e is not null;
-    }
-
-    public virtual async Task<T> SaveChangesAsync()
-    {
-        await _context.SaveChangesAsync();
-        return default!;
     }
 }

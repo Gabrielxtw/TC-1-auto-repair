@@ -33,6 +33,15 @@ public class Part : BaseEntity
         StockQuantity -= quantity;
     }
 
+    public void Update(string name, decimal price)
+    {
+        if (!IsActive())
+            throw new BusinessException(BusinessErrors.Part.CannotAlterStockFromInactivePart);
+
+        Name = name;
+        Price = price;
+    }
+
     public static Part Create(string name, decimal price, int stockQuantity = 0)
     {
         return new Part

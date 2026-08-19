@@ -1,10 +1,10 @@
-using TC1.RepairShop.Application.Clients.UseCases;
-using TC1.RepairShop.Application.Registration.UseCases;
+using TC1.RepairShop.Application.Users.UseCases;
+using TC1.RepairShop.Application.Vehicles.UseCases;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.IntegrationTests;
 using Xunit;
 
-namespace TC1.RepairShop.UnitTests.Registration;
+namespace TC1.RepairShop.UnitTests.Vehicles;
 
 public class VehicleUseCaseTests
 {

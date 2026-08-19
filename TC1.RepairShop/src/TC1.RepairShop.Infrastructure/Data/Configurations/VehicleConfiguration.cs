@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TC1.RepairShop.Domain.Entities.Vehicles;
-using TC1.RepairShop.Domain.Registration;
+using TC1.RepairShop.Domain.Vehicles;
 using TC1.RepairShop.Domain.Entities.Users;
 
 namespace TC1.RepairShop.Infrastructure.Data.Configurations;

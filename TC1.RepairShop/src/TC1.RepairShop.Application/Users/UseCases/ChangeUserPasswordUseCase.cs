@@ -1,6 +1,6 @@
 using TC1.RepairShop.Domain.Interfaces.Users;
 
-namespace TC1.RepairShop.Application.Clients.UseCases;
+namespace TC1.RepairShop.Application.Users.UseCases;
 
 public record ChangeUserPasswordRequest(Guid Id, string NewPassword);
 

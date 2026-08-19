@@ -2,11 +2,11 @@
 using TC1.RepairShop.Domain.Entities.Services;
 using TC1.RepairShop.Domain.Interfaces.Services;
 
-namespace TC1.RepairShop.Application.Services.UseCases.RegisterService
+namespace TC1.RepairShop.Application.Services.UseCases
 {
-    public class RegisterServiceUseCase(IServiceRepository serviceRepository) : BaseUseCase<RegisterServiceRequest, bool>
+    public class CreateServiceUseCase(IServiceRepository serviceRepository) : BaseUseCase<CreateServiceRequest, bool>
     {
-        public async Task<BaseResponse<bool>> ExecuteAsync(RegisterServiceRequest request)
+        public async Task<BaseResponse<bool>> ExecuteAsync(CreateServiceRequest request)
         {
             try
             {

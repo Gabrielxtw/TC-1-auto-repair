@@ -1,7 +1,7 @@
 using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Interfaces.Vehicles;
 
-namespace TC1.RepairShop.Application.Registration.UseCases;
+namespace TC1.RepairShop.Application.Vehicles.UseCases;
 
 public class ListVehiclesUseCase
 {

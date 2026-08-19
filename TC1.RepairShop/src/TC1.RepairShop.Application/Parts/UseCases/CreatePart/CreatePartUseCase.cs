@@ -2,11 +2,11 @@
 using TC1.RepairShop.Domain.Entities.Parts;
 using TC1.RepairShop.Domain.Interfaces.Parts;
 
-namespace TC1.RepairShop.Application.Parts.UseCases.RegisterPart
+namespace TC1.RepairShop.Application.Parts.UseCases
 {
-    public class RegisterPartUseCase(IPartRepository partRepository) : BaseUseCase<RegisterPartRequest, bool>
+    public class CreatePartUseCase(IPartRepository partRepository) : BaseUseCase<CreatePartRequest, bool>
     {
-        public async Task<BaseResponse<bool>> ExecuteAsync(RegisterPartRequest request)
+        public async Task<BaseResponse<bool>> ExecuteAsync(CreatePartRequest request)
         {
             try
             {

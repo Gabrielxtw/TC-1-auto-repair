@@ -3,9 +3,9 @@ using TC1.RepairShop.Domain.Entities.Parts;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces.Parts;
 
-namespace TC1.RepairShop.Application.Parts.UseCases.GetPartById
+namespace TC1.RepairShop.Application.Parts.UseCases
 {
-    public class GetPartByIdCaseUse(IPartRepository partRepository) : BaseUseCase<Guid, GetPartByIdResponse>
+    public class GetPartByIdUseCase(IPartRepository partRepository) : BaseUseCase<Guid, GetPartByIdResponse>
     {
         public async Task<BaseResponse<GetPartByIdResponse>> ExecuteAsync(Guid id)
         {

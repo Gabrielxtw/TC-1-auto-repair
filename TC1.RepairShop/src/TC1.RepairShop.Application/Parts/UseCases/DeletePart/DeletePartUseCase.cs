@@ -2,7 +2,7 @@
 using TC1.RepairShop.Domain.Entities.Parts;
 using TC1.RepairShop.Domain.Interfaces.Parts;
 
-namespace TC1.RepairShop.Application.Parts.UseCases.DeletePart
+namespace TC1.RepairShop.Application.Parts.UseCases
 {
     public class DeletePartUseCase(IPartRepository partRepository)
     {
