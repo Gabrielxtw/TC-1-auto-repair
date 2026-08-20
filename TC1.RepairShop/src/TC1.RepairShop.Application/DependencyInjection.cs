@@ -52,6 +52,7 @@ namespace TC1.RepairShop.Application
             services.AddScoped<ListServiceOrdersUseCase>();
             services.AddScoped<AttachServiceUseCase>();
             services.AddScoped<AttachPartUseCase>();
+            services.AddScoped<GetServiceOrderUseCase>();
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<AuthenticateUserUseCase>();

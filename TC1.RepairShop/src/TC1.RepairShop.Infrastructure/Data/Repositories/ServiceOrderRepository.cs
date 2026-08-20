@@ -20,6 +20,18 @@ public class ServiceOrderRepository : GenericRepository<ServiceOrder>, IServiceO
             .ToListAsync();
     }
 
+    public async Task<ServiceOrder?> GetByIdDetailedAsync(Guid id)
+    {
+        return await _context.ServiceOrders
+            .Include(o => o.User)
+            .Include(o => o.Services)
+            .Include(o => o.ServiceOrderParts).ThenInclude(sop => sop.Part)
+            .Include(o => o.Quote)
+            .Include(o => o.Vehicle)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(o => o.Id == id);
+    }
+
     public async Task<ServiceOrder> GetByUserId(Guid userId)
     {
         return await _context.ServiceOrders.FirstOrDefaultAsync(o => o.UserId == userId)

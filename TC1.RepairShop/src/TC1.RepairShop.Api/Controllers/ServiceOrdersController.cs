@@ -14,7 +14,8 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
                                      CancelServiceOrderUseCase _cancelServiceOrderUseCase,
                                      ListServiceOrdersUseCase _listServiceOrdersUseCase,
                                      AttachPartUseCase _attachPartUseCase,
-                                     AttachServiceUseCase _attachServiceUseCase
+                                     AttachServiceUseCase _attachServiceUseCase,
+                                     GetServiceOrderUseCase _getServiceOrderUseCase
     ) : BaseController
 {
     public record ServiceOrderResponse(string ServiceOrderId, string CustomerName, string Status, string OpenedAt, string CustomerEmail);
@@ -24,6 +25,15 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
     {
         var result = await _listServiceOrdersUseCase.ExecuteAsync();
         return Ok(result.Select(ToResponse));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var result = await _getServiceOrderUseCase.ExecuteAsync(id);
+        if (result is null)
+            return NotFound();
+        return Ok(result);
     }
 
     [HttpPost]

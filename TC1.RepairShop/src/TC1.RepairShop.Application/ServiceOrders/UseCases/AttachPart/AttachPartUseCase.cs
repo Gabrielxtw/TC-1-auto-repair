@@ -29,7 +29,7 @@ public class AttachPartUseCase(IServiceOrderRepository _serviceOrderRepository, 
 
             ServiceOrderPart serviceOrderPart = ServiceOrderPart.Create(request.ServiceOrderId, request.PartId, request.Quantity, request.SuppliedByCustomer);
 
-            await _serviceOrderPartRepository.UpdateAsync(serviceOrderPart);
+            await _serviceOrderPartRepository.AddAsync(serviceOrderPart);
 
             return new BaseResponse<bool>(true);
         }

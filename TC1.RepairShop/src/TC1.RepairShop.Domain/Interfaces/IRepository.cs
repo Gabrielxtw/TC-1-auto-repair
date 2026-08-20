@@ -13,5 +13,6 @@ namespace TC1.RepairShop.Domain.Interfaces
         Task UpdateAsync(T entity);
         Task DeleteAsync(TKey id);
         Task<bool> ExistsAsync(TKey id);
+        Task SaveChangesAsync();
     }
 }

@@ -7,5 +7,7 @@ namespace TC1.RepairShop.Domain.Interfaces.ServiceOrders
         Task<ServiceOrder> GetByUserId(Guid userId);
         Task<ServiceOrderService?> GetServiceOrderServiceById(Guid serviceOrderId, Guid serviceId);
         Task<ServiceOrderPart?> GetServiceOrderPartById(Guid serviceOrderId, Guid partId);
+        Task<ServiceOrder?> GetByIdDetailedAsync(Guid id);
+
     }
 }
