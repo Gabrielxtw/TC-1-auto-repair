@@ -10,7 +10,7 @@ namespace TC1.RepairShop.Application.Services.UseCases
         {
             try
             {
-                Service service = await serviceRepository.GetByIdAsync(id);
+                Service service = await serviceRepository.GetByIdAsync(id) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
 
                 return new BaseResponse<GetServiceByIdResponse>(data: new GetServiceByIdResponse(service.Id, service.Name, service.Description));
             }

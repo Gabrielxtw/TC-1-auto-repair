@@ -10,36 +10,32 @@ public record AttachPartRequest(Guid ServiceOrderId, Guid PartId, int Quantity, 
 public class AttachPartUseCase(IServiceOrderRepository _serviceOrderRepository, IPartRepository _partRepository, IServiceOrderPartRepository _serviceOrderPartRepository)
 {
 
-    public async Task<BaseResponse<bool>> ExecuteAsync(AttachPartRequest request)
+    public async Task<BaseResponse<ServiceOrder?>> ExecuteAsync(AttachPartRequest request)
     {
         try
         {
             var order = await _serviceOrderRepository.GetByIdAsync(request.ServiceOrderId);
             if (order is null)
-                return new BaseResponse<bool>(data: false, success: false, error: "Service order not found.");
+                return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Service order not found.");
 
             var part = await _partRepository.GetByIdAsync(request.PartId);
             if (part is null)
-                return new BaseResponse<bool>(data: false, success: false, error: "Part not found.", StatusCode: "404");
+                return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Part not found.", StatusCode: "404");
 
             ServiceOrderPart? existingPart = await _serviceOrderRepository.GetServiceOrderPartById(request.ServiceOrderId, request.PartId);
             if (existingPart is not null)
-                return new BaseResponse<bool>(data: false, success: false, error: "Part already attached to the service order.", StatusCode: "400");
+                return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Part already attached to the service order.", StatusCode: "400");
 
 
             ServiceOrderPart serviceOrderPart = ServiceOrderPart.Create(request.ServiceOrderId, request.PartId, request.Quantity, request.SuppliedByCustomer);
 
             await _serviceOrderPartRepository.AddAsync(serviceOrderPart);
 
-            return new BaseResponse<bool>(true);
+            return new BaseResponse<ServiceOrder?>(order);
         }
-        catch (BusinessException ex)
+        catch (Exception ex)
         {
-            return new BaseResponse<bool>(data: false, success: false, error: ex.Message);
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<bool>(data: false, success: false);
+            return new BaseResponse<ServiceOrder?>(data: null, success: false, error: ex.Message);
         }
     }
 }

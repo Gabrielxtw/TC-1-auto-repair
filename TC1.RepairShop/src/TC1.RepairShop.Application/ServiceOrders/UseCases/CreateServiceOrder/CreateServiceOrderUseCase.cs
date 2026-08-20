@@ -18,13 +18,9 @@ public class CreateServiceOrderUseCase(IServiceOrderRepository serviceOrderRepos
             await serviceOrderRepository.AddAsync(order);
             return new BaseResponse<CreateServiceOrderResponse>(new CreateServiceOrderResponse(order.Id));
         }
-        catch (BusinessException ex)
+        catch (Exception ex)
         {
             return new BaseResponse<CreateServiceOrderResponse>(data: new CreateServiceOrderResponse(Guid.Empty), success: false, error: ex.Message);
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<CreateServiceOrderResponse>(data: new CreateServiceOrderResponse(Guid.Empty), success: false);
         }
     }
 }

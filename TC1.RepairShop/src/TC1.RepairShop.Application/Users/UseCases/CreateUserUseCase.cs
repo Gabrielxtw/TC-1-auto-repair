@@ -11,23 +11,23 @@ public record CreateUserResult(bool Success, string? Error, User? User);
 
 public class CreateUserUseCase(IUserRepository _userRepository)
 {
-    public async Task<CreateUserResult> ExecuteAsync(CreateUserRequest request)
+    public async Task<BaseResponse<CreateUserResult?>> ExecuteAsync(CreateUserRequest request)
     {
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
         if (existingUser is not null)
         {
-            return new CreateUserResult(false, "Username is already taken.", null);
+            return new BaseResponse<CreateUserResult?>(new CreateUserResult(false, "Username is already taken.", null));
         }
 
         try
         {
             var user = User.Create(request.Username, request.Password, request.Document, request.Email, request.Role, request.Phone);
             await _userRepository.AddAsync(user);
-            return new CreateUserResult(true, null, user);
+            return new BaseResponse<CreateUserResult?>(new CreateUserResult(true, null, user));
         }
         catch (BusinessException ex)
         {
-            return new CreateUserResult(false, ex.Message, null);
+            return new BaseResponse<CreateUserResult?>(new CreateUserResult(false, ex.Message, null));
         }
     }
 }

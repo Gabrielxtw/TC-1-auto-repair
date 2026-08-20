@@ -24,23 +24,33 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
     public async Task<IActionResult> GetAll()
     {
         var result = await _listServiceOrdersUseCase.ExecuteAsync();
-        return Ok(result.Select(ToResponse));
+        if (!result.success)
+            return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
+
+        return Ok(result.data.Select(ToResponse));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _getServiceOrderUseCase.ExecuteAsync(id);
-        if (result is null)
+        if (!result.success)
+            return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
+
+        if (result.data is null)
             return NotFound();
-        return Ok(result);
+
+        return Ok(result.data);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateServiceOrderRequest request)
     {
         var result = await _createServiceOrderUseCase.ExecuteAsync(request);
-        return Response(result);
+        if (!result.success)
+            return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
+
+        return CreatedAtAction(nameof(GetById), new { id = result.data.Id }, result);
     }
 
     [HttpPut("Advance")]
@@ -49,7 +59,7 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
         try
         {
             var result = await _advanceServiceOrderUseCase.ExecuteAsync(request);
-            return Response(result);
+            return Ok(result);
         }
         catch
         {
@@ -61,37 +71,30 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
     public async Task<IActionResult> Cancel([FromBody] CancelServiceOrderRequest request)
     {
         var result = await _cancelServiceOrderUseCase.ExecuteAsync(request);
-        return Response(result);
+        if (!result.success)
+            return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
+
+        return Ok(result.data);
     }
 
     [HttpPost("AttachPart")]
     public async Task<IActionResult> AttachPart([FromBody] AttachPartRequest part)
     {
+        var result = await _attachPartUseCase.ExecuteAsync(part);
+        if (!result.success)
+            return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
 
-        try
-        {
-            var result = await _attachPartUseCase.ExecuteAsync(part);
-            return Response(result);
-        }
-        catch
-        {
-            return BadRequest("Invalid status value.");
-        }
+        return Ok(result.data);
     }
 
     [HttpPost("AttachService")]
     public async Task<IActionResult> AttachService([FromBody] AttachServiceRequest service)
     {
+        var result = await _attachServiceUseCase.ExecuteAsync(service);
+        if (!result.success)
+            return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
 
-        try
-        {
-            var result = await _attachServiceUseCase.ExecuteAsync(service);
-            return Response(result);
-        }
-        catch
-        {
-            return BadRequest("Invalid status value.");
-        }
+        return Ok(result.data);
     }
 
 

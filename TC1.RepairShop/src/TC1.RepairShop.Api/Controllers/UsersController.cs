@@ -26,7 +26,7 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     public async Task<IActionResult> GetAll()
     {
         var users = await _listUsersUseCase.ExecuteAsync();
-        return Ok(users.Select(ToResponse));
+        return Ok(users);
     }
 
     [HttpGet("{id:guid}")]
@@ -38,7 +38,7 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
             return NotFound(new { message = "User not found." });
         }
 
-        return Ok(ToResponse(user));
+        return Ok(user);
     }
 
     [HttpPost]
@@ -46,13 +46,12 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     {
         var result = await _createUserUseCase.ExecuteAsync(request);
 
-        if (!result.Success)
+        if (!result.success)
         {
-            return Conflict(new { message = result.Error });
+            return Conflict(new { message = result.error });
         }
 
-        var response = ToResponse(result.User!);
-        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        return CreatedAtAction(nameof(GetById), new { id = result.data?.User?.Id }, result.data?.User);
     }
 
     [HttpPut("{id:guid}")]
@@ -61,11 +60,11 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
         var result = await _updateUserUseCase.ExecuteAsync(
             new UpdateUserRequest(id, request.Username, request.Role));
 
-        if (!result.Success)
+        if (!result.success)
         {
-            return result.Error == "User not found."
-                ? NotFound(new { message = result.Error })
-                : Conflict(new { message = result.Error });
+            return result.error == "User not found."
+                ? NotFound(new { message = result.error })
+                : Conflict(new { message = result.error });
         }
 
         return NoContent();
@@ -77,9 +76,9 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
         var result = await _changeUserPasswordUseCase.ExecuteAsync(
             new ChangeUserPasswordRequest(id, request.NewPassword));
 
-        if (!result.Success)
+        if (!result.success)
         {
-            return NotFound(new { message = result.Error });
+            return NotFound(new { message = result.error });
         }
 
         return NoContent();
@@ -97,7 +96,4 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
 
         return NoContent();
     }
-
-    private static UserResponse ToResponse(User user) =>
-        new(user.Id, user.Username, user.Role.ToString(), user.Status.ToString());
 }

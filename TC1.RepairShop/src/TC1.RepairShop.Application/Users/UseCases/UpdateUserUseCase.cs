@@ -9,24 +9,24 @@ public record UpdateUserResult(bool Success, string? Error);
 
 public class UpdateUserUseCase(IUserRepository _userRepository)
 {
-    public async Task<UpdateUserResult> ExecuteAsync(UpdateUserRequest request)
+    public async Task<BaseResponse<UpdateUserResult?>> ExecuteAsync(UpdateUserRequest request)
     {
         var user = await _userRepository.GetByIdAsync(request.Id);
         if (user is null)
         {
-            return new UpdateUserResult(false, "User not found.");
+            return new BaseResponse<UpdateUserResult?>(new UpdateUserResult(false, "User not found."));
         }
 
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
         if (existingUser is not null && existingUser.Id != request.Id)
         {
-            return new UpdateUserResult(false, "Username is already taken.");
+            return new BaseResponse<UpdateUserResult?>(new UpdateUserResult(false, "Username is already taken."));
         }
 
         user.UpdateProfile(request.Username, request.Role);
 
         await _userRepository.UpdateAsync(user);
 
-        return new UpdateUserResult(true, null);
+        return new BaseResponse<UpdateUserResult?>(new UpdateUserResult(true, null));
     }
 }

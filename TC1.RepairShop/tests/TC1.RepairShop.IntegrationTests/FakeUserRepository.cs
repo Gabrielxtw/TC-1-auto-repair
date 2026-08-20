@@ -51,6 +51,10 @@ public class FakeUserRepository : IUserRepository
         }
         return Task.CompletedTask;
     }
+    public Task SaveChangesAsync()
+    {
+        return Task.CompletedTask;
+    }
 
     public Task<bool> ExistsAsync(Guid id)
     {

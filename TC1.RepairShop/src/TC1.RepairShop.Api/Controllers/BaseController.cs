@@ -9,26 +9,33 @@ namespace TC1.RepairShop.Api.Controllers
     {
         protected new IActionResult Response<T>(BaseResponse<T> response)
         {
-            if (response.success)
+            try
             {
-                return Ok(response.data);
-            }
-
-            if (int.TryParse(response.StatusCode, out var code))
-            {
-                return code switch
+                if (response.success)
                 {
-                    400 => BadRequest(response.error),
-                    401 => Unauthorized(),
-                    403 => Forbid(),
-                    404 => NotFound(response.error),
-                    500 => StatusCode(500, response.error),
-                    _ => StatusCode(code, response.error),
-                };
-            }
+                    return Ok(response.data);
+                }
 
-            // fallback
-            return BadRequest(response.error);
+                if (int.TryParse(response.StatusCode, out var code))
+                {
+                    return code switch
+                    {
+                        400 => BadRequest(response.error),
+                        401 => Unauthorized(),
+                        403 => Forbid(),
+                        404 => NotFound(response.error),
+                        500 => StatusCode(500, response.error),
+                        _ => StatusCode(code, response.error),
+                    };
+                }
+
+                // fallback
+                return BadRequest(response.error);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

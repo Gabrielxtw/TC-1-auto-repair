@@ -5,5 +5,9 @@ namespace TC1.RepairShop.Application.Users.UseCases;
 
 public class GetUserUseCase(IUserRepository _userRepository)
 {
-    public Task<User?> ExecuteAsync(Guid id) => _userRepository.GetByIdAsync(id);
+    public async Task<BaseResponse<User?>> ExecuteAsync(Guid id)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        return new BaseResponse<User?>(user);
+    }
 }

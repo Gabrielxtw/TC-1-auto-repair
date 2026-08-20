@@ -49,6 +49,10 @@ public class FakeUserRepository : IUserRepository
         return Task.CompletedTask;
     }
 
+    public Task SaveChangesAsync()
+    {
+        return Task.CompletedTask;
+    }
     public Task<bool> ExistsAsync(Guid id)
     {
         return Task.FromResult(Users.TryGetValue(id, out var user) && user.Status != Status.Deleted);

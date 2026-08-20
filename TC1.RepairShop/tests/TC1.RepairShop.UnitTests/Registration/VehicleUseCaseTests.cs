@@ -15,7 +15,7 @@ public class VehicleUseCaseTests
         var useCase = new CreateUserUseCase(userRepository);
         var result = await useCase.ExecuteAsync(
             new CreateUserRequest("Jane Doe", "Pass123", ValidNationalId, "jane@example.com", UserRole.Staff, "11999999999"));
-        return result.User!.Id;
+        return result.data?.User?.Id ?? Guid.Empty;
     }
 
     [Fact]

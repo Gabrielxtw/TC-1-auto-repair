@@ -9,26 +9,26 @@ public record CancelServiceOrderRequest(Guid id);
 
 public class CancelServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository)
 {
-    public async Task<BaseResponse<bool>> ExecuteAsync(CancelServiceOrderRequest request)
+    public async Task<BaseResponse<ServiceOrder?>> ExecuteAsync(CancelServiceOrderRequest request)
     {
         try
         {
             var order = await serviceOrderRepository.GetByIdAsync(request.id);
             if (order is null)
-                return new BaseResponse<bool>(data: false, success: false, error: "Service order not found.");
+                return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Service order not found.");
 
             order.AdvanceTo(ServiceOrderStatus.Cancelled);
             await serviceOrderRepository.UpdateAsync(order);
 
-            return new BaseResponse<bool>(true);
+            return new BaseResponse<ServiceOrder?>(order);
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<bool>(data: false, success: false, error: ex.Message);
+            return new BaseResponse<ServiceOrder?>(data: null, success: false, error: ex.Message);
         }
         catch (Exception)
         {
-            return new BaseResponse<bool>(data: false, success: false);
+            return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "An unexpected error occurred.");
         }
     }
 }

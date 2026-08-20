@@ -9,26 +9,26 @@ public record AdvanceServiceOrderRequest(Guid ServiceOrderId, string NewStatus);
 
 public class AdvanceServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository)
 {
-    public async Task<BaseResponse<bool>> ExecuteAsync(AdvanceServiceOrderRequest request)
+    public async Task<BaseResponse<ServiceOrder?>> ExecuteAsync(AdvanceServiceOrderRequest request)
     {
         try
         {
             var order = await serviceOrderRepository.GetByIdAsync(request.ServiceOrderId);
             if (order is null)
-                return new BaseResponse<bool>(data: false, success: false, error: "Service order not found.");
+                return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Service order not found.");
 
             var newStatus = ServiceOrderStatus.FromName(request.NewStatus);
             order.AdvanceTo(newStatus);
             await serviceOrderRepository.UpdateAsync(order);
-            return new BaseResponse<bool>(true);
+            return new BaseResponse<ServiceOrder?>(order);
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<bool>(data: false, success: false, error: ex.Message);
+            return new BaseResponse<ServiceOrder?>(data: null, success: false, error: ex.Message);
         }
         catch (Exception)
         {
-            return new BaseResponse<bool>(data: false, success: false);
+            return new BaseResponse<ServiceOrder?>(data: null, success: false);
         }
     }
 }
