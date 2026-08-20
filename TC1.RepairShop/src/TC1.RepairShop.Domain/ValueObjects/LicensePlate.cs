@@ -12,7 +12,7 @@ public sealed partial class LicensePlate
     {
         if (!IsValid(value))
         {
-            throw new BusinessException(BusinessErrors.LicensePlate.InvalidFormat);
+            throw new BusinessException(BusinessErrors.LicensePlateErrors.InvalidFormat);
         }
 
         return new LicensePlate(Normalize(value));
@@ -30,7 +30,7 @@ public sealed partial class LicensePlate
         return LegacyFormatRegex().IsMatch(normalized) || MercosulFormatRegex().IsMatch(normalized);
     }
 
-    private static string Normalize(string value) =>
+    public static string Normalize(string value) =>
         new string(value.Where(char.IsLetterOrDigit).ToArray()).ToUpperInvariant();
 
     [GeneratedRegex("^[A-Z]{3}[0-9]{4}$")]

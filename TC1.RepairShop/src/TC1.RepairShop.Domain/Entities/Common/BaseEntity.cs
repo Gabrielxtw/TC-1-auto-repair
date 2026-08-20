@@ -28,7 +28,7 @@ namespace TC1.RepairShop.Domain.Entities.Common
         public void Deactivate()
         {
             if (!IsActive())
-                throw new BusinessException(BusinessErrors.Entity.CannotDoActionInactiveEntity);
+                throw new BusinessException(BusinessErrors.EntityErrors.CannotDoActionInactiveEntity);
 
             Status = Status.Inactive;
         }

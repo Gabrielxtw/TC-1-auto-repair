@@ -11,7 +11,6 @@ public class Part : BaseEntity
     public int StockQuantity { get; set; }
 
     public ICollection<ServiceOrderPart> ServiceOrderParts { get; } = new List<ServiceOrderPart>();
-    public ICollection<ServiceOrder> ServiceOrders { get; } = new List<ServiceOrder>();
 
     private Part()
     {
@@ -20,7 +19,7 @@ public class Part : BaseEntity
     public void ReceiveStock(int quantity)
     {
         if (!IsActive())
-            throw new BusinessException(BusinessErrors.Part.CannotAlterStockFromInactivePart);
+            throw new BusinessException(BusinessErrors.PartErrors.CannotAlterStockFromInactivePart);
 
         StockQuantity += quantity;
     }
@@ -28,7 +27,7 @@ public class Part : BaseEntity
     public void ConsumeStock(int quantity)
     {
         if (!IsActive())
-            throw new BusinessException(BusinessErrors.Part.CannotAlterStockFromInactivePart);
+            throw new BusinessException(BusinessErrors.PartErrors.CannotAlterStockFromInactivePart);
 
         StockQuantity -= quantity;
     }
@@ -36,7 +35,7 @@ public class Part : BaseEntity
     public void Update(string name, decimal price)
     {
         if (!IsActive())
-            throw new BusinessException(BusinessErrors.Part.CannotAlterStockFromInactivePart);
+            throw new BusinessException(BusinessErrors.PartErrors.CannotAlterStockFromInactivePart);
 
         Name = name;
         Price = price;

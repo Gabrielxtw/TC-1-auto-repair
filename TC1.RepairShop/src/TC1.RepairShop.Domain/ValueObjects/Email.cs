@@ -16,7 +16,7 @@ namespace TC1.RepairShop.Domain.ValueObjects
         {
             if (string.IsNullOrWhiteSpace(email) || !Regex.IsMatch(email, "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"))
             {
-                throw new BusinessException(BusinessErrors.Email.InvalidFormat);
+                throw new BusinessException(BusinessErrors.EmailErrors.InvalidFormat);
             }
 
             var normalized = email.Trim().ToLowerInvariant();

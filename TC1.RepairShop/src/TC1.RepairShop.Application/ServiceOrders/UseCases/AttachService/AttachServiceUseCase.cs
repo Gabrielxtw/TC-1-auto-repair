@@ -1,18 +1,14 @@
 using TC1.RepairShop.Domain.CustomExceptions;
+using TC1.RepairShop.Domain.Entities.ServiceOrders;
+using TC1.RepairShop.Domain.Interfaces.Services;
 using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
-public record AttachServiceRequest(Guid ServiceOrderId, ICollection<Guid> ServiceIds);
+public record AttachServiceRequest(Guid ServiceOrderId, Guid ServiceId);
 
-public class AttachServiceUseCase
+public class AttachServiceUseCase(IServiceOrderRepository _serviceOrderRepository, IServiceRepository _serviceRepository)
 {
-    private readonly IServiceOrderRepository _serviceOrderRepository;
-
-    public AttachServiceUseCase(IServiceOrderRepository serviceOrderRepository)
-    {
-        _serviceOrderRepository = serviceOrderRepository;
-    }
 
     public async Task<BaseResponse<bool>> ExecuteAsync(AttachServiceRequest request)
     {
@@ -22,7 +18,15 @@ public class AttachServiceUseCase
             if (order is null)
                 return new BaseResponse<bool>(data: false, success: false, error: "Service order not found.");
 
-            order.AttachServices(request.ServiceIds);
+            var service = await _serviceRepository.GetByIdAsync(request.ServiceId);
+            if (service is null)
+                return new BaseResponse<bool>(data: false, success: false, error: "Service not found.", StatusCode: "404");
+
+            ServiceOrderService? existingService = await _serviceOrderRepository.GetServiceOrderServiceById(request.ServiceOrderId, request.ServiceId);
+            if (existingService is not null)
+                return new BaseResponse<bool>(data: false, success: false, error: "Service already attached to the service order.", StatusCode: "400");
+
+            order.AttachServices(service);
             await _serviceOrderRepository.UpdateAsync(order);
 
             return new BaseResponse<bool>(true);

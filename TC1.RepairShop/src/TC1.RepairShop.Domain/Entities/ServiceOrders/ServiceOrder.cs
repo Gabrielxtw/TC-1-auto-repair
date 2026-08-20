@@ -6,6 +6,7 @@ using TC1.RepairShop.Domain.Entities.Services;
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Enums;
+using static TC1.RepairShop.Domain.CustomExceptions.BusinessErrors;
 
 namespace TC1.RepairShop.Domain.Entities.ServiceOrders;
 
@@ -24,7 +25,6 @@ public class ServiceOrder: BaseEntity
     public ICollection<ServiceOrderService> ServiceOrderServices { get; } = new List<ServiceOrderService>();
     public ICollection<Service> Services { get; } = new List<Service>();
     public ICollection<ServiceOrderPart> ServiceOrderParts { get; } = new List<ServiceOrderPart>();
-    public ICollection<Part> Parts { get; } = new List<Part>();
 
     private ServiceOrder()
     {
@@ -45,38 +45,22 @@ public class ServiceOrder: BaseEntity
         QuoteId = quoteId;
     }
 
-    public void AttachServices(ICollection<Guid> serviceIds)
+    public void AttachServices(Service service)
     {
         if (!IsActive())
-            throw new BusinessException(BusinessErrors.Entity.CannotDoActionInactiveEntity);
+            throw new BusinessException(EntityErrors.CannotDoActionInactiveEntity);
 
-        foreach (var serviceId in serviceIds)
-        {
-            if (ServiceOrderServices.Any(s => s.ServiceId == serviceId))
-                continue;
+        if (Services.Any(s => s.Id == service.Id))
+            throw new BusinessException(ServiceOrderErrors.ServiceAlreadyRegistered);
 
-            ServiceOrderServices.Add(ServiceOrderService.Create(Id, serviceId));
-        }
-    }
-    public void AttachParts(ICollection<(Guid PartId, int Quantity, bool SuppliedByCustomer)> parts)
-    {
-        if (!IsActive())
-            throw new BusinessException(BusinessErrors.Entity.CannotDoActionInactiveEntity);
-
-        foreach (var (partId, quantity, suppliedByCustomer) in parts)
-        {
-            if (quantity <= 0)
-                throw new BusinessException(BusinessErrors.ServiceOrder.QuantityMustBePositive);
-
-            ServiceOrderParts.Add(ServiceOrderPart.Create(Id, partId, quantity, suppliedByCustomer));
-        }
+        Services.Add(service);
     }
 
     public void AdvanceTo(ServiceOrderStatus newStatus)
     {
         if(!OrderStatusValue.CanTransitionTo(newStatus))
         {
-            throw new BusinessException(BusinessErrors.ServiceOrder.InvalidStatusTransition);
+            throw new BusinessException(ServiceOrderErrors.InvalidStatusTransition);
         }
         OrderStatusValue = newStatus;
 

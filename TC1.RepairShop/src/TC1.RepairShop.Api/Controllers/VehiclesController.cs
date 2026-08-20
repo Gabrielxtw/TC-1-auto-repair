@@ -6,27 +6,12 @@ using TC1.RepairShop.Domain.Entities.Vehicles;
 namespace TC1.RepairShop.Api.Controllers;
 
 [Authorize(Policy = "StaffOnly")]
-public class VehiclesController : BaseController
+public class VehiclesController(CreateVehicleUseCase _createVehicleUseCase,
+        GetVehicleUseCase _getVehicleUseCase,
+        ListVehiclesUseCase _listVehiclesUseCase,
+        ListVehiclesByCustomerUseCase _listVehiclesByCustomerUseCase,
+        DeleteVehicleUseCase _deleteVehicleUseCase) : BaseController
 {
-    private readonly CreateVehicleUseCase _createVehicleUseCase;
-    private readonly GetVehicleUseCase _getVehicleUseCase;
-    private readonly ListVehiclesUseCase _listVehiclesUseCase;
-    private readonly ListVehiclesByCustomerUseCase _listVehiclesByCustomerUseCase;
-    private readonly DeleteVehicleUseCase _deleteVehicleUseCase;
-
-    public VehiclesController(
-        CreateVehicleUseCase createVehicleUseCase,
-        GetVehicleUseCase getVehicleUseCase,
-        ListVehiclesUseCase listVehiclesUseCase,
-        ListVehiclesByCustomerUseCase listVehiclesByCustomerUseCase,
-        DeleteVehicleUseCase deleteVehicleUseCase)
-    {
-        _createVehicleUseCase = createVehicleUseCase;
-        _getVehicleUseCase = getVehicleUseCase;
-        _listVehiclesUseCase = listVehiclesUseCase;
-        _listVehiclesByCustomerUseCase = listVehiclesByCustomerUseCase;
-        _deleteVehicleUseCase = deleteVehicleUseCase;
-    }
 
     public record CreateRequest(Guid CustomerId, string LicensePlate, string Brand, string Model, int Year);
 

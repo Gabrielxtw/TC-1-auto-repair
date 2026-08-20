@@ -14,7 +14,7 @@ namespace TC1.RepairShop.Infrastructure.Data
             if (context is null) throw new ArgumentNullException(nameof(context));
             if (configuration is null) throw new ArgumentNullException(nameof(configuration));
 
-            const string defaultUsername = "admin";
+            string defaultUsername = configuration["SeedAdmin:Username"] ?? "admin";
 
             var exists = await context.Users.AnyAsync(u => u.Username == defaultUsername);
             if (exists) return;

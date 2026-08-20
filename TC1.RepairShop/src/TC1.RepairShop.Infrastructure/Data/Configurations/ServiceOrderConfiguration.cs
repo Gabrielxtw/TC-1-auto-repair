@@ -38,9 +38,5 @@ public class ServiceOrderConfiguration : IEntityTypeConfiguration<ServiceOrder>
         b.HasMany(s => s.Services)
             .WithMany(s => s.ServiceOrders)
             .UsingEntity<ServiceOrderService>();
-
-        b.HasMany(s => s.Parts)
-            .WithMany(s => s.ServiceOrders)
-            .UsingEntity<ServiceOrderPart>();
     }
 }

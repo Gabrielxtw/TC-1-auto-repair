@@ -82,7 +82,7 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<RepairShopDbContext>();
         var config = services.GetRequiredService<IConfiguration>();
-        context.Database.EnsureCreated();
+        //context.Database.EnsureCreated();
         await context.Database.MigrateAsync();
         await RepairShopSeeder.SeedAdminAsync(context, config);
     }

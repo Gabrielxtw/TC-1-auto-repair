@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Interfaces.Vehicles;
-using TC1.RepairShop.Infrastructure.Data;
+using TC1.RepairShop.Domain.Vehicles;
 
 namespace TC1.RepairShop.Infrastructure.Data.Repositories;
 
@@ -13,9 +13,9 @@ public class VehicleRepository : GenericRepository<Vehicle>, IVehicleRepository
 
     public async Task<Vehicle?> GetByLicensePlateAsync(string licensePlate)
     {
-        if (string.IsNullOrWhiteSpace(licensePlate)) return null;
-        var normalized = new string(licensePlate.Where(char.IsLetterOrDigit).ToArray()).ToUpperInvariant();
-        return await _context.Vehicles.AsNoTracking().FirstOrDefaultAsync(v => v.LicensePlate.Value == normalized);
+        if (!LicensePlate.IsValid(licensePlate)) return null;
+        var normalized = LicensePlate.Create(licensePlate);
+        return await _context.Vehicles.AsNoTracking().FirstOrDefaultAsync(v => v.LicensePlate == normalized);
     }
 
     public async Task<IEnumerable<Vehicle>> GetByCustomerIdAsync(Guid customerId)

@@ -14,7 +14,7 @@ namespace TC1.RepairShop.Domain.ValueObjects
         public static Document Create(string value)
         {
             if (!IsValidDocument(value))
-                throw new BusinessException(BusinessErrors.Document.InvalidFormat);
+                throw new BusinessException(BusinessErrors.DocumentErrors.InvalidFormat);
             return new Document(value.Trim());
         }
 

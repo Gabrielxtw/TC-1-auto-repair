@@ -21,6 +21,7 @@ namespace TC1.RepairShop.Infrastructure.Data
         public DbSet<Service> Services { get; set; } = null!;
         public DbSet<Quote> Quotes { get; set; } = null!;
         public DbSet<ServiceOrder> ServiceOrders { get; set; } = null!;
+        public DbSet<ServiceOrderPart> ServiceOrderPart { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +32,7 @@ namespace TC1.RepairShop.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new Configurations.PartConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.ServiceOrderConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.ServiceOrderPartConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.QuoteConfiguration());
         }
     }

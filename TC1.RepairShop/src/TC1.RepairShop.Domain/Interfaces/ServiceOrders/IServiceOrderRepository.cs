@@ -5,6 +5,7 @@ namespace TC1.RepairShop.Domain.Interfaces.ServiceOrders
     public interface IServiceOrderRepository : IRepository<ServiceOrder, Guid>
     {
         Task<ServiceOrder> GetByUserId(Guid userId);
-        Task<ServiceOrder> GetByServiceId(Guid serviceId);
+        Task<ServiceOrderService?> GetServiceOrderServiceById(Guid serviceOrderId, Guid serviceId);
+        Task<ServiceOrderPart?> GetServiceOrderPartById(Guid serviceOrderId, Guid partId);
     }
 }

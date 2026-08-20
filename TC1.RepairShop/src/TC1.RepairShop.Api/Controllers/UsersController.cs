@@ -7,30 +7,14 @@ using TC1.RepairShop.Domain.Enums;
 namespace TC1.RepairShop.Api.Controllers;
 
 [Authorize(Policy = "AdminOnly")]
-public class UsersController : BaseController
+public class UsersController(CreateUserUseCase _createUserUseCase,
+                            GetUserUseCase _getUserUseCase,
+                            ListUsersUseCase _listUsersUseCase,
+                            UpdateUserUseCase _updateUserUseCase,
+                            ChangeUserPasswordUseCase _changeUserPasswordUseCase,
+                            DeleteUserUseCase _deleteUserUseCase
+    ) : BaseController
 {
-    private readonly CreateUserUseCase _createUserUseCase;
-    private readonly GetUserUseCase _getUserUseCase;
-    private readonly ListUsersUseCase _listUsersUseCase;
-    private readonly UpdateUserUseCase _updateUserUseCase;
-    private readonly ChangeUserPasswordUseCase _changeUserPasswordUseCase;
-    private readonly DeleteUserUseCase _deleteUserUseCase;
-
-    public UsersController(
-        CreateUserUseCase createUserUseCase,
-        GetUserUseCase getUserUseCase,
-        ListUsersUseCase listUsersUseCase,
-        UpdateUserUseCase updateUserUseCase,
-        ChangeUserPasswordUseCase changeUserPasswordUseCase,
-        DeleteUserUseCase deleteUserUseCase)
-    {
-        _createUserUseCase = createUserUseCase;
-        _getUserUseCase = getUserUseCase;
-        _listUsersUseCase = listUsersUseCase;
-        _updateUserUseCase = updateUserUseCase;
-        _changeUserPasswordUseCase = changeUserPasswordUseCase;
-        _deleteUserUseCase = deleteUserUseCase;
-    }
 
     public record UpdateRequest(string Username, UserRole Role);
 

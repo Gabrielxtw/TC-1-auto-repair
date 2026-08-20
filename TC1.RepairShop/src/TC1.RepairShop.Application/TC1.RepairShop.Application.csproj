@@ -16,4 +16,8 @@
     <ProjectReference Include="..\TC1.RepairShop.Domain\TC1.RepairShop.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ServiceOrders\UseCases\GetServiceOrderById\" />
+  </ItemGroup>
+
 </Project>

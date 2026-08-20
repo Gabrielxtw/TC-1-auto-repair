@@ -20,12 +20,18 @@ namespace TC1.RepairShop.Infrastructure
             configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<RepairShopDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString, sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(15),
+                    errorNumbersToAdd: null)
+                )
+            );
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddScoped<IQuoteRepository, QuoteRepository>();
             services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
+            services.AddScoped<IServiceOrderPartRepository, ServiceOrderPartRepository>();
             services.AddScoped<IServiceRepository, ServiceRepository>();
             services.AddScoped<IPartRepository, PartRepository>();
 

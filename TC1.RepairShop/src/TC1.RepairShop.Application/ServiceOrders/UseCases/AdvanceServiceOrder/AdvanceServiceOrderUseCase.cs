@@ -5,7 +5,7 @@ using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
-public record AdvanceServiceOrderRequest(Guid ServiceOrderId, ServiceOrderStatus NewStatus);
+public record AdvanceServiceOrderRequest(Guid ServiceOrderId, string NewStatus);
 
 public class AdvanceServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository)
 {
@@ -17,7 +17,8 @@ public class AdvanceServiceOrderUseCase(IServiceOrderRepository serviceOrderRepo
             if (order is null)
                 return new BaseResponse<bool>(data: false, success: false, error: "Service order not found.");
 
-            order.AdvanceTo(request.NewStatus);
+            var newStatus = ServiceOrderStatus.FromName(request.NewStatus);
+            order.AdvanceTo(newStatus);
             await serviceOrderRepository.UpdateAsync(order);
             return new BaseResponse<bool>(true);
         }

@@ -24,7 +24,7 @@ public abstract class ServiceOrderStatus : Enumeration<ServiceOrderStatus>
 
     private sealed class UnderDiagnosisStatus : ServiceOrderStatus
     {
-        public UnderDiagnosisStatus() : base(2, "UnderDiagnosis") { }
+        public UnderDiagnosisStatus() : base(2, "Under Diagnosis") { }
 
         public override bool CanTransitionTo(ServiceOrderStatus next) =>
             next == AwaitingApproval || next == Cancelled;
@@ -32,7 +32,7 @@ public abstract class ServiceOrderStatus : Enumeration<ServiceOrderStatus>
 
     private sealed class AwaitingApprovalStatus : ServiceOrderStatus
     {
-        public AwaitingApprovalStatus() : base(3, "AwaitingApproval") { }
+        public AwaitingApprovalStatus() : base(3, "Awaiting Approval") { }
 
         public override bool CanTransitionTo(ServiceOrderStatus next) =>
             next == InProgress || next == UnderDiagnosis;
