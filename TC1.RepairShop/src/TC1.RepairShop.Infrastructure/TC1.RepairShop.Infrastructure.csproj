@@ -27,4 +27,8 @@
     <ProjectReference Include="..\TC1.RepairShop.Application\TC1.RepairShop.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
+
 </Project>

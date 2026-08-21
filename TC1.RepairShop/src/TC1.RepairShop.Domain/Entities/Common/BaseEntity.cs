@@ -1,5 +1,6 @@
 ﻿using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.Events;
 
 namespace TC1.RepairShop.Domain.Entities.Common
 {
@@ -18,6 +19,13 @@ namespace TC1.RepairShop.Domain.Entities.Common
             UpdatedAt = DateTime.UtcNow;
             Status = Status.Active;
         }
+
+        private readonly List<IDomainEvent> _domainEvents = new();
+        public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+        public void ClearDomainEvents() => _domainEvents.Clear();
+        protected void RaiseDomainEvent(IDomainEvent domainEvent) =>
+            _domainEvents.Add(domainEvent);
+
         protected bool IsActive() => Status == Status.Active;
 
         public virtual void Delete()
