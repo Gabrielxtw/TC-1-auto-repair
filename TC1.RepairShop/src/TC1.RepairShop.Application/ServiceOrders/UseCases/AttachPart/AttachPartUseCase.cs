@@ -1,11 +1,10 @@
 using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
-using TC1.RepairShop.Domain.Interfaces.Parts;
-using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
+using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
-public record AttachPartRequest(Guid ServiceOrderId, Guid PartId, int Quantity, bool SuppliedByCustomer);
+public record AttachPartRequest(Guid ServiceOrderId, Guid PartId, int Quantity, decimal Price, bool SuppliedByCustomer);
 
 public class AttachPartUseCase(IServiceOrderRepository _serviceOrderRepository, IPartRepository _partRepository, IServiceOrderPartRepository _serviceOrderPartRepository)
 {
@@ -27,7 +26,7 @@ public class AttachPartUseCase(IServiceOrderRepository _serviceOrderRepository, 
                 return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Part already attached to the service order.", StatusCode: "400");
 
 
-            ServiceOrderPart serviceOrderPart = ServiceOrderPart.Create(request.ServiceOrderId, request.PartId, request.Quantity, request.SuppliedByCustomer);
+            ServiceOrderPart serviceOrderPart = ServiceOrderPart.Create(request.ServiceOrderId, request.PartId, request.Quantity, request.Price, request.SuppliedByCustomer);
 
             await _serviceOrderPartRepository.AddAsync(serviceOrderPart);
 

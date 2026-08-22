@@ -34,9 +34,5 @@ public class ServiceOrderConfiguration : IEntityTypeConfiguration<ServiceOrder>
             .WithOne(q => q.ServiceOrder)
             .HasForeignKey<ServiceOrder>(o => o.QuoteId)
             .OnDelete(DeleteBehavior.SetNull);
-
-        b.HasMany(s => s.Services)
-            .WithMany(s => s.ServiceOrders)
-            .UsingEntity<ServiceOrderService>();
     }
 }

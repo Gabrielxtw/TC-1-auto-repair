@@ -13,6 +13,7 @@ public class ServiceOrderPartConfiguration : IEntityTypeConfiguration<ServiceOrd
         b.HasKey(p => p.Id);
 
         b.Property(p => p.Quantity).IsRequired();
+        b.Property(p => p.Price).IsRequired().HasColumnType("decimal(18,2)");
         b.Property(p => p.SuppliedByCustomer).IsRequired();
 
         b.HasOne(p => p.ServiceOrder)

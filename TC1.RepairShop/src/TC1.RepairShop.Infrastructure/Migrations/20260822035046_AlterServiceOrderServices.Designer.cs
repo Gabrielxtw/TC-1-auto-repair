@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TC1.RepairShop.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using TC1.RepairShop.Infrastructure.Data;
 namespace TC1.RepairShop.Infrastructure.Migrations
 {
     [DbContext(typeof(RepairShopDbContext))]
-    partial class RepairShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260822035046_AlterServiceOrderServices")]
+    partial class AlterServiceOrderServices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

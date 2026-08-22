@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TC1.RepairShop.Domain.Entities.Parts;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
-using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
+using TC1.RepairShop.Domain.Interfaces;
 using TC1.RepairShop.Infrastructure.Data;
 
 namespace TC1.RepairShop.Infrastructure.Data.Repositories;
@@ -24,7 +24,7 @@ public class ServiceOrderRepository : GenericRepository<ServiceOrder>, IServiceO
     {
         return await _context.ServiceOrders
             .Include(o => o.User)
-            .Include(o => o.Services)
+            .Include(o => o.ServiceOrderServices).ThenInclude(sos => sos.Service)
             .Include(o => o.ServiceOrderParts).ThenInclude(sop => sop.Part)
             .Include(o => o.Quote)
             .Include(o => o.Vehicle)

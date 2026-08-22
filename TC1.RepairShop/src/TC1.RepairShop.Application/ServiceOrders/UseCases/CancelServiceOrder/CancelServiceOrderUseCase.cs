@@ -1,6 +1,6 @@
 using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
-using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
+using TC1.RepairShop.Domain.Interfaces;
 using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;

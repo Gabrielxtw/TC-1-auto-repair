@@ -12,7 +12,7 @@ public class ServiceOrderServiceTests
         var serviceOrderId = Guid.NewGuid();
         var serviceId = Guid.NewGuid();
 
-        var sos = ServiceOrderService.Create(serviceOrderId, serviceId);
+        var sos = ServiceOrderService.Create(serviceOrderId, serviceId,0);
 
         Assert.NotEqual(Guid.Empty, sos.Id);
         Assert.Equal(serviceOrderId, sos.ServiceOrderId);

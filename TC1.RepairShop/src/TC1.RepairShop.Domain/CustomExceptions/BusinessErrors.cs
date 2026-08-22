@@ -62,5 +62,16 @@ namespace TC1.RepairShop.Domain.CustomExceptions
                 Message: "Part is already registered for this order.",
                 StatusCode: 400);
         }
+
+        public static class QuoteErrors
+        {
+            public static readonly BusinessError CannotRejectApprovedQuote = new(
+                Message: "Cannot reject an approved quote.",
+                StatusCode: 400);
+
+            public static readonly BusinessError MaxRejectionCount= new(
+                Message: "Quote has reached the maximum rejection count.",
+                StatusCode: 400);
+        }
     }
 }

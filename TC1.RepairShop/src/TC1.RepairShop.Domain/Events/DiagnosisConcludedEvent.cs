@@ -4,17 +4,17 @@ namespace TC1.RepairShop.Domain.Events
 {
     public sealed class DiagnosisConcludedEvent : IDomainEvent
     {
-        public DiagnosisConcludedEvent(Guid serviceOrderId, ICollection<string> serviceIds, ICollection<string> partIds)
+        public DiagnosisConcludedEvent(Guid serviceOrderId, decimal price, Guid? quoteId)
         {
             ServiceOrderId = serviceOrderId;
-            ServiceIds = serviceIds;
-            PartIds = partIds;
+            Price = price;
+            QuoteId = quoteId;
             OccurredOn = DateTime.UtcNow;
         }
 
         public Guid ServiceOrderId { get; }
-        public ICollection<string> ServiceIds { get; } = new HashSet<string>();
-        public ICollection<string> PartIds { get; } = new HashSet<string>();
+        public decimal Price { get; }
+        public Guid? QuoteId { get; set; }
         public DateTime OccurredOn { get; }
     }
 }

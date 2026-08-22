@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
-using TC1.RepairShop.Domain.Interfaces.Users;
+using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.IntegrationTests;
 

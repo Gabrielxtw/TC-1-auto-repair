@@ -1,10 +1,11 @@
-﻿using TC1.RepairShop.Domain.CustomExceptions;
+﻿using MediatR;
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Events;
 
 namespace TC1.RepairShop.Domain.Entities.Common
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity: INotification
     {
         public Guid Id { get; private set; }
         public Status Status { get; private set; }
@@ -23,6 +24,12 @@ namespace TC1.RepairShop.Domain.Entities.Common
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
         public void ClearDomainEvents() => _domainEvents.Clear();
+        public IReadOnlyCollection<IDomainEvent> DequeueDomainEvents()
+        {
+            var events = _domainEvents.ToList();
+            _domainEvents.Clear();
+            return events;
+        }
         protected void RaiseDomainEvent(IDomainEvent domainEvent) =>
             _domainEvents.Add(domainEvent);
 

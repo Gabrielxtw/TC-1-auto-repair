@@ -21,7 +21,7 @@ public record GetServiceOrderByIdResponse(
     DateTime OpenedAt,
     DateTime? CompletedAt,
     QuoteResponse? Quote,
-    IEnumerable<ServiceResponse> Services,
+    IEnumerable<ServiceOrderServiceResponse> Services,
     IEnumerable<ServiceOrderPartResponse> Parts
 )
 {
@@ -53,15 +53,21 @@ public record GetServiceOrderByIdResponse(
             quote.RejectionCount
         );
 
-        var services = order.Services
-            .Select(s => new ServiceResponse(s.Id, s.Name, s.Description, s.Price))
+        var services = order.ServiceOrderServices
+            .Select(sp => new ServiceOrderServiceResponse(
+                sp.Id,
+                sp.ServiceId,
+                new ServiceResponse(sp.Service.Id, sp.Service.Name, sp.Service.Description),
+                sp.Price
+            ))
             .ToList();
 
         var parts = order.ServiceOrderParts
             .Select(sp => new ServiceOrderPartResponse(
                 sp.Id,
                 sp.PartId,
-                new PartResponse(sp.Part.Id, sp.Part.Name, sp.Part.Price, sp.Part.StockQuantity),
+                new PartResponse(sp.Part.Id, sp.Part.Name, sp.Part.StockQuantity),
+                sp.Price,
                 sp.Quantity,
                 sp.SuppliedByCustomer
             ))
@@ -87,8 +93,9 @@ public record VehicleResponse(Guid Id, string LicensePlate, string Brand, string
 
 public record QuoteResponse(Guid Id, decimal Price, string QuoteStatus, int RejectionCount);
 
-public record ServiceResponse(Guid Id, string Name, string Description, decimal Price);
+public record ServiceResponse(Guid Id, string Name, string Description);
 
-public record PartResponse(Guid Id, string Name, decimal Price, int StockQuantity);
+public record PartResponse(Guid Id, string Name, int StockQuantity);
 
-public record ServiceOrderPartResponse(Guid Id, Guid PartId, PartResponse Part, int Quantity, bool SuppliedByCustomer);
+public record ServiceOrderPartResponse(Guid Id, Guid PartId, PartResponse Part,decimal price, int Quantity, bool SuppliedByCustomer);
+public record ServiceOrderServiceResponse(Guid Id, Guid ServiceId, ServiceResponse Service, decimal Price);

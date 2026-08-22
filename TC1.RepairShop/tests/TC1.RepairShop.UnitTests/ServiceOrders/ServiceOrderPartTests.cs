@@ -9,7 +9,7 @@ public class ServiceOrderPartTests
     [Fact]
     public void Create_ShouldInitializeServiceOrderPart_WithCustomerSupplied_ResetUnitPriceToZero()
     {
-        var part = ServiceOrderPart.Create(Guid.NewGuid(), Guid.NewGuid(), 2, true);
+        var part = ServiceOrderPart.Create(Guid.NewGuid(), Guid.NewGuid(), 0, 2, true);
 
         Assert.NotEqual(Guid.Empty, part.Id);
         Assert.True(part.SuppliedByCustomer);
@@ -18,7 +18,7 @@ public class ServiceOrderPartTests
     [Fact]
     public void Create_ShouldInitializeServiceOrderPart_WithSupplierPrice()
     {
-        var part = ServiceOrderPart.Create(Guid.NewGuid(), Guid.NewGuid(), 3, false);
+        var part = ServiceOrderPart.Create(Guid.NewGuid(), Guid.NewGuid(),0, 3, false);
 
         Assert.NotEqual(Guid.Empty, part.Id);
         Assert.False(part.SuppliedByCustomer);

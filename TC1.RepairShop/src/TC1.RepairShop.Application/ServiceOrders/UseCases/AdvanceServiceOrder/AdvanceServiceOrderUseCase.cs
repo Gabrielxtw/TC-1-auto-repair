@@ -1,7 +1,7 @@
 using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Enums;
-using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
+using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
@@ -13,7 +13,7 @@ public class AdvanceServiceOrderUseCase(IServiceOrderRepository serviceOrderRepo
     {
         try
         {
-            var order = await serviceOrderRepository.GetByIdAsync(request.ServiceOrderId);
+            var order = await serviceOrderRepository.GetByIdDetailedAsync(request.ServiceOrderId);
             if (order is null)
                 return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Service order not found.");
 
@@ -26,9 +26,13 @@ public class AdvanceServiceOrderUseCase(IServiceOrderRepository serviceOrderRepo
         {
             return new BaseResponse<ServiceOrder?>(data: null, success: false, error: ex.Message);
         }
-        catch (Exception)
+        catch (System.InvalidOperationException)
         {
-            return new BaseResponse<ServiceOrder?>(data: null, success: false);
+            return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Invalid Status");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<ServiceOrder?>(data: null, success: false, error: ex.Message);
         }
     }
 }

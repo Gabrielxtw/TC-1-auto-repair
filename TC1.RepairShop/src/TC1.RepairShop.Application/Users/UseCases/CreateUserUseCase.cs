@@ -1,6 +1,6 @@
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
-using TC1.RepairShop.Domain.Interfaces.Users;
+using TC1.RepairShop.Domain.Interfaces;
 using TC1.RepairShop.Domain.CustomExceptions;
 
 namespace TC1.RepairShop.Application.Users.UseCases;

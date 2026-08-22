@@ -1,7 +1,7 @@
 ﻿using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Parts;
 using TC1.RepairShop.Domain.Enums;
-using TC1.RepairShop.Domain.Interfaces.Parts;
+using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Parts.UseCases
 {

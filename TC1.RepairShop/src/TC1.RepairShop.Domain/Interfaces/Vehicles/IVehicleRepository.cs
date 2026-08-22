@@ -1,6 +1,6 @@
 using TC1.RepairShop.Domain.Entities.Vehicles;
 
-namespace TC1.RepairShop.Domain.Interfaces.Vehicles
+namespace TC1.RepairShop.Domain.Interfaces
 {
     public interface IVehicleRepository : IRepository<Vehicle, Guid>
     {

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TC1.RepairShop.Domain.Entities.Parts;
-using TC1.RepairShop.Domain.Interfaces.Parts;
+using TC1.RepairShop.Domain.Interfaces;
 using TC1.RepairShop.Infrastructure.Data;
 
 namespace TC1.RepairShop.Infrastructure.Data.Repositories;

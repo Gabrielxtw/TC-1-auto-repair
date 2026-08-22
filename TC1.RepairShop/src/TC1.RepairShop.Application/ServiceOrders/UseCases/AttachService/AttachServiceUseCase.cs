@@ -1,13 +1,12 @@
 using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
-using TC1.RepairShop.Domain.Interfaces.Services;
-using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
+using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
-public record AttachServiceRequest(Guid ServiceOrderId, Guid ServiceId);
+public record AttachServiceRequest(Guid ServiceOrderId, Guid ServiceId, decimal Price);
 
-public class AttachServiceUseCase(IServiceOrderRepository _serviceOrderRepository, IServiceRepository _serviceRepository)
+public class AttachServiceUseCase(IServiceOrderRepository _serviceOrderRepository, IServiceRepository _serviceRepository, IServiceOrderServiceRepository _serviceOrderServiceRepository)
 {
 
     public async Task<BaseResponse<ServiceOrder?>> ExecuteAsync(AttachServiceRequest request)
@@ -26,8 +25,10 @@ public class AttachServiceUseCase(IServiceOrderRepository _serviceOrderRepositor
             if (existingService is not null)
                 return new BaseResponse<ServiceOrder?>(data: null, success: false, error: "Service already attached to the service order.", StatusCode: "400");
 
-            order.AttachServices(service);
-            await _serviceOrderRepository.UpdateAsync(order);
+
+            ServiceOrderService serviceOrderService = ServiceOrderService.Create(request.ServiceOrderId, request.ServiceId, request.Price);
+
+            await _serviceOrderServiceRepository.AddAsync(serviceOrderService);
 
             return new BaseResponse<ServiceOrder?>(order);
         }

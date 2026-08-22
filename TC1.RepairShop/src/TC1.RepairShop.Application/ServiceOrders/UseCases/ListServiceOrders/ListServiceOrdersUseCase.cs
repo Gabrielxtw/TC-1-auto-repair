@@ -1,5 +1,5 @@
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
-using TC1.RepairShop.Domain.Interfaces.ServiceOrders;
+using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 

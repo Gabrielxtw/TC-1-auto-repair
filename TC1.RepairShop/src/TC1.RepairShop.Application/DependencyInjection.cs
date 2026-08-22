@@ -7,6 +7,8 @@ using TC1.RepairShop.Application.Vehicles.UseCases;
 using TC1.RepairShop.Application.Services.UseCases;
 using TC1.RepairShop.Application.Quotes.UseCases;
 using TC1.RepairShop.Application.ServiceOrders.UseCases;
+using TC1.RepairShop.Domain.Events;
+using TC1.RepairShop.Application.ServiceOrders.EventHandlers;
 
 namespace TC1.RepairShop.Application
 {
@@ -56,6 +58,13 @@ namespace TC1.RepairShop.Application
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<AuthenticateUserUseCase>();
+
+
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssembly(
+                    typeof(DiagnosisConcludedEventHandler).Assembly);
+            });
 
             return services;
         }
