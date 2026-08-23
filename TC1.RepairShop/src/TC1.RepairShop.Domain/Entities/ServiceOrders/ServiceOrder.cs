@@ -43,6 +43,7 @@ public class ServiceOrder: BaseEntity
     public void AttachQuote(Guid quoteId)
     {
         QuoteId = quoteId;
+        RaiseDomainEvent(new QuoteCreatedUpdatedEvent(quoteId));
     }
 
     public void AdvanceTo(ServiceOrderStatus newStatus)
@@ -56,7 +57,7 @@ public class ServiceOrder: BaseEntity
                 Id,
                 price:
                     ServiceOrderServices.Sum(sos => sos.Price) + 
-                    ServiceOrderParts.Sum(sop => sop.Price * sop.Quantity),
+                    ServiceOrderParts.Where(sop => !sop.SuppliedByCustomer).Sum(sop => sop.Price * sop.Quantity),
                 QuoteId)
             );
         OrderStatusValue = newStatus;

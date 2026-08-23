@@ -17,7 +17,6 @@ public class DiagnosisConcludedEventHandler (
     {
         try
         {
-            decimal total = 0m;
             Quote? quote = null;
             if (domainEvent.QuoteId != null) {
                 quote = await _quoteRepository.GetByIdAsync(domainEvent.QuoteId.Value);
@@ -29,15 +28,16 @@ public class DiagnosisConcludedEventHandler (
 
             if (quote is not null)
             {
-                total = quote.Price;
+                quote.UpdatePrice(domainEvent.Price);
+                await _quoteRepository.UpdateAsync(quote);
+                return;
             }
             else
             {
-                quote = Quote.Create(domainEvent.ServiceOrderId, total);
+                quote = Quote.Create(domainEvent.ServiceOrderId, domainEvent.Price);
+                await _quoteRepository.AddAsync(quote);
             }
 
-            // Create and persist quote, then attach to service order
-            await _quoteRepository.AddAsync(quote);
 
 
             var order = await _serviceOrderRepository.GetByIdAsync(domainEvent.ServiceOrderId);

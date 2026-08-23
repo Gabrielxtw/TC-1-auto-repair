@@ -1,6 +1,7 @@
 using TC1.RepairShop.Domain.Entities.Common;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Enums;
+using TC1.RepairShop.Domain.Events;
 
 namespace TC1.RepairShop.Domain.Entities.Quotes;
 
@@ -28,11 +29,29 @@ public class Quote: BaseEntity
 
         return quote;
     }
+    public void UpdatePrice(decimal newPrice)
+    {
+        Price = newPrice;
+
+        RaiseDomainEvent(new QuoteCreatedUpdatedEvent(Id));
+    }
 
     public void Reject()
     {
         QuoteStatusValue = QuoteStatus.Rejected;
         RejectionCount++;
+        if(RejectionCount >= 3)
+        {
+            QuoteStatusValue = QuoteStatus.UnderReview;
+        }
+        RaiseDomainEvent(new QuoteRejectedEvent(
+            Id,
+            ServiceOrderId)
+        );
+    }
+    public void SendToCustomer()
+    {
+        QuoteStatusValue = QuoteStatus.SentToCustomer;
     }
 
     public void Approve()
