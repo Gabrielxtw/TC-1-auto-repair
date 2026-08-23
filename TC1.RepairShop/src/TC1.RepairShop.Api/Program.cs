@@ -9,6 +9,8 @@ using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Infrastructure.Data;
 using TC1.RepairShop.Infrastructure;
 using TC1.RepairShop.Application;
+using TC1.RepairShop.Application.Notifications;
+using TC1.RepairShop.Infrastructure.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +73,11 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+
+builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection(SendGridOptions.SectionName));
+builder.Services.AddSingleton<EmailQueue>();
+builder.Services.AddSingleton<IEmailSender>(sp => sp.GetRequiredService<EmailQueue>());
+builder.Services.AddHostedService<EmailQueueBackgroundService>();
 
 var app = builder.Build();
 
