@@ -16,6 +16,8 @@ public class QuoteCreatedEventHandler(
             var quote = await _quoteRepository.GetByIdAsync(domainEvent.QuoteId);
             if (quote is null)
                 return;
+
+            // TODO send Quote to customer email
             quote.SendToCustomer();
             await _quoteRepository.UpdateAsync(quote);
 

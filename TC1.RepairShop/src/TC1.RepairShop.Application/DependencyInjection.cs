@@ -9,6 +9,7 @@ using TC1.RepairShop.Application.Quotes.UseCases;
 using TC1.RepairShop.Application.ServiceOrders.UseCases;
 using TC1.RepairShop.Domain.Events;
 using TC1.RepairShop.Application.ServiceOrders.EventHandlers;
+using TC1.RepairShop.Application.Quotes.UseCases.ListQuotes;
 
 namespace TC1.RepairShop.Application
 {
@@ -47,6 +48,7 @@ namespace TC1.RepairShop.Application
             services.AddScoped<CreateQuoteUseCase>();
             services.AddScoped<ApproveQuoteUseCase>();
             services.AddScoped<RejectQuoteUseCase>();
+            services.AddScoped<ListQuotesUseCase>();
 
             services.AddScoped<CreateServiceOrderUseCase>();
             services.AddScoped<AdvanceServiceOrderUseCase>();

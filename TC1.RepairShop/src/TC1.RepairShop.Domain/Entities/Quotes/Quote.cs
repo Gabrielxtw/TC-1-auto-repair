@@ -49,6 +49,10 @@ public class Quote: BaseEntity
             ServiceOrderId)
         );
     }
+    public void MarkUnderReview()
+    {
+        QuoteStatusValue = QuoteStatus.UnderReview;
+    }
     public void SendToCustomer()
     {
         QuoteStatusValue = QuoteStatus.SentToCustomer;
@@ -57,5 +61,8 @@ public class Quote: BaseEntity
     public void Approve()
     {
         QuoteStatusValue = QuoteStatus.Approved;
+        RaiseDomainEvent(new QuoteApprovedEvent(
+            ServiceOrderId)
+        );
     }
 }

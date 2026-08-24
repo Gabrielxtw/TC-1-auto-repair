@@ -40,7 +40,7 @@ public abstract class ServiceOrderStatus : Enumeration<ServiceOrderStatus>
 
     private sealed class InProgressStatus : ServiceOrderStatus
     {
-        public InProgressStatus() : base(4, "InProgress") { }
+        public InProgressStatus() : base(4, "In Progress") { }
 
         public override bool CanTransitionTo(ServiceOrderStatus next) =>
             next == Completed;

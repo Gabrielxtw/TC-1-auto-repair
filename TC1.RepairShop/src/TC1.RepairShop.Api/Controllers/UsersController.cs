@@ -51,7 +51,7 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
             return Conflict(new { message = result.error });
         }
 
-        return CreatedAtAction(nameof(GetById), new { id = result.data?.User?.Id }, result.data?.User);
+        return CreatedAtAction(nameof(GetById), new { id = result.data?.id }, result.data);
     }
 
     [HttpPut("{id:guid}")]

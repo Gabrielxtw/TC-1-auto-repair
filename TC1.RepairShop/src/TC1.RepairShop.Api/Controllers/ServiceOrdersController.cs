@@ -18,7 +18,6 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
                                      GetServiceOrderUseCase _getServiceOrderUseCase
     ) : BaseController
 {
-    public record ServiceOrderResponse(string ServiceOrderId, string CustomerName, string Status, string OpenedAt, string CustomerEmail);
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -27,7 +26,7 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
         if (!result.success)
             return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
 
-        return Ok(result.data.Select(ToResponse));
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
@@ -40,7 +39,7 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
         if (result.data is null)
             return NotFound();
 
-        return Ok(result.data);
+        return Ok(result);
     }
 
     [HttpPost]
@@ -74,7 +73,7 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
         if (!result.success)
             return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
 
-        return Ok(result.data);
+        return Ok(result);
     }
 
     [HttpPost("AttachPart")]
@@ -84,7 +83,7 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
         if (!result.success)
             return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
 
-        return Ok(result.data);
+        return Ok(result);
     }
 
     [HttpPost("AttachService")]
@@ -94,10 +93,7 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
         if (!result.success)
             return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
 
-        return Ok(result.data);
+        return Ok(result);
     }
 
-
-    private static ServiceOrderResponse ToResponse(ServiceOrder serviceOrder) =>
-        new(serviceOrder.Id.ToString(), serviceOrder.User.Username, serviceOrder.OrderStatusValue.ToString(), serviceOrder.OpenedAt.ToString(), serviceOrder.User.Email.Value);
 }

@@ -7,7 +7,7 @@ namespace TC1.RepairShop.Application.Users.UseCases;
 
 public record CreateUserRequest(string Username, string Password, string Document, string Email, UserRole Role, string Phone);
 
-public record CreateUserResult(bool Success, string? Error, User? User);
+public record CreateUserResult(Guid id,string username, string document, string email);
 
 public class CreateUserUseCase(IUserRepository _userRepository)
 {
@@ -16,18 +16,18 @@ public class CreateUserUseCase(IUserRepository _userRepository)
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
         if (existingUser is not null)
         {
-            return new BaseResponse<CreateUserResult?>(new CreateUserResult(false, "Username is already taken.", null));
+            return new BaseResponse<CreateUserResult?>(data: null, success: false, error: "Username is already taken.");
         }
 
         try
         {
             var user = User.Create(request.Username, request.Password, request.Document, request.Email, request.Role, request.Phone);
             await _userRepository.AddAsync(user);
-            return new BaseResponse<CreateUserResult?>(new CreateUserResult(true, null, user));
+            return new BaseResponse<CreateUserResult?>(new CreateUserResult(user.Id, user.Username, user.Document.Value, user.Email.Value));
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<CreateUserResult?>(new CreateUserResult(false, ex.Message, null));
+            return new BaseResponse<CreateUserResult?>(new CreateUserResult(Guid.Empty, string.Empty, string.Empty, string.Empty));
         }
     }
 }
