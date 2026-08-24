@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TC1.RepairShop.Application.Services.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers
 {
     //[Route("api/[controller]")]
     //[ApiController]
+    [Authorize(Policy = "StaffOnly")]
     public class ServicesController(
         DeactiveServiceUseCase deactiveServiceUseCase,
         DeleteServiceUseCase deleteServiceUseCase,

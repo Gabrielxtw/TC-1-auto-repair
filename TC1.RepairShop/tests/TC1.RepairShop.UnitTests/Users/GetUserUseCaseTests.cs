@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using TC1.RepairShop.Application.Users.UseCases;
-using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces;
@@ -21,19 +20,21 @@ public class GetUserUseCaseTests
         var useCase = new GetUserUseCase(repository.Object);
         var result = await useCase.ExecuteAsync(user.Id);
 
-        result.data.Id.Should().Be(user.Id);
+        result.success.Should().BeTrue();
+        result.data!.Id.Should().Be(user.Id);
         result.data.Username.Should().Be(user.Username);
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldThrow_WhenNotFound()
+    public async Task ExecuteAsync_ShouldFail_WhenNotFound()
     {
         var repository = new Mock<IUserRepository>();
         repository.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((User?)null);
 
         var useCase = new GetUserUseCase(repository.Object);
-        var act = () => useCase.ExecuteAsync(Guid.NewGuid());
+        var result = await useCase.ExecuteAsync(Guid.NewGuid());
 
-        await act.Should().ThrowAsync<BusinessException>();
+        result.success.Should().BeFalse();
+        result.error.Should().Be("User not found.");
     }
 }

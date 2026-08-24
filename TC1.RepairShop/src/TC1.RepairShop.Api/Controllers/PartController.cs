@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TC1.RepairShop.Application.Parts.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers
 {
     //[ApiController]
     //[Route("api/[controller]")]
+    [Authorize(Policy = "StaffOnly")]
     public class PartController(
         DeactivatePartUseCase deactivatePartUseCase,
         DeletePartUseCase deletePartUseCase,

@@ -25,7 +25,7 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
     private async Task AuthenticateAsStaffAsync()
     {
-        var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", new { username = "admin", password = "Admin@123" });
+        var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", new { username = ApiWebApplicationFactory.AdminUsername, password = ApiWebApplicationFactory.AdminPassword });
         var login = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
 
         _client.DefaultRequestHeaders.Authorization =
@@ -37,7 +37,7 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
     [Fact]
     public async Task GetCustomers_WithoutToken_ShouldReturn401()
     {
-        var response = await _client.GetAsync("/api/customers");
+        var response = await _client.GetAsync("/api/users");
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -47,7 +47,7 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
     {
         await AuthenticateAsStaffAsync();
 
-        var response = await _client.GetAsync("/api/customers");
+        var response = await _client.GetAsync("/api/users");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
@@ -58,56 +58,55 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
         await AuthenticateAsStaffAsync();
 
         var createResponse = await _client.PostAsJsonAsync(
-            "/api/customers",
-            new { name = "John Smith", nationalId = NextCpf(), phone = "11988887777", email = "john@example.com" });
+            "/api/users",
+            new { username = $"customer.{Guid.NewGuid():N}", password = "Passw0rd!", document = NextCpf(), email = "john@example.com", role = "Customer", phone = "11988887777" });
 
         Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
 
-        var created = await createResponse.Content.ReadFromJsonAsync<CustomerResponseDto>();
+        var created = await createResponse.Content.ReadFromJsonAsync<CreateUserResultDto>();
         Assert.NotNull(created);
-        Assert.Equal("Active", created!.Status);
 
-        var getResponse = await _client.GetAsync($"/api/customers/{created.Id}");
+        var getResponse = await _client.GetAsync($"/api/users/{created!.id}");
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
     }
 
     [Fact]
-    public async Task CreateCustomer_WithDuplicateNationalId_ShouldReturn409()
+    public async Task CreateCustomer_WithDuplicateUsername_ShouldReturn409()
     {
         await AuthenticateAsStaffAsync();
 
-        var nationalId = NextCpf();
+        var username = $"customer.{Guid.NewGuid():N}";
         await _client.PostAsJsonAsync(
-            "/api/customers",
-            new { name = "John Smith", nationalId, phone = "11988887777", email = "john@example.com" });
+            "/api/users",
+            new { username, password = "Passw0rd!", document = NextCpf(), email = "john@example.com", role = "Customer", phone = "11988887777" });
 
         var response = await _client.PostAsJsonAsync(
-            "/api/customers",
-            new { name = "Other Name", nationalId, phone = "11977776666", email = "other@example.com" });
+            "/api/users",
+            new { username, password = "Passw0rd!", document = NextCpf(), email = "other@example.com", role = "Customer", phone = "11977776666" });
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
     }
 
     [Fact]
-    public async Task UpdateCustomer_ShouldChangeContactInfo()
+    public async Task UpdateCustomer_ShouldChangeUsername()
     {
         await AuthenticateAsStaffAsync();
 
         var createResponse = await _client.PostAsJsonAsync(
-            "/api/customers",
-            new { name = "John Smith", nationalId = NextCpf(), phone = "11988887777", email = "john@example.com" });
-        var created = await createResponse.Content.ReadFromJsonAsync<CustomerResponseDto>();
+            "/api/users",
+            new { username = $"customer.{Guid.NewGuid():N}", password = "Passw0rd!", document = NextCpf(), email = "john@example.com", role = "Customer", phone = "11988887777" });
+        var created = await createResponse.Content.ReadFromJsonAsync<CreateUserResultDto>();
 
+        var newUsername = $"customer.{Guid.NewGuid():N}";
         var updateResponse = await _client.PutAsJsonAsync(
-            $"/api/customers/{created!.Id}",
-            new { phone = "11900001111", email = "john.new@example.com" });
+            $"/api/users/{created!.id}",
+            new { username = newUsername, role = "Customer" });
 
         Assert.Equal(HttpStatusCode.NoContent, updateResponse.StatusCode);
 
-        var getResponse = await _client.GetAsync($"/api/customers/{created.Id}");
-        var updated = await getResponse.Content.ReadFromJsonAsync<CustomerResponseDto>();
-        Assert.Equal("11900001111", updated!.Phone);
-        Assert.Equal("john.new@example.com", updated.Email);
+        var getResponse = await _client.GetAsync($"/api/users/{created.id}");
+        var updated = await getResponse.Content.ReadFromJsonAsync<GetUserResponseDto>();
+        Assert.Equal(newUsername, updated!.Username);
     }
 
     [Fact]
@@ -116,18 +115,20 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
         await AuthenticateAsStaffAsync();
 
         var createResponse = await _client.PostAsJsonAsync(
-            "/api/customers",
-            new { name = "John Smith", nationalId = NextCpf(), phone = "11988887777", email = "john@example.com" });
-        var created = await createResponse.Content.ReadFromJsonAsync<CustomerResponseDto>();
+            "/api/users",
+            new { username = $"customer.{Guid.NewGuid():N}", password = "Passw0rd!", document = NextCpf(), email = "john@example.com", role = "Customer", phone = "11988887777" });
+        var created = await createResponse.Content.ReadFromJsonAsync<CreateUserResultDto>();
 
-        var deleteResponse = await _client.DeleteAsync($"/api/customers/{created!.Id}");
+        var deleteResponse = await _client.DeleteAsync($"/api/users/{created!.id}");
         Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
-        var getResponse = await _client.GetAsync($"/api/customers/{created.Id}");
+        var getResponse = await _client.GetAsync($"/api/users/{created.id}");
         Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
     private record LoginResponseDto(string Token);
 
-    private record CustomerResponseDto(Guid Id, string Name, string NationalId, string Phone, string Email, string Status);
+    private record CreateUserResultDto(Guid id, string username, string document, string email);
+
+    private record GetUserResponseDto(Guid Id, string Username, string document, string email, string Role, string Status);
 }
