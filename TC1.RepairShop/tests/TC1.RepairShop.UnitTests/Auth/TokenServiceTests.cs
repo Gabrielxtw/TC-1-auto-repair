@@ -22,7 +22,7 @@ public class TokenServiceTests
     public void GenerateStaffToken_ShouldGenerateTokenWithExpectedClaims()
     {
         var tokenService = CreateTokenService();
-        var user = User.Create("admin", "Passw0rd!", "123456789", "email@email.com", UserRole.Admin, "1999999999");
+        var user = User.Create("admin", "Passw0rd!", "52998224725", "email@email.com", UserRole.Admin, "1999999999");
 
         var token = tokenService.GenerateStaffToken(user);
 

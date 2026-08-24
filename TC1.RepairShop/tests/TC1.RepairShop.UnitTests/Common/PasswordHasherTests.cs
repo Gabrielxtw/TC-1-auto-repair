@@ -29,4 +29,13 @@ public class PasswordHasherTests
 
         Assert.NotEqual(hash1, hash2);
     }
+
+    [Theory]
+    [InlineData("not-a-valid-hash")]
+    [InlineData("only.two-parts")]
+    [InlineData("notanumber.c2FsdA==.aGFzaA==")]
+    public void Verify_WithMalformedHash_ShouldReturnFalse(string malformedHash)
+    {
+        Assert.False(PasswordHasher.Verify("Passw0rd!", malformedHash));
+    }
 }

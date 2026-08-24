@@ -27,7 +27,7 @@ public class CreateUserUseCase(IUserRepository _userRepository)
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<CreateUserResult?>(new CreateUserResult(Guid.Empty, string.Empty, string.Empty, string.Empty));
+            return new BaseResponse<CreateUserResult?>(data: null, success: false, error: ex.Message);
         }
     }
 }

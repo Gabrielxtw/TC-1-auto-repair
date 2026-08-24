@@ -12,7 +12,7 @@ namespace TC1.RepairShop.Application.Parts.UseCases
             {
                 Part part = await partRepository.GetByIdAsync(request.Id) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
 
-                part.ReceiveStock(request.Quantity);
+                part.ConsumeStock(request.Quantity);
 
                 await partRepository.UpdateAsync(part);
 

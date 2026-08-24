@@ -1,5 +1,7 @@
 using System;
+using FluentAssertions;
 using Xunit;
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Enums;
 
@@ -38,9 +40,12 @@ public class ServiceOrderTests
     {
         var order = ServiceOrder.Create(Guid.NewGuid(), Guid.NewGuid());
 
+        order.AdvanceTo(ServiceOrderStatus.UnderDiagnosis);
+        order.AdvanceTo(ServiceOrderStatus.AwaitingApproval);
         order.AdvanceTo(ServiceOrderStatus.InProgress);
         Assert.Equal(ServiceOrderStatus.InProgress, order.OrderStatusValue);
 
+        order.AdvanceTo(ServiceOrderStatus.Completed);
         order.AdvanceTo(ServiceOrderStatus.Delivered);
         Assert.Equal(ServiceOrderStatus.Delivered, order.OrderStatusValue);
         Assert.NotNull(order.CompletedAt);
@@ -55,5 +60,28 @@ public class ServiceOrderTests
         order.Delete();
 
         Assert.Equal(Status.Deleted, order.Status);
+    }
+
+    [Fact]
+    public void AdvanceTo_ShouldThrow_WhenTransitionIsInvalid()
+    {
+        var order = ServiceOrder.Create(Guid.NewGuid(), Guid.NewGuid());
+
+        var act = () => order.AdvanceTo(ServiceOrderStatus.Delivered);
+
+        act.Should().Throw<BusinessException>()
+            .WithMessage("Cannot transition from the current status to the new status.");
+    }
+
+    [Fact]
+    public void AdvanceTo_ShouldThrow_WhenOrderIsAlreadyInTerminalStatus()
+    {
+        var order = ServiceOrder.Create(Guid.NewGuid(), Guid.NewGuid());
+        order.AdvanceTo(ServiceOrderStatus.Cancelled);
+
+        var act = () => order.AdvanceTo(ServiceOrderStatus.UnderDiagnosis);
+
+        act.Should().Throw<BusinessException>()
+            .WithMessage("Cannot transition from the current status to the new status.");
     }
 }
