@@ -4,9 +4,9 @@ using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Parts.UseCases
 {
-    public class DeletePartUseCase(IPartRepository partRepository)
+    public class DeletePartUseCase(IPartRepository partRepository): BaseUseCase<DeletePartRequest,PartResponse?>
     {
-        public async Task<BaseResponse<bool>> ExecuteAsync(DeletePartRequest request)
+        public async Task<BaseResponse<PartResponse?>> ExecuteAsync(DeletePartRequest request)
         {
             try
             {
@@ -16,15 +16,15 @@ namespace TC1.RepairShop.Application.Parts.UseCases
 
                 await partRepository.UpdateAsync(part);
 
-                return new BaseResponse<bool>(true);
+                return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
             }
             catch (BusinessException ex)
             {
-                return new BaseResponse<bool>(data: false, success: false, error: ex.Message);
+                return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message);
             }
             catch (Exception)
             {
-                return new BaseResponse<bool>(data: false, success: false);
+                return new BaseResponse<PartResponse?>(data: null, success: false, error: "Ocorreu um erro ao excluir a peça.");
             }
         }
     }

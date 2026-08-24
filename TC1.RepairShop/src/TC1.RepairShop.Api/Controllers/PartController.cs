@@ -3,8 +3,6 @@ using TC1.RepairShop.Application.Parts.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers
 {
-    //[ApiController]
-    //[Route("api/[controller]")]
     public class PartController(
         DeactivatePartUseCase deactivatePartUseCase,
         DeletePartUseCase deletePartUseCase,
@@ -29,10 +27,15 @@ namespace TC1.RepairShop.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] CreatePartRequest request)
+        public async Task<IActionResult> Create([FromBody] CreatePartRequest request)
         {
             var result = await registerPartUseCase.ExecuteAsync(request);
-            return Response(result);
+            if (!result.success)
+            {
+                return Conflict(new { message = result.error });
+            }
+
+            return CreatedAtAction(nameof(GetById), new { id = result.data?.Id }, result.data);
         }
 
         [HttpPut("ReceiveStock")]

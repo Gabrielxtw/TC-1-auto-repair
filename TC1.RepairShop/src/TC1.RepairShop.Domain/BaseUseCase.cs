@@ -2,7 +2,7 @@
 {
     public interface BaseUseCase<TRequest, TResponse>
     {
-        Task<BaseResponse<TResponse>> ExecuteAsync(TRequest request);
+        public Task<BaseResponse<TResponse>> ExecuteAsync(TRequest request);
     }
 
     public interface BaseUseCase<TResponse>
