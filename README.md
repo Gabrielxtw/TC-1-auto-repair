@@ -23,6 +23,7 @@ A concepção da solução seguiu a abordagem de Domain-Driven Design (DDD) para
 
 ### Domain Storytelling
 A oficina enfrentava desorganização no pátio, perda de prazos por falta de visibilidade da fila de trabalho e inconsistência no controle de peças utilizadas. A solução foi desenhada para criar rastreabilidade total desde a recepção do veículo até a entrega das chaves.
+
 Os diagramas do Domain Storytelling estão contindos na pasta `docs/storytelling`.
 
 ### Event Storming
@@ -63,4 +64,5 @@ Caso todos os tópicos estejam configurados corretamente, basta executar via sua
 ## Relatório de Cobertura de Código
 
 Há um ferramenta para facilitar a geração do relatório de cobertura de código, automatizando as etapas para gerar um relatório pelo Report Generator.
+
 Para gerar o relatório basta executar o seguinte comando na raiz do projeto `dotnet run --project ./CoverageRunner`.
