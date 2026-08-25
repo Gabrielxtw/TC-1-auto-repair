@@ -49,7 +49,7 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
         if (!result.success)
             return StatusCode(int.TryParse(result.StatusCode, out var code) ? code : 500, result.error);
 
-        return CreatedAtAction(nameof(GetById), new { id = result.data.Id }, result);
+        return CreatedAtAction(nameof(GetById), new { id = result.data.Id }, result.data);
     }
 
     [HttpPut("Advance")]

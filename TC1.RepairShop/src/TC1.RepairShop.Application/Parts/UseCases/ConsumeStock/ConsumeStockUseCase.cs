@@ -2,30 +2,29 @@
 using TC1.RepairShop.Domain.Entities.Parts;
 using TC1.RepairShop.Domain.Interfaces;
 
-namespace TC1.RepairShop.Application.Parts.UseCases
+namespace TC1.RepairShop.Application.Parts.UseCases;
+
+public class ConsumeStockUseCase(IPartRepository _partRepository) : BaseUseCase<ConsumeStockRequest, PartResponse?>
 {
-    public class ConsumeStockUseCase(IPartRepository partRepository) : BaseUseCase<ConsumeStockRequest, bool>
+    public async Task<BaseResponse<PartResponse?>> ExecuteAsync(ConsumeStockRequest request)
     {
-        public async Task<BaseResponse<bool>> ExecuteAsync(ConsumeStockRequest request)
+        try
         {
-            try
-            {
-                Part part = await partRepository.GetByIdAsync(request.Id) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
+            Part part = await _partRepository.GetByIdAsync(request.Id) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
 
-                part.ReceiveStock(request.Quantity);
+            part.ConsumeStock(request.Quantity);
 
-                await partRepository.UpdateAsync(part);
+            await _partRepository.UpdateAsync(part);
 
-                return new BaseResponse<bool>(true);
-            }
-            catch (BusinessException ex)
-            {
-                return new BaseResponse<bool>(data: false, success: false, error: ex.Message);
-            }
-            catch (Exception)
-            {
-                return new BaseResponse<bool>(data: false, success: false);
-            }
+            return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
+        }
+        catch (BusinessException ex)
+        {
+            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message);
+        }
+        catch (Exception)
+        {
+            return new BaseResponse<PartResponse?>(data: null, success: false);
         }
     }
 }

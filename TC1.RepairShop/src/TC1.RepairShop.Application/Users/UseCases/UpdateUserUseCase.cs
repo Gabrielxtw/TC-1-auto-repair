@@ -3,30 +3,27 @@ using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Users.UseCases;
 
-public record UpdateUserRequest(Guid Id, string Username, UserRole Role);
 
-public record UpdateUserResult(bool Success, string? Error);
-
-public class UpdateUserUseCase(IUserRepository _userRepository)
+public class UpdateUserUseCase(IUserRepository _userRepository): BaseUseCase<UpdateUserRequest, UserResponse?>
 {
-    public async Task<BaseResponse<UpdateUserResult?>> ExecuteAsync(UpdateUserRequest request)
+    public async Task<BaseResponse<UserResponse?>> ExecuteAsync(UpdateUserRequest request)
     {
         var user = await _userRepository.GetByIdAsync(request.Id);
         if (user is null)
         {
-            return new BaseResponse<UpdateUserResult?>(new UpdateUserResult(false, "User not found."));
+            return new BaseResponse<UserResponse?>(data: null, success: false, error: "User not found.");
         }
 
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
         if (existingUser is not null && existingUser.Id != request.Id)
         {
-            return new BaseResponse<UpdateUserResult?>(new UpdateUserResult(false, "Username is already taken."));
+            return new BaseResponse<UserResponse?>(data: null, success: false, error: "Username is already taken.");
         }
 
         user.UpdateProfile(request.Username, request.Role);
 
         await _userRepository.UpdateAsync(user);
 
-        return new BaseResponse<UpdateUserResult?>(new UpdateUserResult(true, null));
+        return new BaseResponse<UserResponse?>(UsersDTO.ToUserResponse(user));
     }
 }

@@ -13,62 +13,42 @@ public class VehiclesController(CreateVehicleUseCase _createVehicleUseCase,
         DeleteVehicleUseCase _deleteVehicleUseCase) : BaseController
 {
 
-    public record CreateRequest(Guid CustomerId, string LicensePlate, string Brand, string Model, int Year);
-
-    public record VehicleResponse(Guid Id, Guid CustomerId, string LicensePlate, string Brand, string Model, int Year, string Status);
-
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] Guid? customerId)
     {
-        var vehicles = customerId.HasValue
+        var result = customerId.HasValue
             ? await _listVehiclesByCustomerUseCase.ExecuteAsync(customerId.Value)
             : await _listVehiclesUseCase.ExecuteAsync();
 
-        return Ok(vehicles.Select(ToResponse));
+        return Response(result);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var vehicle = await _getVehicleUseCase.ExecuteAsync(id);
-        if (vehicle is null)
-        {
-            return NotFound(new { message = "Vehicle not found." });
-        }
-
-        return Ok(ToResponse(vehicle));
+        var result = await _getVehicleUseCase.ExecuteAsync(id);
+        return Response(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateVehicleRequest request)
     {
-        var result = await _createVehicleUseCase.ExecuteAsync(
-            new CreateVehicleRequest(request.CustomerId, request.LicensePlate, request.Brand, request.Model, request.Year));
+        var result = await _createVehicleUseCase.ExecuteAsync(request);
 
-        if (!result.Success)
+        if (!result.success)
         {
-            return result.Error == "Customer not found."
-                ? NotFound(new { message = result.Error })
-                : Conflict(new { message = result.Error });
+            return result.error == "Customer not found."
+                ? NotFound(new { message = result.error })
+                : Conflict(new { message = result.error });
         }
 
-        var response = ToResponse(result.Vehicle!);
-        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        return CreatedAtAction(nameof(GetById), new { id = result.data?.Id }, result.data);
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var result = await _deleteVehicleUseCase.ExecuteAsync(id);
-
-        if (!result.Success)
-        {
-            return NotFound(new { message = result.Error });
-        }
-
-        return NoContent();
+        return Response(result);
     }
-
-    private static VehicleResponse ToResponse(Vehicle vehicle) =>
-        new(vehicle.Id, vehicle.UserId, vehicle.LicensePlate.Value, vehicle.Brand, vehicle.Model, vehicle.Year, vehicle.Status.ToString());
 }

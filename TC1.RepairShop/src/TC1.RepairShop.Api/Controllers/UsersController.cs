@@ -16,12 +16,6 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     ) : BaseController
 {
 
-    public record UpdateRequest(string Username, UserRole Role);
-
-    public record ChangePasswordRequest(string NewPassword);
-
-    public record UserResponse(Guid Id, string Username, string Role, string Status);
-
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -29,7 +23,7 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
         return Ok(users);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var user = await _getUserUseCase.ExecuteAsync(id);
@@ -51,14 +45,13 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
             return Conflict(new { message = result.error });
         }
 
-        return CreatedAtAction(nameof(GetById), new { id = result.data?.id }, result.data);
+        return CreatedAtAction(nameof(GetById), new { id = result.data?.Id }, result.data);
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRequest request)
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateUserRequest request)
     {
-        var result = await _updateUserUseCase.ExecuteAsync(
-            new UpdateUserRequest(id, request.Username, request.Role));
+        var result = await _updateUserUseCase.ExecuteAsync(request);
 
         if (!result.success)
         {
@@ -67,14 +60,13 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
                 : Conflict(new { message = result.error });
         }
 
-        return NoContent();
+        return AcceptedAtAction(nameof(GetById), new { id = result.data?.Id }, result.data);
     }
 
-    [HttpPut("{id:guid}/password")]
-    public async Task<IActionResult> ChangePassword(Guid id, [FromBody] ChangePasswordRequest request)
+    [HttpPut("password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangeUserPasswordRequest request)
     {
-        var result = await _changeUserPasswordUseCase.ExecuteAsync(
-            new ChangeUserPasswordRequest(id, request.NewPassword));
+        var result = await _changeUserPasswordUseCase.ExecuteAsync(request);
 
         if (!result.success)
         {
@@ -89,9 +81,9 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     {
         var result = await _deleteUserUseCase.ExecuteAsync(id);
 
-        if (!result.Success)
+        if (!result.success)
         {
-            return NotFound(new { message = result.Error });
+            return NotFound(new { message = result.error });
         }
 
         return NoContent();

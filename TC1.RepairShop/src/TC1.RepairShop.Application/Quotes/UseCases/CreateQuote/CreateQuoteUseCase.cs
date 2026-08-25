@@ -4,11 +4,7 @@ using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Quotes.UseCases;
 
-public record CreateQuoteRequest(Guid ServiceOrderId, decimal Price);
-
-public record CreateQuoteResponse(Guid Id);
-
-public class CreateQuoteUseCase(IQuoteRepository quoteRepository, IServiceOrderRepository serviceOrderRepository)
+public class CreateQuoteUseCase(IQuoteRepository quoteRepository, IServiceOrderRepository serviceOrderRepository): BaseUseCase<CreateQuoteRequest, CreateQuoteResponse>
 {
     public async Task<BaseResponse<CreateQuoteResponse>> ExecuteAsync(CreateQuoteRequest request)
     {

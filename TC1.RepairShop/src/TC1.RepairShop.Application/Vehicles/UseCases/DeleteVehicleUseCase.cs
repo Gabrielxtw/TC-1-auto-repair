@@ -1,29 +1,22 @@
-namespace TC1.RepairShop.Application.Vehicles.UseCases;
 using TC1.RepairShop.Domain.Interfaces;
 
-public record DeleteVehicleResult(bool Success, string? Error);
+namespace TC1.RepairShop.Application.Vehicles.UseCases;
 
-public class DeleteVehicleUseCase
+
+public class DeleteVehicleUseCase(IVehicleRepository _vehicleRepository) : BaseUseCase<Guid, VehicleResponse?>
 {
-    private readonly IVehicleRepository _vehicleRepository;
-
-    public DeleteVehicleUseCase(IVehicleRepository vehicleRepository)
-    {
-        _vehicleRepository = vehicleRepository;
-    }
-
-    public async Task<DeleteVehicleResult> ExecuteAsync(Guid id)
+    public async Task<BaseResponse<VehicleResponse?>> ExecuteAsync(Guid id)
     {
         var vehicle = await _vehicleRepository.GetByIdAsync(id);
         if (vehicle is null)
         {
-            return new DeleteVehicleResult(false, "Vehicle not found.");
+            return new BaseResponse<VehicleResponse?>(data: null, success: false, error: "Vehicle not found.");
         }
 
         vehicle.Delete();
 
         await _vehicleRepository.UpdateAsync(vehicle);
 
-        return new DeleteVehicleResult(true, null);
+        return new BaseResponse<VehicleResponse?>(data: VehiclesDTO.ToVehicleResponse(vehicle));
     }
 }

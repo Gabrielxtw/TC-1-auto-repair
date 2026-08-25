@@ -8,7 +8,8 @@ namespace TC1.RepairShop.Api.Controllers;
 
 public class QuotesController(ListQuotesUseCase _listQuotesUseCase,
                                 RejectQuoteUseCase _rejectQuoteUseCase,
-                                ApproveQuoteUseCase _approveQuoteUseCase) : BaseController
+                                ApproveQuoteUseCase _approveQuoteUseCase,
+                                CreateQuoteUseCase _createQuoteUseCase) : BaseController
 {
     //TODO get records from path
 
@@ -17,6 +18,16 @@ public class QuotesController(ListQuotesUseCase _listQuotesUseCase,
     {
         var result = await _listQuotesUseCase.ExecuteAsync();
         return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateQuoteRequest request)
+    {
+        var result = await _createQuoteUseCase.ExecuteAsync(request);
+        if (result.success)
+            return CreatedAtAction(nameof(GetMyQuotes), new { id = result.data?.Id }, result);
+
+        return BadRequest(result);
     }
 
     [HttpPut("Reject/{id}")]

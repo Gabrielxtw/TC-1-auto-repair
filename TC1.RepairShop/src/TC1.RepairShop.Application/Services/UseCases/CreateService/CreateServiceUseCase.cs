@@ -2,31 +2,30 @@
 using TC1.RepairShop.Domain.Entities.Services;
 using TC1.RepairShop.Domain.Interfaces;
 
-namespace TC1.RepairShop.Application.Services.UseCases
+namespace TC1.RepairShop.Application.Services.UseCases;
+
+public class CreateServiceUseCase(IServiceRepository _serviceRepository) : BaseUseCase<CreateServiceRequest, ServiceResponse?>
 {
-    public class CreateServiceUseCase(IServiceRepository serviceRepository) : BaseUseCase<CreateServiceRequest, bool>
+    public async Task<BaseResponse<ServiceResponse?>> ExecuteAsync(CreateServiceRequest request)
     {
-        public async Task<BaseResponse<bool>> ExecuteAsync(CreateServiceRequest request)
+        try
         {
-            try
-            {
-                if (await serviceRepository.ExistsByNameAsync(request.name))
-                    return new BaseResponse<bool>(data: false, success: false, error: "Serviço já está cadastrado no sistema.");
+            if (await _serviceRepository.ExistsByNameAsync(request.name))
+                return new BaseResponse<ServiceResponse?>(data: null, success: false, error: "Serviço já está cadastrado no sistema.");
 
-                Service part = Service.Create(request.name, request.description, request.price);
+            Service service = Service.Create(request.name, request.description, request.price);
 
-                await serviceRepository.AddAsync(part);
+            await _serviceRepository.AddAsync(service);
 
-                return new BaseResponse<bool>(true);
-            }
-            catch (BusinessException ex)
-            {
-                return new BaseResponse<bool>(data: false, success: false, error: ex.Message);
-            }
-            catch (Exception)
-            {
-                return new BaseResponse<bool>(data: false, success: false);
-            }
+            return new BaseResponse<ServiceResponse?>(data: ServicesDTO.ToServiceResponse(service), success: true);
+        }
+        catch (BusinessException ex)
+        {
+            return new BaseResponse<ServiceResponse?>(data: null, success: false, error: ex.Message);
+        }
+        catch (Exception)
+        {
+            return new BaseResponse<ServiceResponse?>(data: null, success: false);
         }
     }
 }

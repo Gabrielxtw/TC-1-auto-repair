@@ -5,8 +5,6 @@ using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Quotes.UseCases;
 
-public record ApproveQuoteRequest(Guid QuoteId);
-public record ApproveQuoteResult(Guid id, decimal price, QuoteStatus status);
 
 public class ApproveQuoteUseCase(IQuoteRepository quoteRepository)
 {

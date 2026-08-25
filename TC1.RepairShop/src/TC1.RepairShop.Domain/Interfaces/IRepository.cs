@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace TC1.RepairShop.Domain.Interfaces
@@ -9,6 +10,7 @@ namespace TC1.RepairShop.Domain.Interfaces
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(TKey id);
+        Task<T?> GetByIdAsync(TKey id, params Expression<Func<T, object>>[] includes);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(TKey id);

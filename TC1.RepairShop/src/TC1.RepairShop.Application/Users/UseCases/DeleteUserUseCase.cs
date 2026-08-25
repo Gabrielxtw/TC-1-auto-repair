@@ -2,22 +2,21 @@ using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Users.UseCases;
 
-public record DeleteUserResult(bool Success, string? Error);
 
-public class DeleteUserUseCase(IUserRepository _userRepository)
+public class DeleteUserUseCase(IUserRepository _userRepository): BaseUseCase<Guid, UserResponse?>
 {
-    public async Task<DeleteUserResult> ExecuteAsync(Guid id)
+    public async Task<BaseResponse<UserResponse?>> ExecuteAsync(Guid id)
     {
         var user = await _userRepository.GetByIdAsync(id);
         if (user is null)
         {
-            return new DeleteUserResult(false, "User not found.");
+            return new BaseResponse<UserResponse?>(data: null, success: false, error: "User not found.");
         }
 
         user.Delete();
 
         await _userRepository.UpdateAsync(user);
 
-        return new DeleteUserResult(true, null);
+        return new BaseResponse<UserResponse?>(data: null, success: true);
     }
 }

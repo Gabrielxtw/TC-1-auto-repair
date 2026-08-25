@@ -3,14 +3,13 @@ using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.Parts.UseCases
 {
-    public record PartRequest(Guid Id);
     public record PartResponse(Guid Id, string Name, int StockQuantity, decimal Price, Status Status);
-
     public record CreatePartRequest(string Name, decimal Price, int MinimumQuantity);
-
     public record ListPartsResponse(ICollection<PartResponse> Parts);
-
-    public record DeletePartRequest(Guid Id);
+    public record ReceiveStockRequest(Guid Id, int Quantity);
+    public record UpdatePartRequest(Guid Id,string Name,decimal Price);
+    public record DeactivePartRequest(Guid Id);
+    public record ConsumeStockRequest(Guid Id, int Quantity);
     public class PartDTO
     {
 

@@ -4,14 +4,13 @@ using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Users.UseCases;
 
-public record GetUserResponse(Guid Id, string Username,string document, string email, string Role, string Status);
-public class GetUserUseCase(IUserRepository _userRepository)//: BaseUseCase<GetUserResponse>
+public class GetUserUseCase(IUserRepository _userRepository): BaseUseCase<Guid,UserDetailedResponse>
 {
-    public async Task<BaseResponse<GetUserResponse>> ExecuteAsync(Guid id)
+    public async Task<BaseResponse<UserDetailedResponse>> ExecuteAsync(Guid request)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _userRepository.GetByIdAsync(request);
         if (user == null)
             throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
-        return new BaseResponse<GetUserResponse>(new GetUserResponse(user.Id, user.Username, user.Document.Value, user.Email.Value, user.Role.ToString(), user.Status.ToString()));
+        return new BaseResponse<UserDetailedResponse>(UsersDTO.ToUserDetailedResponse(user));
     }
 }

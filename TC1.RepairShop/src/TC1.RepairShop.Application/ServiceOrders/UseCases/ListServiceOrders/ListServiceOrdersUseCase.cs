@@ -1,26 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Interfaces;
+using TC1.RepairShop.Application.ServiceOrders.UseCases;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
-public record ListServiceOrderResponse(string ServiceOrderId, string CustomerName, string Status, string OpenedAt, string CustomerEmail);
 
-public class ListServiceOrdersUseCase(IServiceOrderRepository serviceOrderRepository)
+public class ListServiceOrdersUseCase(IServiceOrderRepository serviceOrderRepository): BaseUseCase<ListServiceOrdersResponse>
 {
 
-    public async Task<BaseResponse<IEnumerable<ListServiceOrderResponse>>> ExecuteAsync()
+    public async Task<BaseResponse<ListServiceOrdersResponse>> ExecuteAsync()
     {
         try
         {
             var orders = await serviceOrderRepository.GetAllAsync();
-            return new BaseResponse<IEnumerable<ListServiceOrderResponse>>(orders.Select(ToResponse));
+            var dto = ServiceOrdersDTO.ToListServiceOrdersResponse(orders);
+            return new BaseResponse<ListServiceOrdersResponse>(dto);
         }
         catch (Exception ex)
         {
-            return new BaseResponse<IEnumerable<ListServiceOrderResponse>>(Enumerable.Empty<ListServiceOrderResponse>(), success: false, error: ex.Message);
+            return new BaseResponse<ListServiceOrdersResponse>(new ListServiceOrdersResponse(Enumerable.Empty<ServiceOrderListResponse>()), success: false, error: ex.Message);
         }
     }
-
-
-    private static ListServiceOrderResponse ToResponse(ServiceOrder serviceOrder) =>
-        new(serviceOrder.Id.ToString(), serviceOrder.User.Username, serviceOrder.OrderStatusValue.ToString(), serviceOrder.OpenedAt.ToString(), serviceOrder.User.Email.Value);
 }

@@ -2,30 +2,29 @@
 using TC1.RepairShop.Domain.Entities.Services;
 using TC1.RepairShop.Domain.Interfaces;
 
-namespace TC1.RepairShop.Application.Services.UseCases
+namespace TC1.RepairShop.Application.Services.UseCases;
+
+public class DeleteServiceUseCase(IServiceRepository _serviceRepository) : BaseUseCase<Guid, ServiceResponse?>
 {
-    public class DeleteServiceUseCase(IServiceRepository serviceRepository) : BaseUseCase<DeleteServiceRequest, bool>
+    public async Task<BaseResponse<ServiceResponse?>> ExecuteAsync(Guid id)
     {
-        public async Task<BaseResponse<bool>> ExecuteAsync(DeleteServiceRequest request)
+        try
         {
-            try
-            {
-                Service service = await serviceRepository.GetByIdAsync(request.id) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
+            Service service = await _serviceRepository.GetByIdAsync(id) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
 
-                service.Delete();
+            service.Delete();
 
-                await serviceRepository.UpdateAsync(service);
+            await _serviceRepository.UpdateAsync(service);
 
-                return new BaseResponse<bool>(data: true);
-            }
-            catch (BusinessException ex)
-            {
-                return new BaseResponse<bool>(data: false, success: false, error: ex.Message);
-            }
-            catch (Exception)
-            {
-                return new BaseResponse<bool>(data: false, success: false);
-            }
+            return new BaseResponse<ServiceResponse?>(data: ServicesDTO.ToServiceResponse(service), success: true);
+        }
+        catch (BusinessException ex)
+        {
+            return new BaseResponse<ServiceResponse?>(data: null, success: false, error: ex.Message);
+        }
+        catch (Exception)
+        {
+            return new BaseResponse<ServiceResponse?>(data: null, success: false);
         }
     }
 }
