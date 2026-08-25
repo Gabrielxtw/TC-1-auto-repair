@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using TC1.RepairShop.Application.Vehicles;
 using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Enums;
@@ -7,7 +8,7 @@ namespace TC1.RepairShop.UnitTests.Vehicles;
 
 public class FakeVehicleRepository : IVehicleRepository
 {
-    private readonly Dictionary<Guid, Vehicle> _vehicles = [];
+    private static readonly ConcurrentDictionary<Guid, Vehicle> _vehicles = new();
 
     public Task<Vehicle?> GetByLicensePlateAsync(string licensePlate)
     {

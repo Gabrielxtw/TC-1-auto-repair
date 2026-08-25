@@ -1,5 +1,7 @@
 using TC1.RepairShop.Application.Users.UseCases;
 using TC1.RepairShop.Application.Vehicles.UseCases;
+using FluentAssertions;
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.IntegrationTests;
 using Xunit;
@@ -40,7 +42,7 @@ public class VehicleUseCaseTests
         var result = await useCase.ExecuteAsync(new CreateVehicleRequest(Guid.NewGuid(), "ABC1234", "Toyota", "Corolla", 2022));
 
         Assert.False(result.success);
-        Assert.Equal("User not found.", result.error);
+        Assert.Equal("Customer not found.", result.error);
     }
 
     [Fact]
@@ -57,5 +59,19 @@ public class VehicleUseCaseTests
 
         Assert.False(result.success);
         Assert.Equal("License plate is already registered.", result.error);
+    }
+
+    [Fact]
+    public async Task CreateVehicle_WithInvalidLicensePlate_ShouldPropagateBusinessException()
+    {
+        var userRepository = new FakeUserRepository();
+        var vehicleRepository = new FakeVehicleRepository();
+        var userId = await CreateUserAsync(userRepository);
+
+        var useCase = new CreateVehicleUseCase(userRepository, vehicleRepository);
+        var act = () => useCase.ExecuteAsync(new CreateVehicleRequest(userId, "XYZ", "Toyota", "Corolla", 2022));
+
+        await act.Should().ThrowAsync<BusinessException>()
+            .WithMessage("The license plate value must be a valid Brazilian license plate.");
     }
 }

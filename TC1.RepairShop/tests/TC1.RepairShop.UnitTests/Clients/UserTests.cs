@@ -1,3 +1,5 @@
+using FluentAssertions;
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Enums;
 using Xunit;
@@ -9,7 +11,7 @@ public class UserTests
     [Fact]
     public void Create_ShouldInitializeUser()
     {
-        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
+        var user = User.Create("alice", "Passw0rd!", "52998224725", "email@email.com", UserRole.Staff, "1999999999");
 
         Assert.NotEqual(Guid.Empty, user.Id);
         Assert.Equal("alice", user.Username);
@@ -22,7 +24,7 @@ public class UserTests
     [Fact]
     public void VerifyPassword_WithIncorrectPassword_ShouldReturnFalse()
     {
-        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
+        var user = User.Create("alice", "Passw0rd!", "52998224725", "email@email.com", UserRole.Staff, "1999999999");
 
         Assert.False(user.VerifyPassword("WrongPassword"));
     }
@@ -30,7 +32,7 @@ public class UserTests
     [Fact]
     public void UpdateProfile_ShouldChangeUsernameAndRole()
     {
-        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
+        var user = User.Create("alice", "Passw0rd!", "52998224725", "email@email.com", UserRole.Staff, "1999999999");
 
         user.UpdateProfile("bob", UserRole.Admin);
 
@@ -41,7 +43,7 @@ public class UserTests
     [Fact]
     public void ChangePassword_ShouldUpdateHashAndVerification()
     {
-        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
+        var user = User.Create("alice", "Passw0rd!", "52998224725", "email@email.com", UserRole.Staff, "1999999999");
         var oldHash = user.PasswordHash;
 
         user.ChangePassword("NewPass2!");
@@ -54,10 +56,28 @@ public class UserTests
     [Fact]
     public void Delete_ShouldSetStatusDeleted()
     {
-        var user = User.Create("alice", "Passw0rd!", "123456789", "email@email.com", UserRole.Staff, "1999999999");
+        var user = User.Create("alice", "Passw0rd!", "52998224725", "email@email.com", UserRole.Staff, "1999999999");
 
         user.Delete();
 
         Assert.Equal(Status.Deleted, user.Status);
+    }
+
+    [Fact]
+    public void Create_ShouldThrow_WhenDocumentIsInvalid()
+    {
+        var act = () => User.Create("alice", "Passw0rd!", "not-a-document", "email@email.com", UserRole.Staff, "1999999999");
+
+        act.Should().Throw<BusinessException>()
+            .WithMessage("The document value must be a valid CPF or CNPJ.");
+    }
+
+    [Fact]
+    public void Create_ShouldThrow_WhenEmailIsInvalid()
+    {
+        var act = () => User.Create("alice", "Passw0rd!", "52998224725", "not-an-email", UserRole.Staff, "1999999999");
+
+        act.Should().Throw<BusinessException>()
+            .WithMessage("The email value must be a valid email address.");
     }
 }

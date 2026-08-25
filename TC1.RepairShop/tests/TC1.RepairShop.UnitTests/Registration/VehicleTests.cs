@@ -1,4 +1,6 @@
+using FluentAssertions;
 using Xunit;
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Entities.Vehicles;
 
@@ -29,5 +31,14 @@ public class VehicleTests
         vehicle.Delete();
 
         Assert.Equal(Status.Deleted, vehicle.Status);
+    }
+
+    [Fact]
+    public void Create_ShouldThrow_WhenLicensePlateIsInvalid()
+    {
+        var act = () => Vehicle.Create(Guid.NewGuid(), "XYZ", "Ford", "Fiesta", 2018);
+
+        act.Should().Throw<BusinessException>()
+            .WithMessage("The license plate value must be a valid Brazilian license plate.");
     }
 }

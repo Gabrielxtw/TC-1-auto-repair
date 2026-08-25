@@ -6,6 +6,7 @@ using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Api.Controllers;
 
+[Authorize(Policy = "StaffOnly")]
 public class QuotesController(ListQuotesUseCase _listQuotesUseCase,
                                 RejectQuoteUseCase _rejectQuoteUseCase,
                                 ApproveQuoteUseCase _approveQuoteUseCase,

@@ -39,16 +39,16 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
     {
         return await _set.FindAsync(id);
     }
-    public virtual async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
-    {
-        IQueryable<T> query = _context.Set<T>();
-        foreach (var include in includes)
-        {
-            query = query.Include(include);
-        }
-        return await query.FirstOrDefaultAsync(
-            x => EF.Property<Guid>(x, "Id") == id);
-    }
+    //public virtual async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
+    //{
+    //    IQueryable<T> query = _context.Set<T>();
+    //    foreach (var include in includes)
+    //    {
+    //        query = query.Include(include);
+    //    }
+    //    return await query.FirstOrDefaultAsync(
+    //        x => EF.Property<Guid>(x, "Id") == id);
+    //}
 
     public virtual async Task UpdateAsync(T entity)
     {

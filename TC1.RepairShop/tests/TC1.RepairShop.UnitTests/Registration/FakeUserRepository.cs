@@ -8,7 +8,7 @@ namespace TC1.RepairShop.IntegrationTests;
 
 public class FakeUserRepository : IUserRepository
 {
-    private static readonly ConcurrentDictionary<Guid, User> Users = new();
+    private readonly ConcurrentDictionary<Guid, User> Users = new();
 
     public Task<User?> GetByUsernameAsync(string username)
     {

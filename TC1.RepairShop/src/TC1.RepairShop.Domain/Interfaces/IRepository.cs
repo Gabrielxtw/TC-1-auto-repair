@@ -10,7 +10,7 @@ namespace TC1.RepairShop.Domain.Interfaces
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(TKey id);
-        Task<T?> GetByIdAsync(TKey id, params Expression<Func<T, object>>[] includes);
+        //Task<T?> GetByIdAsync(TKey id, params Expression<Func<T, object>>[] includes);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(TKey id);

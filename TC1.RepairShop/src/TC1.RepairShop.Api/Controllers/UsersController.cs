@@ -26,13 +26,13 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var user = await _getUserUseCase.ExecuteAsync(id);
-        if (user is null)
+        var result = await _getUserUseCase.ExecuteAsync(id);
+        if (!result.success)
         {
-            return NotFound(new { message = "User not found." });
+            return NotFound(new { message = result.error });
         }
 
-        return Ok(user);
+        return Ok(result.data);
     }
 
     [HttpPost]

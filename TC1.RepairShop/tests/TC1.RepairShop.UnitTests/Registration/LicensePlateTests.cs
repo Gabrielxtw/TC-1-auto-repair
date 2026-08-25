@@ -1,4 +1,5 @@
 using TC1.RepairShop.Domain.Vehicles;
+using TC1.RepairShop.Domain.CustomExceptions;
 using Xunit;
 
 namespace TC1.RepairShop.UnitTests.Vehicles;
@@ -37,6 +38,6 @@ public class LicensePlateTests
     [Fact]
     public void Create_ShouldThrow_WhenPlateIsInvalid()
     {
-        Assert.Throws<ArgumentException>(() => LicensePlate.Create("XYZ"));
+        Assert.Throws<BusinessException>(() => LicensePlate.Create("XYZ"));
     }
 }
