@@ -28,14 +28,14 @@ namespace TC1.RepairShop.Application.ServiceOrders.UseCases
     }
     public record GetServiceOrderByIdResponse(
     Guid Id,
+    string OrderStatus,
     UserResponse User,
     VehicleResponse Vehicle,
-    string OrderStatus,
-    DateTime OpenedAt,
-    DateTime? CompletedAt,
     QuoteResponse? Quote,
     IEnumerable<ServiceOrderServiceResponse> Services,
-    IEnumerable<ServiceOrderPartResponse> Parts
+    IEnumerable<ServiceOrderPartResponse> Parts,
+    DateTime OpenedAt,
+    DateTime? CompletedAt
 )
     {
         public static GetServiceOrderByIdResponse FromDomain(ServiceOrder order)
@@ -90,14 +90,14 @@ namespace TC1.RepairShop.Application.ServiceOrders.UseCases
 
             return new GetServiceOrderByIdResponse(
                 order.Id,
+                order.OrderStatusValue.ToString(),
                 userResp,
                 vehicleResp,
-                order.OrderStatusValue.ToString(),
-                order.OpenedAt,
-                order.CompletedAt,
                 quoteResp,
                 services,
-                parts
+                parts,
+                order.OpenedAt,
+                order.CompletedAt
             );
         }
     }
