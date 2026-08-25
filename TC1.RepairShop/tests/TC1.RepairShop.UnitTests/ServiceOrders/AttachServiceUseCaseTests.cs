@@ -21,6 +21,7 @@ public class AttachServiceUseCaseTests
         orderRepository.Setup(r => r.GetByIdAsync(order.Id)).ReturnsAsync(order);
         serviceRepository.Setup(r => r.GetByIdAsync(service.Id)).ReturnsAsync(service);
         orderRepository.Setup(r => r.GetServiceOrderServiceById(order.Id, service.Id)).ReturnsAsync((ServiceOrderService?)null);
+        orderRepository.Setup(r => r.GetByIdDetailedAsync(order.Id)).ReturnsAsync(order);
 
         var useCase = new AttachServiceUseCase(orderRepository.Object, serviceRepository.Object, orderServiceRepository.Object);
         var result = await useCase.ExecuteAsync(new AttachServiceRequest(order.Id, service.Id, 59.99m));

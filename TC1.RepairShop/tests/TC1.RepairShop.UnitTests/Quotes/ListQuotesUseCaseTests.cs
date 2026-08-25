@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Moq;
+using TC1.RepairShop.Application.Quotes.UseCases;
 using TC1.RepairShop.Application.Quotes.UseCases.ListQuotes;
 using TC1.RepairShop.Domain.Entities.Quotes;
 using TC1.RepairShop.Domain.Interfaces;
@@ -20,7 +21,7 @@ public class ListQuotesUseCaseTests
         var result = await useCase.ExecuteAsync();
 
         result.success.Should().BeTrue();
-        result.data.Quotes.Should().ContainSingle().Which.Should().Be(quote);
+        result.data.Quotes.Should().ContainSingle().Which.Should().Be(QuotesDTO.ToQuoteResponse(quote));
     }
 
     [Fact]

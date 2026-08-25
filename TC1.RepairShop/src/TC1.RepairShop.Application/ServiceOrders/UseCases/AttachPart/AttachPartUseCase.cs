@@ -31,6 +31,8 @@ public class AttachPartUseCase(IServiceOrderRepository _serviceOrderRepository, 
             await _serviceOrderPartRepository.AddAsync(serviceOrderPart);
 
             var detailed = await _serviceOrderRepository.GetByIdDetailedAsync(request.ServiceOrderId);
+            if (detailed is null)
+                return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: "Error saving part");
             return new BaseResponse<ServiceOrderListResponse?>(ServiceOrdersDTO.ToListResponse(detailed));
         }
         catch (Exception ex)

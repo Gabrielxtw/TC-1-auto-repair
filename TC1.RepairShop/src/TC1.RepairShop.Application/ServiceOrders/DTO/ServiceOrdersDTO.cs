@@ -8,7 +8,7 @@ using TC1.RepairShop.Domain.Entities.ServiceOrders;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases
 {
-    public record ServiceOrderListResponse(Guid Id, string CustomerName, string Status, DateTime OpenedAt, string CustomerEmail);
+    public record ServiceOrderListResponse(Guid Id, string? CustomerName, string Status, DateTime OpenedAt, string? CustomerEmail);
     public record ListServiceOrdersResponse(IEnumerable<ServiceOrderListResponse> Orders);
     public record ServiceOrderPartResponse(Guid Id, Guid PartId, PartResponse Part, decimal price, int Quantity, bool SuppliedByCustomer);
     public record ServiceOrderServiceResponse(Guid Id, Guid ServiceId, ServiceResponse Service, decimal Price);
@@ -17,7 +17,7 @@ namespace TC1.RepairShop.Application.ServiceOrders.UseCases
     {
         public static ServiceOrderListResponse ToListResponse(ServiceOrder order)
         {
-            return new ServiceOrderListResponse(order.Id, order.User.Username, order.OrderStatusValue.ToString(), order.OpenedAt, order.User.Email.Value);
+            return new ServiceOrderListResponse(order.Id, order.User?.Username, order.OrderStatusValue.ToString(), order.OpenedAt, order.User?.Email.Value);
         }
 
         public static ListServiceOrdersResponse ToListServiceOrdersResponse(IEnumerable<ServiceOrder> orders)

@@ -13,7 +13,7 @@ public class CancelServiceOrderUseCase(IServiceOrderRepository serviceOrderRepos
     {
         try
         {
-            var order = await serviceOrderRepository.GetByIdDetailedAsync(request.id);
+            var order = await serviceOrderRepository.GetByIdAsync(request.id);
             if (order is null)
                 return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: "Service order not found.");
 

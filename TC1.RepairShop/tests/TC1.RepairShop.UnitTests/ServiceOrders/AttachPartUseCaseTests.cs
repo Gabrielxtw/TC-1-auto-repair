@@ -21,6 +21,7 @@ public class AttachPartUseCaseTests
         orderRepository.Setup(r => r.GetByIdAsync(order.Id)).ReturnsAsync(order);
         partRepository.Setup(r => r.GetByIdAsync(part.Id)).ReturnsAsync(part);
         orderRepository.Setup(r => r.GetServiceOrderPartById(order.Id, part.Id)).ReturnsAsync((ServiceOrderPart?)null);
+        orderRepository.Setup(r => r.GetByIdDetailedAsync(order.Id)).ReturnsAsync(order);
 
         var useCase = new AttachPartUseCase(orderRepository.Object, partRepository.Object, orderPartRepository.Object);
         var result = await useCase.ExecuteAsync(new AttachPartRequest(order.Id, part.Id, 2, 19.99m, false));

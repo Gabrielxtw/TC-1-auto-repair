@@ -10,7 +10,7 @@ public class ChangeUserPasswordUseCase(IUserRepository _userRepository) : BaseUs
         var user = await _userRepository.GetByIdAsync(request.Id);
         if (user is null)
         {
-            return new BaseResponse<UserResponse?>(null,success: false, error:"Not Found");
+            return new BaseResponse<UserResponse?>(null,success: false, error: "User not found.");
         }
 
         user.ChangePassword(request.NewPassword);

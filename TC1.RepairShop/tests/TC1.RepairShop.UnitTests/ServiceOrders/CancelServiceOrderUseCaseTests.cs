@@ -1,6 +1,8 @@
 using FluentAssertions;
 using Moq;
 using TC1.RepairShop.Application.ServiceOrders.UseCases;
+using TC1.RepairShop.Domain.CustomError.BusinessErrors;
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces;
@@ -50,6 +52,6 @@ public class CancelServiceOrderUseCaseTests
         var result = await useCase.ExecuteAsync(new CancelServiceOrderRequest(order.Id));
 
         result.success.Should().BeFalse();
-        result.error.Should().Be("Cannot transition from the current status to the new status.");
+        result.error.Should().Be(BusinessErrors.ServiceOrderErrors.InvalidStatusTransition.Message);
     }
 }

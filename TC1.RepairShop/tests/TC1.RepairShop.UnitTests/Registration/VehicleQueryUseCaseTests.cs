@@ -22,7 +22,7 @@ public class VehicleQueryUseCaseTests
         var useCase = new GetVehicleUseCase(repository.Object);
         var result = await useCase.ExecuteAsync(vehicle.Id);
 
-        result.Should().Be(vehicle);
+        result.data.Should().Be(VehiclesDTO.ToVehicleResponse(vehicle));
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class VehicleQueryUseCaseTests
         var useCase = new GetVehicleUseCase(repository.Object);
         var result = await useCase.ExecuteAsync(Guid.NewGuid());
 
-        result.Should().BeNull();
+        result.data.Should().BeNull();
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class VehicleQueryUseCaseTests
         var useCase = new ListVehiclesUseCase(repository.Object);
         var result = await useCase.ExecuteAsync();
 
-        result.data.Vehicles.Should().ContainSingle().Which.Should().Be(vehicle);
+        result.data.Vehicles.Should().ContainSingle().Which.Should().Be(VehiclesDTO.ToVehicleResponse(vehicle));
     }
 
     [Fact]
@@ -61,6 +61,6 @@ public class VehicleQueryUseCaseTests
         var useCase = new ListVehiclesByCustomerUseCase(repository.Object);
         var result = await useCase.ExecuteAsync(customerId);
 
-        result.data.Vehicles.Should().ContainSingle().Which.Should().Be(vehicle);
+        result.data.Vehicles.Should().ContainSingle().Which.Should().Be(VehiclesDTO.ToVehicleResponse(vehicle));
     }
 }
