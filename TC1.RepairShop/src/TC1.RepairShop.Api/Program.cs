@@ -73,12 +73,6 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-
-builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection(SendGridOptions.SectionName));
-builder.Services.AddSingleton<EmailQueue>();
-builder.Services.AddSingleton<IEmailSender>(sp => sp.GetRequiredService<EmailQueue>());
-builder.Services.AddHostedService<EmailQueueBackgroundService>();
-
 var app = builder.Build();
 
 // Ensure database migrated/seeded at startup

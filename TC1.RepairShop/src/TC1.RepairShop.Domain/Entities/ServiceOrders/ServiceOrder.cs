@@ -60,15 +60,15 @@ public class ServiceOrder: BaseEntity
                     ServiceOrderParts.Where(sop => !sop.SuppliedByCustomer).Sum(sop => sop.Price * sop.Quantity),
                 QuoteId)
             );
-        // TODO create and raise in progress event
-        //if (newStatus == ServiceOrderStatus.InProgress)
-        //    RaiseDomainEvent(new DiagnosisConcludedEvent(
-        //        Id,
-        //        price:
-        //            ServiceOrderServices.Sum(sos => sos.Price) +
-        //            ServiceOrderParts.Where(sop => !sop.SuppliedByCustomer).Sum(sop => sop.Price * sop.Quantity),
-        //        QuoteId)
-        //    );
+
+        if (newStatus == ServiceOrderStatus.Completed)
+            RaiseDomainEvent(new DiagnosisConcludedEvent(
+                Id,
+                price:
+                    ServiceOrderServices.Sum(sos => sos.Price) +
+                    ServiceOrderParts.Where(sop => !sop.SuppliedByCustomer).Sum(sop => sop.Price * sop.Quantity),
+                QuoteId)
+            );
         OrderStatusValue = newStatus;
 
         if (newStatus == ServiceOrderStatus.Delivered || newStatus == ServiceOrderStatus.Cancelled)
