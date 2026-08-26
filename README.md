@@ -24,7 +24,7 @@ A concepção da solução seguiu a abordagem de Domain-Driven Design (DDD) para
 ### Domain Storytelling
 A oficina enfrentava desorganização no pátio, perda de prazos por falta de visibilidade da fila de trabalho e inconsistência no controle de peças utilizadas. A solução foi desenhada para criar rastreabilidade total desde a recepção do veículo até a entrega das chaves.
 
-Os diagramas do Domain Storytelling estão contindos na pasta `docs/storytelling`.
+Os diagramas do Domain Storytelling estão contindos na pasta `docs/storytelling` na raiz da projeto.
 
 ### Event Storming
 O mapeamento do domínio foi realizado identificando os principais Domain Events, Commands e Aggregates.
