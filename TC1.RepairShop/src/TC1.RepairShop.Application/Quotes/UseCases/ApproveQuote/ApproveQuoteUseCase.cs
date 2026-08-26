@@ -22,7 +22,7 @@ public class ApproveQuoteUseCase(IQuoteRepository quoteRepository)
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<ApproveQuoteResult?>(data: null, success: false, error: ex.Message);
+            return new BaseResponse<ApproveQuoteResult?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

@@ -24,7 +24,7 @@ public class CreateQuoteUseCase(IQuoteRepository quoteRepository, IServiceOrderR
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<CreateQuoteResponse>(data: new CreateQuoteResponse(Guid.Empty), success: false, error: ex.Message);
+            return new BaseResponse<CreateQuoteResponse>(data: new CreateQuoteResponse(Guid.Empty), success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

@@ -19,7 +19,7 @@ public class GetAllServiceUseCase(IServiceRepository _serviceRepository) : BaseU
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<ListServicesResponse>(data: new ListServicesResponse(new List<ServiceResponse>()), success: false, error: ex.Message);
+            return new BaseResponse<ListServicesResponse>(data: new ListServicesResponse(new List<ServiceResponse>()), success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

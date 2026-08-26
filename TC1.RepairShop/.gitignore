@@ -14,4 +14,9 @@ obj/
 Thumbs.db
 
 ## Cobertura de código
-CoverageReport/ No newline at end of file
+CoverageReport/
+
+## SonarQube
+.sonarqube/
+coverage/
+

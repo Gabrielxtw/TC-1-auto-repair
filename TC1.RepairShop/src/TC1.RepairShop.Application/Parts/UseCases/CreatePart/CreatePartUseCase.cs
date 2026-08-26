@@ -21,7 +21,7 @@ public class CreatePartUseCase(IPartRepository _partRepository) : BaseUseCase<Cr
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message);
+            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

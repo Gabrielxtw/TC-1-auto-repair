@@ -13,6 +13,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="7.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="ReportGenerator" Version="5.5.11" />
@@ -25,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\TC1.RepairShop.Domain\TC1.RepairShop.Domain.csproj" />
     <ProjectReference Include="..\..\src\TC1.RepairShop.Application\TC1.RepairShop.Application.csproj" />
+    <ProjectReference Include="..\..\src\TC1.RepairShop.Infrastructure\TC1.RepairShop.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\TC1.RepairShop.Api\TC1.RepairShop.Api.csproj" />
   </ItemGroup>
 

@@ -125,6 +125,95 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
+    [Fact]
+    public async Task GetAll_ShouldReturnCreatedOrder()
+    {
+        await AuthenticateAsStaffAsync();
+        var userId = await CreateUserAsync();
+        var vehicleId = await CreateVehicleAsync(userId);
+        await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
+
+        var response = await _client.GetAsync("/api/serviceorders");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetById_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsStaffAsync();
+
+        var response = await _client.GetAsync($"/api/serviceorders/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Cancel_ShouldSucceed()
+    {
+        await AuthenticateAsStaffAsync();
+        var userId = await CreateUserAsync();
+        var vehicleId = await CreateVehicleAsync(userId);
+        var orderResponse = await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
+        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResultDto>();
+
+        var response = await _client.PutAsJsonAsync(
+            "/api/serviceorders/Cancel",
+            new { id = order!.Id });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<CancelServiceOrderResponseDto>();
+        Assert.True(body!.success);
+    }
+
+    // NOTE: CancelServiceOrderUseCase returns success:false directly (not via BusinessException)
+    // when the order is not found, so BaseResponse.StatusCode keeps its "500" default and the
+    // controller's `StatusCode(int.TryParse(result.StatusCode, ...) ? code : 500, ...)` branch
+    // returns 500, not a 4xx.
+    [Fact]
+    public async Task Cancel_WithUnknownId_ShouldReturnInternalServerError()
+    {
+        await AuthenticateAsStaffAsync();
+
+        var response = await _client.PutAsJsonAsync(
+            "/api/serviceorders/Cancel",
+            new { id = Guid.NewGuid() });
+
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task AttachService_ShouldSucceed()
+    {
+        await AuthenticateAsStaffAsync();
+        var userId = await CreateUserAsync();
+        var vehicleId = await CreateVehicleAsync(userId);
+        var orderResponse = await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
+        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResultDto>();
+
+        var name = $"Wheel Balance {Guid.NewGuid():N}";
+        var serviceResponse = await _client.PostAsJsonAsync(
+            "/api/services",
+            new { name, description = "Balance wheels", price = 29.99m });
+        Assert.Equal(HttpStatusCode.Created, serviceResponse.StatusCode);
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var service = allServices.Single(s => s.name == name);
+
+        var response = await _client.PostAsJsonAsync(
+            "/api/serviceorders/AttachService",
+            new { serviceOrderId = order!.Id, serviceId = service.id, price = 29.99m });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    private record ServiceViewModelDto(Guid id, string name, string description);
+
+    private record ListServicesResponseDto(List<ServiceViewModelDto> Services);
+
+    private record CreateServiceOrderResultDto(Guid Id);
+
+    private record CancelServiceOrderResponseDto(bool success, string? error);
+
     private record LoginResponseDto(string Token);
 
     private record CreateUserResultDto(Guid id, string username, string document, string email);

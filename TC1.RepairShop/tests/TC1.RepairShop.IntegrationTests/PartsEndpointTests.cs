@@ -57,8 +57,8 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var name = $"Oil Filter {Guid.NewGuid():N}";
         await _client.PostAsJsonAsync("/api/part", new { name, unitPrice = 9.99m, minimumQuantity = 1 });
 
-        var allParts = await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<List<PartViewModelDto>>();
-        var created = allParts!.Single(p => p.name == name);
+        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var created = allParts.Single(p => p.name == name);
 
         var receiveResponse = await _client.PutAsJsonAsync("/api/part/ReceiveStock", new { id = created.id, quantity = 10 });
         Assert.Equal(HttpStatusCode.OK, receiveResponse.StatusCode);
@@ -80,7 +80,51 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
         Assert.NotEqual(HttpStatusCode.OK, response.StatusCode);
     }
 
+    [Fact]
+    public async Task GetById_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsync();
+
+        var response = await _client.GetAsync($"/api/part/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Deactivate_ThenGetAll_ShouldStillReturnPart()
+    {
+        await AuthenticateAsync();
+
+        var name = $"Air Filter {Guid.NewGuid():N}";
+        await _client.PostAsJsonAsync("/api/part", new { name, unitPrice = 14.99m, minimumQuantity = 1 });
+        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var created = allParts.Single(p => p.name == name);
+
+        var deactivateResponse = await _client.PutAsJsonAsync("/api/part/Deactive", new { id = created.id });
+
+        Assert.Equal(HttpStatusCode.OK, deactivateResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task Delete_ThenGetById_ShouldReturnNotFound()
+    {
+        await AuthenticateAsync();
+
+        var name = $"Timing Belt {Guid.NewGuid():N}";
+        await _client.PostAsJsonAsync("/api/part", new { name, unitPrice = 24.99m, minimumQuantity = 1 });
+        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var created = allParts.Single(p => p.name == name);
+
+        var deleteResponse = await _client.DeleteAsync($"/api/part/{created.id}");
+        Assert.Equal(HttpStatusCode.OK, deleteResponse.StatusCode);
+
+        var getResponse = await _client.GetAsync($"/api/part/{created.id}");
+        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+    }
+
     private record LoginResponseDto(string Token);
 
     private record PartViewModelDto(Guid id, string name, int stockQuantity, decimal unitPrice);
+
+    private record ListPartsResponseDto(List<PartViewModelDto> Parts);
 }

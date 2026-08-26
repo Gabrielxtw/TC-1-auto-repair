@@ -43,6 +43,9 @@ services:
       Jwt__Issuer: "TC1.RepairShop"
       Jwt__Audience: "TC1.RepairShop.Clients"
       Jwt__ExpirationMinutes: "60"
+      SeedAdmin__Password: "${SEED_ADMIN_PASSWORD:-Admin@123}"
+      SendGrid__ApiKey: "${SENDGRID_API_KEY:-}"
+      SendGrid__FromEmail: "${SENDGRID_FROM_EMAIL:-no-reply@example.com}"
     ports:
       - "8080:8080"
     depends_on:

@@ -18,14 +18,22 @@ namespace TC1.RepairShop.Domain.ValueObjects
             return new Document(value.Trim());
         }
 
+        private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(1);
+
+        private static readonly Regex CpfPattern = new(
+            "^\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}$", RegexOptions.None, RegexTimeout);
+
+        private static readonly Regex CnpjPattern = new(
+            "^\\d{2}\\.?\\d{3}\\.?\\d{3}/?\\d{4}-?\\d{2}$", RegexOptions.None, RegexTimeout);
+
         private static bool IsValidDocument(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return false;
 
-            if (Regex.IsMatch(value, "^\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}$")) //CPF pattern
+            if (CpfPattern.IsMatch(value)) //CPF pattern
                 return true;
-            else if (Regex.IsMatch(value, "^\\d{2}\\.?\\d{3}\\.?\\d{3}/?\\d{4}-?\\d{2}$")) //CNPJ pattern
+            else if (CnpjPattern.IsMatch(value)) //CNPJ pattern
                 return true;
             return false;
         }

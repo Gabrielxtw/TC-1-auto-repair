@@ -24,7 +24,7 @@ public class CancelServiceOrderUseCase(IServiceOrderRepository serviceOrderRepos
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message);
+            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

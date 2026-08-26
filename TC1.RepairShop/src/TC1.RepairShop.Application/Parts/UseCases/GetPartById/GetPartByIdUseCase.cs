@@ -23,7 +23,8 @@ public class GetPartByIdUseCase(IPartRepository _partRepository) : BaseUseCase<G
             return new BaseResponse<PartResponse?>(
                 data: null,
                 success: false,
-                error: ex.Message
+                error: ex.Message,
+                StatusCode: ex.StatusCode.ToString()
             );
         }
         catch (Exception)

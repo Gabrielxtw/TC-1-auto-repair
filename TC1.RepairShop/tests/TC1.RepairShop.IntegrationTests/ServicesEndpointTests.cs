@@ -79,7 +79,36 @@ public class ServicesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         Assert.NotEqual(HttpStatusCode.OK, secondDeactivate.StatusCode);
     }
 
+    [Fact]
+    public async Task GetById_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsync();
+
+        var response = await _client.GetAsync($"/api/services/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Delete_ThenGetById_ShouldReturnNotFound()
+    {
+        await AuthenticateAsync();
+
+        var name = $"Brake Fluid Flush {Guid.NewGuid():N}";
+        await _client.PostAsJsonAsync("/api/services", new { name, description = "Flush brake fluid", price = 49.99m });
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var created = allServices.Single(s => s.name == name);
+
+        var deleteResponse = await _client.DeleteAsync($"/api/services/{created.id}");
+        Assert.Equal(HttpStatusCode.OK, deleteResponse.StatusCode);
+
+        var getResponse = await _client.GetAsync($"/api/services/{created.id}");
+        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+    }
+
     private record LoginResponseDto(string Token);
 
     private record ServiceViewModelDto(Guid id, string name, string description);
+
+    private record ListServicesResponseDto(List<ServiceViewModelDto> Services);
 }
