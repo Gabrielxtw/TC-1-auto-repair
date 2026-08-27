@@ -40,10 +40,10 @@ public class ServicesEndpointTests : IClassFixture<ApiWebApplicationFactory>
             "/api/services",
             new { name, description = "Change engine oil", price = 59.99m });
 
-        Assert.Equal(HttpStatusCode.OK, createResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
 
-        var allServices = await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<List<ServiceViewModelDto>>();
-        var created = allServices!.Single(s => s.name == name);
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var created = allServices.Single(s => s.name == name);
 
         var getResponse = await _client.GetAsync($"/api/services/{created.id}");
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
@@ -69,8 +69,8 @@ public class ServicesEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         var name = $"Wheel Alignment {Guid.NewGuid():N}";
         await _client.PostAsJsonAsync("/api/services", new { name, description = "Align wheels", price = 39.99m });
-        var allServices = await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<List<ServiceViewModelDto>>();
-        var created = allServices!.Single(s => s.name == name);
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var created = allServices.Single(s => s.name == name);
 
         var firstDeactivate = await _client.PutAsJsonAsync("/api/services/Deactive", new { id = created.id });
         Assert.Equal(HttpStatusCode.OK, firstDeactivate.StatusCode);

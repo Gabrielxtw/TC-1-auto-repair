@@ -39,14 +39,13 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
             "/api/part",
             new { name = $"Brake Pad {Guid.NewGuid():N}", unitPrice = 19.99m, minimumQuantity = 1 });
 
-        Assert.Equal(HttpStatusCode.OK, createResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
 
         var getAllResponse = await _client.GetAsync("/api/part");
         Assert.Equal(HttpStatusCode.OK, getAllResponse.StatusCode);
 
-        var parts = await getAllResponse.Content.ReadFromJsonAsync<List<PartViewModelDto>>();
-        Assert.NotNull(parts);
-        Assert.Contains(parts!, p => p.stockQuantity == 0);
+        var parts = (await getAllResponse.Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        Assert.Contains(parts, p => p.stockQuantity == 0);
     }
 
     [Fact]
@@ -63,8 +62,8 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var receiveResponse = await _client.PutAsJsonAsync("/api/part/ReceiveStock", new { id = created.id, quantity = 10 });
         Assert.Equal(HttpStatusCode.OK, receiveResponse.StatusCode);
 
-        var afterReceive = await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<List<PartViewModelDto>>();
-        Assert.Contains(afterReceive!, p => p.id == created.id && p.stockQuantity == 10);
+        var afterReceive = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        Assert.Contains(afterReceive, p => p.id == created.id && p.stockQuantity == 10);
     }
 
     [Fact]

@@ -99,10 +99,10 @@ public class UsersEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         var newUsername = $"user.{Guid.NewGuid():N}";
         var updateResponse = await _client.PutAsJsonAsync(
-            $"/api/users/{created!.id}",
-            new { username = newUsername, role = "Admin" });
+            "/api/users",
+            new { id = created!.id, username = newUsername, role = "Admin" });
 
-        Assert.Equal(HttpStatusCode.NoContent, updateResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.Accepted, updateResponse.StatusCode);
 
         var getResponse = await _client.GetAsync($"/api/users/{created.id}");
         var updated = await getResponse.Content.ReadFromJsonAsync<GetUserResponseDto>();
@@ -139,8 +139,8 @@ public class UsersEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var created = await createResponse.Content.ReadFromJsonAsync<CreateUserResultDto>();
 
         var changeResponse = await _client.PutAsJsonAsync(
-            $"/api/users/{created!.id}/password",
-            new { newPassword = "NewPassw0rd!" });
+            "/api/users/password",
+            new { id = created!.id, newPassword = "NewPassw0rd!" });
         Assert.Equal(HttpStatusCode.NoContent, changeResponse.StatusCode);
 
         var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", new { username, password = "NewPassw0rd!" });

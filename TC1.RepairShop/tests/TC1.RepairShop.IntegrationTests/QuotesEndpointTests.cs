@@ -46,7 +46,7 @@ public class QuotesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         Assert.True(body!.success);
         // Documents current behavior: GetMyQuotes has a "//TODO get records from path"
         // comment and does not scope results to the authenticated caller.
-        Assert.Contains(body.data!, q => q.Id == quote.Id);
+        Assert.Contains(body.data!.Quotes, q => q.Id == quote.Id);
     }
 
     [Fact]
@@ -94,5 +94,7 @@ public class QuotesEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
     private record QuoteDto(Guid Id);
 
-    private record BaseResponseDto(List<QuoteDto>? data, bool success, string? error);
+    private record QuoteListDataDto(List<QuoteDto> Quotes);
+
+    private record BaseResponseDto(QuoteListDataDto? data, bool success, string? error);
 }

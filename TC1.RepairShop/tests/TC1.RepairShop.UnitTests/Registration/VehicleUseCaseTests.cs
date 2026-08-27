@@ -42,7 +42,7 @@ public class VehicleUseCaseTests
         var result = await useCase.ExecuteAsync(new CreateVehicleRequest(Guid.NewGuid(), "ABC1234", "Toyota", "Corolla", 2022));
 
         Assert.False(result.success);
-        Assert.Equal("User not found.", result.error);
+        Assert.Equal("Customer not found.", result.error);
     }
 
     [Fact]
