@@ -69,21 +69,21 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
         var userId = await CreateUserAsync();
         var vehicleId = await CreateVehicleAsync(userId);
         var orderResponse = await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
-        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResponseDto>();
+        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResultDto>();
 
         var partResponse = await _client.PostAsJsonAsync("/api/part", new { name = $"Brake Pad {Guid.NewGuid():N}", unitPrice = 19.99m, minimumQuantity = 1 });
-        Assert.Equal(HttpStatusCode.OK, partResponse.StatusCode);
-        var allParts = await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<List<PartViewModelDto>>();
-        var part = allParts!.Last();
+        Assert.Equal(HttpStatusCode.Created, partResponse.StatusCode);
+        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var part = allParts.Last();
 
         var firstAttach = await _client.PostAsJsonAsync(
             "/api/serviceorders/AttachPart",
-            new { serviceOrderId = order!.data.Id, partId = part.id, quantity = 1, price = 19.99m, suppliedByCustomer = false });
+            new { serviceOrderId = order!.Id, partId = part.id, quantity = 1, price = 19.99m, suppliedByCustomer = false });
         Assert.Equal(HttpStatusCode.OK, firstAttach.StatusCode);
 
         var secondAttach = await _client.PostAsJsonAsync(
             "/api/serviceorders/AttachPart",
-            new { serviceOrderId = order.data.Id, partId = part.id, quantity = 1, price = 19.99m, suppliedByCustomer = false });
+            new { serviceOrderId = order.Id, partId = part.id, quantity = 1, price = 19.99m, suppliedByCustomer = false });
         Assert.NotEqual(HttpStatusCode.OK, secondAttach.StatusCode);
     }
 
@@ -98,14 +98,14 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
         var userId = await CreateUserAsync();
         var vehicleId = await CreateVehicleAsync(userId);
         var orderResponse = await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
-        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResponseDto>();
+        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResultDto>();
 
         var response = await _client.PutAsJsonAsync(
             "/api/serviceorders/Advance",
-            new { serviceOrderId = order!.data.Id, newStatus = "NotARealStatus" });
+            new { serviceOrderId = order!.Id, newStatus = "NotARealStatus" });
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var body = await response.Content.ReadFromJsonAsync<CreateServiceOrderResponseDto>();
+        var body = await response.Content.ReadFromJsonAsync<AdvanceServiceOrderResponseDto>();
         Assert.False(body!.success);
     }
 
@@ -116,24 +116,109 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
         var userId = await CreateUserAsync();
         var vehicleId = await CreateVehicleAsync(userId);
         var orderResponse = await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
-        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResponseDto>();
+        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResultDto>();
 
         var response = await _client.PutAsJsonAsync(
             "/api/serviceorders/Advance",
-            new { serviceOrderId = order!.data.Id, newStatus = "Under Diagnosis" });
+            new { serviceOrderId = order!.Id, newStatus = "Under Diagnosis" });
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
+
+    [Fact]
+    public async Task GetAll_ShouldReturnCreatedOrder()
+    {
+        await AuthenticateAsStaffAsync();
+        var userId = await CreateUserAsync();
+        var vehicleId = await CreateVehicleAsync(userId);
+        await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
+
+        var response = await _client.GetAsync("/api/serviceorders");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetById_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsStaffAsync();
+
+        var response = await _client.GetAsync($"/api/serviceorders/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Cancel_ShouldSucceed()
+    {
+        await AuthenticateAsStaffAsync();
+        var userId = await CreateUserAsync();
+        var vehicleId = await CreateVehicleAsync(userId);
+        var orderResponse = await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
+        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResultDto>();
+
+        var response = await _client.PutAsJsonAsync(
+            "/api/serviceorders/Cancel",
+            new { id = order!.Id });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<CancelServiceOrderResponseDto>();
+        Assert.True(body!.success);
+    }
+
+    [Fact]
+    public async Task Cancel_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsStaffAsync();
+
+        var response = await _client.PutAsJsonAsync(
+            "/api/serviceorders/Cancel",
+            new { id = Guid.NewGuid() });
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task AttachService_ShouldSucceed()
+    {
+        await AuthenticateAsStaffAsync();
+        var userId = await CreateUserAsync();
+        var vehicleId = await CreateVehicleAsync(userId);
+        var orderResponse = await _client.PostAsJsonAsync("/api/serviceorders", new { userId, vehicleId });
+        var order = await orderResponse.Content.ReadFromJsonAsync<CreateServiceOrderResultDto>();
+
+        var name = $"Wheel Balance {Guid.NewGuid():N}";
+        var serviceResponse = await _client.PostAsJsonAsync(
+            "/api/services",
+            new { name, description = "Balance wheels", price = 29.99m });
+        Assert.Equal(HttpStatusCode.Created, serviceResponse.StatusCode);
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var service = allServices.Single(s => s.name == name);
+
+        var response = await _client.PostAsJsonAsync(
+            "/api/serviceorders/AttachService",
+            new { serviceOrderId = order!.Id, serviceId = service.id, price = 29.99m });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    private record ServiceViewModelDto(Guid id, string name, string description);
+
+    private record ListServicesResponseDto(List<ServiceViewModelDto> Services);
+
+    private record CreateServiceOrderResultDto(Guid Id);
+
+    private record CancelServiceOrderResponseDto(bool success, string? error);
+
+    private record AdvanceServiceOrderResponseDto(bool success, string? error);
 
     private record LoginResponseDto(string Token);
 
     private record CreateUserResultDto(Guid id, string username, string document, string email);
 
-    private record VehicleResponseDto(Guid Id, Guid CustomerId, string LicensePlate, string Brand, string Model, int Year, string Status);
-
-    private record ServiceOrderIdDto(Guid Id);
-
-    private record CreateServiceOrderResponseDto(ServiceOrderIdDto data, bool success, string? error);
+    private record VehicleResponseDto(Guid Id, string? Username, string LicensePlate, string Brand, string Model, int Year, string Status);
 
     private record PartViewModelDto(Guid id, string name, int stockQuantity, decimal unitPrice);
+
+    private record ListPartsResponseDto(List<PartViewModelDto> Parts);
 }

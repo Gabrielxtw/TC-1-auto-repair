@@ -12,3 +12,11 @@ obj/
 ## OS
 .DS_Store
 Thumbs.db
+
+## Cobertura de código
+CoverageReport/
+
+## SonarQube
+.sonarqube/
+coverage/
+

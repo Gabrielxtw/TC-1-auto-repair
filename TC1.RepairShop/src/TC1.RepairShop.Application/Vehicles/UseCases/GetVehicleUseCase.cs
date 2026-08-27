@@ -9,7 +9,7 @@ public class GetVehicleUseCase(IVehicleRepository _vehicleRepository) : BaseUseC
     {
         var vehicle = await _vehicleRepository.GetByIdAsync(id);
         if (vehicle is null)
-            return new BaseResponse<VehicleResponse?>(data: null, success: false, error: "Vehicle not found.");
+            return new BaseResponse<VehicleResponse?>(data: null, success: false, error: "Vehicle not found.", StatusCode: "404");
 
         return new BaseResponse<VehicleResponse?>(data: VehiclesDTO.ToVehicleResponse(vehicle));
     }

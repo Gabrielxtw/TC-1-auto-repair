@@ -24,7 +24,7 @@ public class RejectQuoteUseCase(IQuoteRepository quoteRepository)
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<RejectQuoteResult?>(data: null, success: false, error: ex.Message);
+            return new BaseResponse<RejectQuoteResult?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

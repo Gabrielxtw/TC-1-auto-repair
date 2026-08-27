@@ -24,7 +24,7 @@ public class AdvanceServiceOrderUseCase(IServiceOrderRepository serviceOrderRepo
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message);
+            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (System.InvalidOperationException)
         {

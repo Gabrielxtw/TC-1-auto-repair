@@ -19,7 +19,7 @@ public class DeactivatePartUseCase(IPartRepository _partRepository) : BaseUseCas
             return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
         }
         catch (BusinessException ex) {
-            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message);
+            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

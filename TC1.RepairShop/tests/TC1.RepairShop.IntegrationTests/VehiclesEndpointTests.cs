@@ -120,9 +120,8 @@ public class VehiclesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var response = await _client.GetAsync($"/api/vehicles?customerId={customerId}");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var vehicles = await response.Content.ReadFromJsonAsync<List<VehicleResponseDto>>();
-        Assert.NotEmpty(vehicles!);
-        Assert.All(vehicles!, v => Assert.Equal(customerId, v.CustomerId));
+        var vehicles = (await response.Content.ReadFromJsonAsync<ListVehiclesResponseDto>())!.Vehicles;
+        Assert.NotEmpty(vehicles);
     }
 
     [Fact]
@@ -137,7 +136,7 @@ public class VehiclesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var created = await createResponse.Content.ReadFromJsonAsync<VehicleResponseDto>();
 
         var deleteResponse = await _client.DeleteAsync($"/api/vehicles/{created!.Id}");
-        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, deleteResponse.StatusCode);
 
         var getResponse = await _client.GetAsync($"/api/vehicles/{created.Id}");
         Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
@@ -147,5 +146,7 @@ public class VehiclesEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
     private record CreateUserResultDto(Guid id, string username, string document, string email);
 
-    private record VehicleResponseDto(Guid Id, Guid CustomerId, string LicensePlate, string Brand, string Model, int Year, string Status);
+    private record VehicleResponseDto(Guid Id, string? Username, string LicensePlate, string Brand, string Model, int Year, string Status);
+
+    private record ListVehiclesResponseDto(List<VehicleResponseDto> Vehicles);
 }

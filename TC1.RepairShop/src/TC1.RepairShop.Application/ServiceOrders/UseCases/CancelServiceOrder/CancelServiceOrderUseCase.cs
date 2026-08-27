@@ -15,7 +15,7 @@ public class CancelServiceOrderUseCase(IServiceOrderRepository serviceOrderRepos
         {
             var order = await serviceOrderRepository.GetByIdAsync(request.id);
             if (order is null)
-                return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: "Service order not found.");
+                return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: "Service order not found.", StatusCode: "404");
 
             order.AdvanceTo(ServiceOrderStatus.Cancelled);
             await serviceOrderRepository.UpdateAsync(order);
@@ -24,7 +24,7 @@ public class CancelServiceOrderUseCase(IServiceOrderRepository serviceOrderRepos
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message);
+            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

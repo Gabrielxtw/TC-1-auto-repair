@@ -20,7 +20,7 @@ public class DeletePartUseCase(IPartRepository _partRepository): BaseUseCase<Gui
         }
         catch (BusinessException ex)
         {
-            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message);
+            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
         }
         catch (Exception)
         {

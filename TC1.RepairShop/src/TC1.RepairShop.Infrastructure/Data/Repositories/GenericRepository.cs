@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using TC1.RepairShop.Domain.Entities.Common;
 using TC1.RepairShop.Domain.Interfaces;
 using TC1.RepairShop.Infrastructure.Data;
 
@@ -26,8 +27,11 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
     {
         var entity = await GetByIdAsync(id);
         if (entity is null) return;
-        entity.GetType().GetProperty("Status")?.SetValue(entity, Enum.Parse(entity.GetType().GetProperty("Status")!.PropertyType, "Deleted"));
-        await _context.SaveChangesAsync();
+        if (entity is BaseEntity baseEntity)
+        {
+            baseEntity.Delete();
+            await _context.SaveChangesAsync();
+        }
     }
 
     public virtual async Task<IEnumerable<T>> GetAllAsync()

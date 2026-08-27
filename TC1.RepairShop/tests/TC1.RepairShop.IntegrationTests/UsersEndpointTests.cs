@@ -99,10 +99,10 @@ public class UsersEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         var newUsername = $"user.{Guid.NewGuid():N}";
         var updateResponse = await _client.PutAsJsonAsync(
-            $"/api/users/{created!.id}",
-            new { username = newUsername, role = "Admin" });
+            "/api/users",
+            new { id = created!.id, username = newUsername, role = "Admin" });
 
-        Assert.Equal(HttpStatusCode.NoContent, updateResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.Accepted, updateResponse.StatusCode);
 
         var getResponse = await _client.GetAsync($"/api/users/{created.id}");
         var updated = await getResponse.Content.ReadFromJsonAsync<GetUserResponseDto>();
@@ -139,12 +139,56 @@ public class UsersEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var created = await createResponse.Content.ReadFromJsonAsync<CreateUserResultDto>();
 
         var changeResponse = await _client.PutAsJsonAsync(
-            $"/api/users/{created!.id}/password",
-            new { newPassword = "NewPassw0rd!" });
+            "/api/users/password",
+            new { id = created!.id, newPassword = "NewPassw0rd!" });
         Assert.Equal(HttpStatusCode.NoContent, changeResponse.StatusCode);
 
         var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", new { username, password = "NewPassw0rd!" });
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetById_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsync();
+
+        var response = await _client.GetAsync($"/api/users/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Update_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsync();
+
+        var response = await _client.PutAsJsonAsync(
+            "/api/users",
+            new { id = Guid.NewGuid(), username = $"user.{Guid.NewGuid():N}", role = "Admin" });
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task ChangePassword_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsync();
+
+        var response = await _client.PutAsJsonAsync(
+            "/api/users/password",
+            new { id = Guid.NewGuid(), newPassword = "NewPassw0rd!" });
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Delete_WithUnknownId_ShouldReturnNotFound()
+    {
+        await AuthenticateAsync();
+
+        var response = await _client.DeleteAsync($"/api/users/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     private record LoginResponseDto(string Token);

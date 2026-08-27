@@ -12,9 +12,13 @@ namespace TC1.RepairShop.Domain.ValueObjects
 
         public string Value { get; }
 
+        private static readonly Regex EmailPattern = new(
+            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            RegexOptions.None, TimeSpan.FromSeconds(1));
+
         public static Email Create(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || !Regex.IsMatch(email, "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"))
+            if (string.IsNullOrWhiteSpace(email) || !EmailPattern.IsMatch(email))
             {
                 throw new BusinessException(BusinessErrors.EmailErrors.InvalidFormat);
             }

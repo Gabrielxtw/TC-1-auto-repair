@@ -16,4 +16,5 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
+USER app
 ENTRYPOINT ["dotnet", "TC1.RepairShop.Migrations.dll"]
