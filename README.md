@@ -63,7 +63,7 @@ Caso todos os tópicos estejam configurados corretamente, basta executar via sua
 ## Relatório de Cobertura de Código
 
 * Pré-requisitos
- * SDK do .NET 10 esteja instalado corretamente;
+  * SDK do .NET 10 esteja instalado corretamente;
 
 Há um ferramenta para facilitar a geração do relatório de cobertura de código, automatizando as etapas para gerar um relatório pelo Report Generator.
 
