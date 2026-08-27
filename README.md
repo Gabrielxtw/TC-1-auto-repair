@@ -1,11 +1,11 @@
-# Auto-repair-
+# Auto-repair
 
 Sistema projetado para a gestão da oficina mecânica Auto Repair, com o objetivo de otimizar o fluxo operacional, resolver problemas de priorização de atendimentos, controlar estoques/insumos e gerenciar orçamentos e Ordens de Serviço (OS).
 
 ## Escopo do sistema
 O projeto visa solucionar os principais gargalos operacionais, por meio de funcionalidades que iram apoiar nos seguintes tópicos:
 
-- Priorização de Atendimentos: Organização e fila de veículos com base na urgência e capacidade produtiva;
+- Priorização de Atendimentos: Organização e fila de veículos com base na capacidade produtiva;
 - Gestão de Ordens de Serviço (OS): Acompanhamento completo do ciclo de vida das OS (Recebida, Em diagnóstico, Aguardando Aprovação, Em Execução, Finalizado, Entregue);
 - Orçamentos e Autorizações: Geração autómatica dos orçamentos após o diagnóstico e aprovação direta de clientes;
 - Controle de Insumos e Estoque: Baixa automática e controle de peças utilizadas nos serviços;
