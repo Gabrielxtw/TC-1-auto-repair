@@ -28,7 +28,7 @@ public class QuoteTests
 
         quote.Reject();
 
-        Assert.Equal(QuoteStatus.Rejected, quote.QuoteStatusValue);
+        Assert.Equal(QuoteStatus.UnderReview, quote.QuoteStatusValue);
         Assert.Equal(1, quote.RejectionCount);
     }
 

@@ -6,7 +6,7 @@ namespace TC1.RepairShop.UnitTests.Vehicles;
 
 public class FakeVehicleRepository : IVehicleRepository
 {
-    private readonly Dictionary<Guid, Vehicle> _vehicles = [];
+    private readonly Dictionary<Guid, Vehicle> _vehicles = new();
 
     public Task<Vehicle?> GetByLicensePlateAsync(string licensePlate)
     {
@@ -33,6 +33,18 @@ public class FakeVehicleRepository : IVehicleRepository
     }
 
     public Task UpdateAsync(Vehicle vehicle)
+    {
+        _vehicles[vehicle.Id] = vehicle;
+        return Task.CompletedTask;
+    }
+
+    public Task Add(Vehicle vehicle)
+    {
+        _vehicles[vehicle.Id] = vehicle;
+        return Task.CompletedTask;
+    }
+
+    public Task Update(Vehicle vehicle)
     {
         _vehicles[vehicle.Id] = vehicle;
         return Task.CompletedTask;

@@ -35,6 +35,18 @@ public class FakeServiceOrderServiceRepository : IServiceOrderServiceRepository
         return Task.CompletedTask;
     }
 
+    public Task Add(ServiceOrderService service)
+    {
+        ServiceOrderServices[service.Id] = service;
+        return Task.CompletedTask;
+    }
+
+    public Task Update(ServiceOrderService service)
+    {
+        ServiceOrderServices[service.Id] = service;
+        return Task.CompletedTask;
+    }
+
     public Task DeleteAsync(Guid id)
     {
         ServiceOrderServices.TryRemove(id, out _);

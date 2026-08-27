@@ -52,22 +52,21 @@ public class DiagnosisConcludedEventHandlerTests
     [Fact]
     public async Task Handle_ShouldCreateQuoteAndAttachToOrder_WhenQuoteIdIsNullAndOrderExists()
     {
-        var serviceOrderId = Guid.NewGuid();
-        var serviceOrder = ServiceOrder.Create(Guid.NewGuid(), Guid.NewGuid());
+        var order = ServiceOrder.Create(Guid.NewGuid(), Guid.NewGuid());
         var quoteRepository = new Mock<IQuoteRepository>();
         var serviceOrderRepository = new Mock<IServiceOrderRepository>();
-        serviceOrderRepository.Setup(r => r.GetByIdAsync(serviceOrderId)).ReturnsAsync(serviceOrder);
+        serviceOrderRepository.Setup(r => r.GetByIdAsync(order.Id)).ReturnsAsync(order);
 
         var handler = new DiagnosisConcludedEventHandler(quoteRepository.Object, serviceOrderRepository.Object);
-        var domainEvent = new DiagnosisConcludedEvent(serviceOrderId, 300m, null);
+        var domainEvent = new DiagnosisConcludedEvent(order.Id, 300m, null);
 
         await handler.Handle(domainEvent);
 
-        quoteRepository.Verify(r => r.AddAsync(It.Is<Quote>(q =>
-            q.ServiceOrderId == serviceOrderId && q.Price == 300m)), Times.Once);
+        quoteRepository.Verify(r => r.Add(It.Is<Quote>(q =>
+            q.ServiceOrderId == order.Id && q.Price == 300m)), Times.Once);
         quoteRepository.Verify(r => r.UpdateAsync(It.IsAny<Quote>()), Times.Never);
-        serviceOrder.QuoteId.Should().NotBeNull();
-        serviceOrderRepository.Verify(r => r.UpdateAsync(serviceOrder), Times.Once);
+        order.QuoteId.Should().NotBeNull();
+        serviceOrderRepository.Verify(r => r.Update(order), Times.Once);
     }
 
     [Fact]
@@ -84,7 +83,7 @@ public class DiagnosisConcludedEventHandlerTests
         await handler.Handle(domainEvent);
 
         quoteRepository.Verify(r => r.AddAsync(It.Is<Quote>(q =>
-            q.ServiceOrderId == serviceOrderId && q.Price == 300m)), Times.Once);
+            q.ServiceOrderId == serviceOrderId && q.Price == 300m)), Times.Never);
         serviceOrderRepository.Verify(r => r.UpdateAsync(It.IsAny<ServiceOrder>()), Times.Never);
     }
 

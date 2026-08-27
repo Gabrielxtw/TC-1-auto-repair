@@ -36,6 +36,18 @@ public class FakeServiceRepository : IServiceRepository
         return Task.CompletedTask;
     }
 
+    public Task Add(Service service)
+    {
+        Services[service.Id] = service;
+        return Task.CompletedTask;
+    }
+
+    public Task Update(Service service)
+    {
+        Services[service.Id] = service;
+        return Task.CompletedTask;
+    }
+
     public Task DeleteAsync(Guid id)
     {
         if (Services.TryGetValue(id, out var service))

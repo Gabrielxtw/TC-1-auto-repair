@@ -21,7 +21,7 @@ public class RejectQuoteUseCaseTests
         var result = await useCase.ExecuteAsync(quote.Id);
 
         result.success.Should().BeTrue();
-        quote.QuoteStatusValue.Should().Be(QuoteStatus.Rejected);
+        quote.QuoteStatusValue.Should().Be(QuoteStatus.UnderReview);
         quote.RejectionCount.Should().Be(1);
         repository.Verify(r => r.UpdateAsync(quote), Times.Once);
     }

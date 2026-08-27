@@ -39,6 +39,18 @@ public class FakeUserRepository : IUserRepository
         return Task.CompletedTask;
     }
 
+    public Task Add(User user)
+    {
+        Users[user.Id] = user;
+        return Task.CompletedTask;
+    }
+
+    public Task Update(User user)
+    {
+        Users[user.Id] = user;
+        return Task.CompletedTask;
+    }
+
     public Task DeleteAsync(Guid id)
     {
         if (Users.TryGetValue(id, out var user))
@@ -56,5 +68,11 @@ public class FakeUserRepository : IUserRepository
     public Task<bool> ExistsAsync(Guid id)
     {
         return Task.FromResult(Users.TryGetValue(id, out var user) && user.Status != Status.Deleted);
+    }
+
+    public Task<User?> GetByDocumentAsync(string document)
+    {
+        var user = Users.Values.SingleOrDefault(u => u.Document.Value == document && u.Status != Status.Deleted);
+        return Task.FromResult(user);
     }
 }

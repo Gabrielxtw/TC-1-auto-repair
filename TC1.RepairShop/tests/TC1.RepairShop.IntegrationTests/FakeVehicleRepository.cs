@@ -40,6 +40,18 @@ public class FakeVehicleRepository : IVehicleRepository
         return Task.CompletedTask;
     }
 
+    public Task Add(Vehicle vehicle)
+    {
+        _vehicles[vehicle.Id] = vehicle;
+        return Task.CompletedTask;
+    }
+
+    public Task Update(Vehicle vehicle)
+    {
+        _vehicles[vehicle.Id] = vehicle;
+        return Task.CompletedTask;
+    }
+
     public Task DeleteAsync(Guid id)
     {
         if (_vehicles.TryGetValue(id, out var vehicle))

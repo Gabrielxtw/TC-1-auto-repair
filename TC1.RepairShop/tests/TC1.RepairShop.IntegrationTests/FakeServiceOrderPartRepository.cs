@@ -43,9 +43,20 @@ public class FakeServiceOrderPartRepository : IServiceOrderPartRepository
     }
 
     public Task SaveChangesAsync() => Task.CompletedTask;
-    public Task Add(Quote quote) => Task.CompletedTask;
-    public Task Update(Quote quote) => Task.CompletedTask;
-    public Task GetPartById(Quote quote) => Task.CompletedTask;
+    public Task Add(ServiceOrderPart part)
+    {
+        ServiceOrderParts[part.Id] = part;
+        return Task.CompletedTask;
+    }
+
+    public Task Update(ServiceOrderPart part)
+    {
+        ServiceOrderParts[part.Id] = part;
+        return Task.CompletedTask;
+    }
+
+    public Task<IEnumerable<ServiceOrderPart>> GetByPartIdAsync(Guid partId) =>
+        Task.FromResult(ServiceOrderParts.Values.Where(p => p.PartId == partId));
 
     public Task<bool> ExistsAsync(Guid id) => Task.FromResult(ServiceOrderParts.ContainsKey(id));
 }

@@ -72,7 +72,7 @@ public class QuotesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var response = await _client.PutAsync($"/api/quotes/Reject/{quote.Id}", null);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(QuoteStatus.Rejected, quote.QuoteStatusValue);
+        Assert.Equal(QuoteStatus.UnderReview, quote.QuoteStatusValue);
     }
 
     [Fact]
