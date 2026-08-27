@@ -85,7 +85,7 @@ public class QuotesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         // NOTE: QuotesController always returns Ok(...) regardless of use case
         // success/failure (it never inspects result.success), so a missing quote
         // still yields 200 with a failure payload embedded in the body.
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<BaseResponseDto>();
         Assert.False(body!.success);
     }

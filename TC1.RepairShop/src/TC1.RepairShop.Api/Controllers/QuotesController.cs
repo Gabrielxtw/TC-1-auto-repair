@@ -19,38 +19,36 @@ public class QuotesController(ListQuotesUseCase _listQuotesUseCase,
     public async Task<IActionResult> GetMyQuotes()
     {
         var result = await _listQuotesUseCase.ExecuteAsync();
-        return Ok(result);
+        return Response(result);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateQuoteRequest request)
     {
         var result = await _createQuoteUseCase.ExecuteAsync(request);
-        if (result.success)
-            return CreatedAtAction(nameof(GetMyQuotes), new { id = result.data?.Id }, result);
 
-        return BadRequest(result);
+        return Response(result);
     }
 
     [HttpPut("Reject/{id}")]
     public async Task<IActionResult> RejectQuote(Guid id)
     {
         var result = await _rejectQuoteUseCase.ExecuteAsync(id);
-        return Ok(result);
+        return Response(result);
     }
 
     [HttpPut("Approve/{id}")]
     public async Task<IActionResult> ApproveQuote(Guid id)
     {
         var result = await _approveQuoteUseCase.ExecuteAsync(id);
-        return Ok(result);
+        return Response(result);
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateQuote(UpdateQuoteRequest request)
     {
         var result = await _updateQuoteUseCase.ExecuteAsync(request);
-        return Ok(result);
+        return Response(result);
     }
 
 }

@@ -11,26 +11,25 @@ namespace TC1.RepairShop.Api.Controllers
         {
             try
             {
-                if (response.success)
-                {
-                    return Ok(response.data);
-                }
+                var body = new { data = response.data, success = response.success, error = response.error };
 
                 if (int.TryParse(response.StatusCode, out var code))
                 {
                     return code switch
                     {
-                        400 => BadRequest(response.error),
+                        200 => Ok(body),
+                        204 => NoContent(),
+                        400 => BadRequest(body),
                         401 => Unauthorized(),
                         403 => Forbid(),
-                        404 => NotFound(response.error),
-                        500 => StatusCode(500, response.error),
-                        _ => StatusCode(code, response.error),
+                        404 => NotFound(body),
+                        500 => StatusCode(500, body),
+                        _ => StatusCode(code, body),
                     };
                 }
 
                 // fallback
-                return BadRequest(response.error);
+                return BadRequest(body);
             }
             catch (Exception ex)
             {

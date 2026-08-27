@@ -14,7 +14,7 @@ public class ApproveQuoteUseCase(IQuoteRepository quoteRepository)
         {
             var quote = await quoteRepository.GetByIdAsync(request);
             if (quote is null)
-                return new BaseResponse<ApproveQuoteResult?>(data: null, success: false, error: "Quote not found.");
+                return new BaseResponse<ApproveQuoteResult?>(data: null, success: false, error: "Quote not found.", StatusCode: "404");
 
             quote.Approve();
             await quoteRepository.UpdateAsync(quote);

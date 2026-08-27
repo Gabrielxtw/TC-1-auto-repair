@@ -102,7 +102,7 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
             "/api/users",
             new { id = created!.id, username = newUsername, role = "Customer" });
 
-        Assert.Equal(HttpStatusCode.Accepted, updateResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
 
         var getResponse = await _client.GetAsync($"/api/users/{created.id}");
         var updated = await getResponse.Content.ReadFromJsonAsync<GetUserResponseDto>();

@@ -17,6 +17,6 @@ public class DeleteUserUseCase(IUserRepository _userRepository): BaseUseCase<Gui
 
         await _userRepository.UpdateAsync(user);
 
-        return new BaseResponse<UserResponse?>(data: null, success: true);
+        return new BaseResponse<UserResponse?>(data: null, success: true, StatusCode: "204");
     }
 }

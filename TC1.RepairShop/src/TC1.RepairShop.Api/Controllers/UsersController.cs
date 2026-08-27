@@ -20,19 +20,15 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     public async Task<IActionResult> GetAll()
     {
         var users = await _listUsersUseCase.ExecuteAsync();
-        return Ok(users);
+        return Response(users);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _getUserUseCase.ExecuteAsync(id);
-        if (!result.success)
-        {
-            return NotFound(new { message = result.error });
-        }
 
-        return Ok(result.data);
+        return Response(result);
     }
 
     [HttpPost]
@@ -53,14 +49,7 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     {
         var result = await _updateUserUseCase.ExecuteAsync(request);
 
-        if (!result.success)
-        {
-            return result.error == "User not found."
-                ? NotFound(new { message = result.error })
-                : Conflict(new { message = result.error });
-        }
-
-        return AcceptedAtAction(nameof(GetById), new { id = result.data?.Id }, result.data);
+        return Response(result);
     }
 
     [HttpPut("password")]
@@ -68,12 +57,7 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     {
         var result = await _changeUserPasswordUseCase.ExecuteAsync(request);
 
-        if (!result.success)
-        {
-            return NotFound(new { message = result.error });
-        }
-
-        return NoContent();
+        return Response(result);
     }
 
     [HttpDelete("{id:guid}")]
@@ -81,11 +65,6 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     {
         var result = await _deleteUserUseCase.ExecuteAsync(id);
 
-        if (!result.success)
-        {
-            return NotFound(new { message = result.error });
-        }
-
-        return NoContent();
+        return Response(result);
     }
 }
