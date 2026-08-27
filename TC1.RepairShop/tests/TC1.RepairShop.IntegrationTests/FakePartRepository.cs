@@ -44,6 +44,9 @@ public class FakePartRepository : IPartRepository
     }
 
     public Task SaveChangesAsync() => Task.CompletedTask;
+    public Task Add(Part part) => Task.CompletedTask;
+    public Task Update(Part part) => Task.CompletedTask;
+
 
     public Task<bool> ExistsAsync(Guid id) =>
         Task.FromResult(Parts.TryGetValue(id, out var part) && part.Status != Status.Deleted);

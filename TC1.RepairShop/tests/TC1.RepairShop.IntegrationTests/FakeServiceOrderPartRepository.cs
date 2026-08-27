@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using TC1.RepairShop.Domain.Entities.Quotes;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Interfaces;
 
@@ -42,6 +43,9 @@ public class FakeServiceOrderPartRepository : IServiceOrderPartRepository
     }
 
     public Task SaveChangesAsync() => Task.CompletedTask;
+    public Task Add(Quote quote) => Task.CompletedTask;
+    public Task Update(Quote quote) => Task.CompletedTask;
+    public Task GetPartById(Quote quote) => Task.CompletedTask;
 
     public Task<bool> ExistsAsync(Guid id) => Task.FromResult(ServiceOrderParts.ContainsKey(id));
 }

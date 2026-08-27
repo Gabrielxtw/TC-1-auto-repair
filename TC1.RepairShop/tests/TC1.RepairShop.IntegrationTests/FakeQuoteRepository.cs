@@ -36,6 +36,9 @@ public class FakeQuoteRepository : IQuoteRepository
     }
 
     public Task SaveChangesAsync() => Task.CompletedTask;
+    public Task Add(Quote quote) => Task.CompletedTask;
+    public Task Update(Quote quote) => Task.CompletedTask;
+
 
     public Task<bool> ExistsAsync(Guid id) => Task.FromResult(Quotes.ContainsKey(id));
 }
