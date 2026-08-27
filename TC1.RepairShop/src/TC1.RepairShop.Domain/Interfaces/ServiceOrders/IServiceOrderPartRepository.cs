@@ -6,4 +6,5 @@ public interface IServiceOrderPartRepository : IRepository<ServiceOrderPart, Gui
 {
     Task<IEnumerable<ServiceOrderPart>> GetByServiceOrderIdAsync(Guid serviceOrderId);
     Task<ServiceOrderPart?> GetByServiceOrderAndPartIdAsync(Guid serviceOrderId, Guid partId);
+    Task<IEnumerable<ServiceOrderPart>> GetByPartIdAsync(Guid partId);
 }

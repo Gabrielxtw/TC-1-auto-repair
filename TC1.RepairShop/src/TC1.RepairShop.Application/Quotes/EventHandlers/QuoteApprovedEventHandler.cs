@@ -18,7 +18,7 @@ public class QuoteApprovedEventHandler(
     {
         try
         {
-            var order = await _serviceOrderRepository.GetByIdAsync(domainEvent.ServiceOrderId);
+            var order = await _serviceOrderRepository.GetByIdDetailedAsync(domainEvent.ServiceOrderId);
             if (order is null)
             {
                 return;
@@ -27,7 +27,7 @@ public class QuoteApprovedEventHandler(
             bool allPartsAvailable = true;
             ICollection<(Part, int)> partsToConsume = new List<(Part, int)>();
 
-            foreach (var servicePart in serviceOrderParts)
+            foreach (var servicePart in serviceOrderParts.Where(p => !p.SuppliedByCustomer))
             {
                 var part = await _partRepository.GetByIdAsync(servicePart.PartId);
                 if (part is null)

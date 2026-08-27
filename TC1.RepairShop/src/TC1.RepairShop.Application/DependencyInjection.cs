@@ -49,6 +49,7 @@ namespace TC1.RepairShop.Application
             services.AddScoped<ApproveQuoteUseCase>();
             services.AddScoped<RejectQuoteUseCase>();
             services.AddScoped<ListQuotesUseCase>();
+            services.AddScoped<UpdateQuoteUseCase>();
 
             services.AddScoped<CreateServiceOrderUseCase>();
             services.AddScoped<AdvanceServiceOrderUseCase>();

@@ -1,6 +1,7 @@
 using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Common;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
+using TC1.RepairShop.Domain.Events;
 
 namespace TC1.RepairShop.Domain.Entities.Parts;
 
@@ -22,6 +23,7 @@ public class Part : BaseEntity
             throw new BusinessException(BusinessErrors.PartErrors.CannotAlterStockFromInactivePart);
 
         StockQuantity += quantity;
+        RaiseDomainEvent(new PartReceivedEvent(Id, quantity));
     }
 
     public void ConsumeStock(int quantity)

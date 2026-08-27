@@ -10,7 +10,8 @@ namespace TC1.RepairShop.Api.Controllers;
 public class QuotesController(ListQuotesUseCase _listQuotesUseCase,
                                 RejectQuoteUseCase _rejectQuoteUseCase,
                                 ApproveQuoteUseCase _approveQuoteUseCase,
-                                CreateQuoteUseCase _createQuoteUseCase) : BaseController
+                                CreateQuoteUseCase _createQuoteUseCase,
+                                UpdateQuoteUseCase _updateQuoteUseCase) : BaseController
 {
     //TODO get records from path
 
@@ -42,6 +43,13 @@ public class QuotesController(ListQuotesUseCase _listQuotesUseCase,
     public async Task<IActionResult> ApproveQuote(Guid id)
     {
         var result = await _approveQuoteUseCase.ExecuteAsync(id);
+        return Ok(result);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateQuote(UpdateQuoteRequest request)
+    {
+        var result = await _updateQuoteUseCase.ExecuteAsync(request);
         return Ok(result);
     }
 

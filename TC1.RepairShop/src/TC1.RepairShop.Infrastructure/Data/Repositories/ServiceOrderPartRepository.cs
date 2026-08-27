@@ -26,4 +26,11 @@ public class ServiceOrderPartRepository : GenericRepository<ServiceOrderPart>, I
             .Include(p => p.Part)
             .FirstOrDefaultAsync(p => p.ServiceOrderId == serviceOrderId && p.PartId == partId);
     }
+
+    public async Task<IEnumerable<ServiceOrderPart>> GetByPartIdAsync(Guid partId)
+    {
+        return await _context.ServiceOrderParts.Where(p => p.PartId == partId)
+            .Include(p => p.ServiceOrder)
+            .ToListAsync();
+    }
 }

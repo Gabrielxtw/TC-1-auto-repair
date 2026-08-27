@@ -5,7 +5,7 @@ using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Quotes.EventHandlers;
 
-public class QuoteCreatedEventHandler(
+public class QuoteCreatedUpdatedEventHandler(
     IQuoteRepository _quoteRepository,
     IServiceOrderRepository _serviceOrderRepository,
     IEmailSender _emailSender

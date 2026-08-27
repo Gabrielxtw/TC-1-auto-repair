@@ -8,6 +8,7 @@ namespace TC1.RepairShop.Application.Quotes.UseCases
     public record ApproveQuoteResult(Guid id, decimal price, QuoteStatus status);
     public record CreateQuoteRequest(Guid ServiceOrderId, decimal Price);
     public record CreateQuoteResponse(Guid Id);
+    public record UpdateQuoteRequest(Guid Id, decimal Price);
 
     public static class QuotesDTO
     {
