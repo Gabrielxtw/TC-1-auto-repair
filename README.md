@@ -55,12 +55,15 @@ Na raiz do projeto existe a pasta `docker/` contendo o `docker-compose.yml` e o 
 
 ### Sem docker
 Garanta que:
-- o SDK do .NET 10 esteja instalado corretamente;
+- SDK do .NET 10 esteja instalado corretamente;
 - A string de conexão com o SQL Server 2022 correta esteja no `appsettings.json`;
 
 Caso todos os tópicos estejam configurados corretamente, basta executar via sua IDE favorita ou pelo comando `dotnet run --project /src/TC1.RepairShop.Api`
 
 ## Relatório de Cobertura de Código
+
+* Pré-requisitos
+ * SDK do .NET 10 esteja instalado corretamente;
 
 Há um ferramenta para facilitar a geração do relatório de cobertura de código, automatizando as etapas para gerar um relatório pelo Report Generator.
 
