@@ -24,7 +24,7 @@ A concepção da solução seguiu a abordagem de Domain-Driven Design (DDD) para
 ### Domain Storytelling
 A oficina enfrentava desorganização no pátio, perda de prazos por falta de visibilidade da fila de trabalho e inconsistência no controle de peças utilizadas. A solução foi desenhada para criar rastreabilidade total desde a recepção do veículo até a entrega das chaves.
 
-Os diagramas do Domain Storytelling estão contindos na pasta `docs/storytelling` na raiz da projeto.
+Os diagramas do Domain Storytelling, feitos no [egon.io](https://egon.io/app/), estão contindos na pasta `docs/storytelling` na raiz da projeto.
 
 ### Event Storming
 O mapeamento do domínio foi realizado identificando os principais Domain Events, Commands e Aggregates.
@@ -57,7 +57,6 @@ Na raiz do projeto existe a pasta `docker/` contendo o `docker-compose.yml` e o 
 Garanta que:
 - o SDK do .NET 10 esteja instalado corretamente;
 - A string de conexão com o SQL Server 2022 correta esteja no `appsettings.json`;
-- Migrations esteja aplicada na base de dados. Caso as migrations não estejam aplicadas, execute o comando `dotnet ef database update`;
 
 Caso todos os tópicos estejam configurados corretamente, basta executar via sua IDE favorita ou pelo comando `dotnet run --project /src/TC1.RepairShop.Api`
 
