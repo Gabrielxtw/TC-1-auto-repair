@@ -62,6 +62,15 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
         return e is not null;
     }
 
+    public virtual async Task Add(T entity)
+    {
+        _set.Add(entity);
+    }
+    public virtual async Task Update(T entity)
+    {
+        _set.Update(entity);
+    }
+
     public virtual async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();

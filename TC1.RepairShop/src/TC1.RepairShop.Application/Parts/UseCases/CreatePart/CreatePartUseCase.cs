@@ -13,7 +13,7 @@ public class CreatePartUseCase(IPartRepository _partRepository) : BaseUseCase<Cr
             if (await _partRepository.ExistsByNameAsync(request.Name))
                 return new BaseResponse<PartResponse?>(data: null, success: false, error: "Peça já está cadastrada no sistema.");
 
-            Part part = Part.Create(request.Name, request.Price);
+            Part part = Part.Create(request.Name, request.Price, request.StockQuantity);
 
             await _partRepository.AddAsync(part);
 

@@ -35,7 +35,7 @@ public abstract class ServiceOrderStatus : Enumeration<ServiceOrderStatus>
         public AwaitingApprovalStatus() : base(3, "Awaiting Approval") { }
 
         public override bool CanTransitionTo(ServiceOrderStatus next) =>
-            next == InProgress || next == UnderDiagnosis;
+            next == InProgress || next == UnderDiagnosis || next == Cancelled;
     }
 
     private sealed class InProgressStatus : ServiceOrderStatus

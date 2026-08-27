@@ -1,25 +1,34 @@
 using System.Threading;
 using System.Threading.Tasks;
+using TC1.RepairShop.Application.Notifications;
+using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Events;
 using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Quotes.EventHandlers;
 
 public class QuoteRejectedEventHandler(
-    IQuoteRepository _quoteRepository
+    IServiceOrderRepository _serviceOrderRepository,
+    IEmailSender _emailSender
     ) : IEventHandler<QuoteRejectedEvent>
 {
     public async Task Handle(QuoteRejectedEvent domainEvent, CancellationToken cancellationToken = default)
     {
         try
         {
-            var quote = await _quoteRepository.GetByIdAsync(domainEvent.QuoteId);
-            if (quote is null)
-                return;
+            var order = await _serviceOrderRepository.GetByIdDetailedAsync(domainEvent.ServiceOrderId);
+            if (order is null) return;
+            order.AdvanceTo(ServiceOrderStatus.Cancelled);
+            var to = order.User?.Email?.Value ?? "";
+            if (!string.IsNullOrWhiteSpace(to))
+            {
+                var subject = "Ordem Cancelada";
+                var body = $"Olá {order.User?.Username},<br/><br/>Você atingiu o limite de rejeições para a ordem {order.Id}.<br/>" +
+                    $" Ela será cancelada automaticamente.<br/><br/>Atenciosamente,<br/>Oficina";
+                _emailSender.Enqueue(new EmailMessage(to, subject, body));
+            }
+            await _serviceOrderRepository.UpdateAsync(order);
 
-            // TODO check max rejections, update quote and notify customer
-            quote.MarkUnderReview();
-            await _quoteRepository.UpdateAsync(quote);
         }
         catch
         {

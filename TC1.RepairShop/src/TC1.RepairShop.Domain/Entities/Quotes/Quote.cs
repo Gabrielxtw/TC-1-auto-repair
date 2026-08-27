@@ -38,16 +38,15 @@ public class Quote: BaseEntity
 
     public void Reject()
     {
-        QuoteStatusValue = QuoteStatus.Rejected;
+        QuoteStatusValue = QuoteStatus.UnderReview;
         RejectionCount++;
         if(RejectionCount >= 3)
         {
-            QuoteStatusValue = QuoteStatus.UnderReview;
+            QuoteStatusValue = QuoteStatus.Rejected;
+            RaiseDomainEvent(new QuoteRejectedEvent(
+                ServiceOrderId)
+            );
         }
-        RaiseDomainEvent(new QuoteRejectedEvent(
-            Id,
-            ServiceOrderId)
-        );
     }
     public void MarkUnderReview()
     {

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using TC1.RepairShop.Domain.Entities.Users;
 using TC1.RepairShop.Domain.Interfaces;
 using TC1.RepairShop.Infrastructure.Data;
@@ -17,5 +18,9 @@ public class UserRepository : GenericRepository<User>, IUserRepository
             return null;
 
         return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username);
+    }
+    public async Task<User?> GetByDocumentAsync(string document)
+    {
+        return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Document.Value == document);
     }
 }

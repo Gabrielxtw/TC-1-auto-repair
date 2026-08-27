@@ -1,23 +1,36 @@
+using TC1.RepairShop.Application.Notifications;
+using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Events;
 using TC1.RepairShop.Domain.Interfaces;
-using TC1.RepairShop.Domain.Enums;
 
 namespace TC1.RepairShop.Application.Quotes.EventHandlers;
 
 public class QuoteCreatedEventHandler(
-    IQuoteRepository _quoteRepository
+    IQuoteRepository _quoteRepository,
+    IServiceOrderRepository _serviceOrderRepository,
+    IEmailSender _emailSender
     ) : IEventHandler<QuoteCreatedUpdatedEvent>
 {
     public async Task Handle(QuoteCreatedUpdatedEvent domainEvent, CancellationToken cancellationToken = default)
     {
         try
         {
-            // Ensure the quote exists
             var quote = await _quoteRepository.GetByIdAsync(domainEvent.QuoteId);
             if (quote is null)
                 return;
 
-            // TODO send Quote to customer email
+            var order = await _serviceOrderRepository.GetByIdDetailedAsync(quote.ServiceOrderId);
+            if (order is null)
+                return;
+
+            var to = order.User.Email.Value;
+            if (!string.IsNullOrWhiteSpace(to))
+            {
+                var subject = "Diagnóstico concluído";
+                var body = $"Olá {order.User.Username},<br/><br/>O diagnóstico da sua ordem {order.Id} foi concluído. Valor estimado: {quote.Price:C}.<br/><br/>Atenciosamente,<br/>Oficina";
+                _emailSender.Enqueue(new EmailMessage(to, subject, body));
+            }
+
             quote.SendToCustomer();
             await _quoteRepository.UpdateAsync(quote);
 

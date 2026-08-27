@@ -62,13 +62,8 @@ public class ServiceOrder: BaseEntity
             );
 
         if (newStatus == ServiceOrderStatus.Completed)
-            RaiseDomainEvent(new DiagnosisConcludedEvent(
-                Id,
-                price:
-                    ServiceOrderServices.Sum(sos => sos.Price) +
-                    ServiceOrderParts.Where(sop => !sop.SuppliedByCustomer).Sum(sop => sop.Price * sop.Quantity),
-                QuoteId)
-            );
+            RaiseDomainEvent(new OrderFinishedEvent(Id));
+
         OrderStatusValue = newStatus;
 
         if (newStatus == ServiceOrderStatus.Delivered || newStatus == ServiceOrderStatus.Cancelled)

@@ -4,7 +4,7 @@ using TC1.RepairShop.Domain.Enums;
 namespace TC1.RepairShop.Application.Parts.UseCases
 {
     public record PartResponse(Guid Id, string Name, int StockQuantity, decimal Price, Status Status);
-    public record CreatePartRequest(string Name, decimal Price, int MinimumQuantity);
+    public record CreatePartRequest(string Name, decimal Price, int StockQuantity);
     public record ListPartsResponse(ICollection<PartResponse> Parts);
     public record ReceiveStockRequest(Guid Id, int Quantity);
     public record UpdatePartRequest(Guid Id,string Name,decimal Price);

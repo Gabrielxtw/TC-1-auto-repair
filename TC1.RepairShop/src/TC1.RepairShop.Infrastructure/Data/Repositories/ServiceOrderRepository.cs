@@ -28,7 +28,7 @@ public class ServiceOrderRepository : GenericRepository<ServiceOrder>, IServiceO
             .Include(o => o.ServiceOrderParts).ThenInclude(sop => sop.Part)
             .Include(o => o.Quote)
             .Include(o => o.Vehicle)
-            .AsNoTracking()
+            //.AsNoTracking()
             .FirstOrDefaultAsync(o => o.Id == id);
     }
 
