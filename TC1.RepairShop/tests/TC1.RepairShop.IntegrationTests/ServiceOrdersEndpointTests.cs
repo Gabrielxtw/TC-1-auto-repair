@@ -73,7 +73,7 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
 
         var partResponse = await _client.PostAsJsonAsync("/api/part", new { name = $"Brake Pad {Guid.NewGuid():N}", unitPrice = 19.99m, minimumQuantity = 1 });
         Assert.Equal(HttpStatusCode.Created, partResponse.StatusCode);
-        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ResponseWrapper<ListPartsResponseDto>>())!.data.Parts;
         var part = allParts.Last();
 
         var firstAttach = await _client.PostAsJsonAsync(
@@ -192,7 +192,7 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
             "/api/services",
             new { name, description = "Balance wheels", price = 29.99m });
         Assert.Equal(HttpStatusCode.Created, serviceResponse.StatusCode);
-        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ResponseWrapper<ListServicesResponseDto>>())!.data.Services;
         var service = allServices.Single(s => s.name == name);
 
         var response = await _client.PostAsJsonAsync(
@@ -221,4 +221,5 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
     private record PartViewModelDto(Guid id, string name, int stockQuantity, decimal unitPrice);
 
     private record ListPartsResponseDto(List<PartViewModelDto> Parts);
+    private record ResponseWrapper<T>(T data, string error, bool success);
 }

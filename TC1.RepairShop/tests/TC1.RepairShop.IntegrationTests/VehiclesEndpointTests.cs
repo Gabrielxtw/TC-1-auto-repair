@@ -46,8 +46,8 @@ public class VehiclesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var response = await _client.PostAsJsonAsync(
             "/api/users",
             new { username = $"owner.{Guid.NewGuid():N}", password = "Passw0rd!", document = NextCpf(), email = "owner@example.com", role = "Customer", phone = "11988887777" });
-        var created = await response.Content.ReadFromJsonAsync<CreateUserResultDto>();
-        return created!.id;
+        var created = await response.Content.ReadFromJsonAsync<ResponseWrapper<CreateUserResultDto>>();
+        return created!.data.id;
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class VehiclesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var response = await _client.GetAsync($"/api/vehicles?customerId={customerId}");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var vehicles = (await response.Content.ReadFromJsonAsync<ListVehiclesResponseDto>())!.Vehicles;
+        var vehicles = (await response.Content.ReadFromJsonAsync<ResponseWrapper<ListVehiclesResponseDto>>())!.data.Vehicles;
         Assert.NotEmpty(vehicles);
     }
 
@@ -149,4 +149,5 @@ public class VehiclesEndpointTests : IClassFixture<ApiWebApplicationFactory>
     private record VehicleResponseDto(Guid Id, string? Username, string LicensePlate, string Brand, string Model, int Year, string Status);
 
     private record ListVehiclesResponseDto(List<VehicleResponseDto> Vehicles);
+    private record ResponseWrapper<T>(T data, string error, bool success);
 }

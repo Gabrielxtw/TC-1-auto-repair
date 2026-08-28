@@ -44,7 +44,8 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var getAllResponse = await _client.GetAsync("/api/part");
         Assert.Equal(HttpStatusCode.OK, getAllResponse.StatusCode);
 
-        var parts = (await getAllResponse.Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var wrapper = await getAllResponse.Content.ReadFromJsonAsync<ResponseWrapper<ListPartsResponseDto>>();
+        var parts = wrapper!.data.Parts;
         Assert.Contains(parts, p => p.stockQuantity == 0);
     }
 
@@ -56,13 +57,13 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var name = $"Oil Filter {Guid.NewGuid():N}";
         await _client.PostAsJsonAsync("/api/part", new { name, unitPrice = 9.99m, minimumQuantity = 1 });
 
-        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ResponseWrapper<ListPartsResponseDto>>())!.data.Parts;
         var created = allParts.Single(p => p.name == name);
 
         var receiveResponse = await _client.PutAsJsonAsync("/api/part/ReceiveStock", new { id = created.id, quantity = 10 });
         Assert.Equal(HttpStatusCode.OK, receiveResponse.StatusCode);
 
-        var afterReceive = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var afterReceive = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ResponseWrapper<ListPartsResponseDto>>())!.data.Parts;
         Assert.Contains(afterReceive, p => p.id == created.id && p.stockQuantity == 10);
     }
 
@@ -96,7 +97,7 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         var name = $"Air Filter {Guid.NewGuid():N}";
         await _client.PostAsJsonAsync("/api/part", new { name, unitPrice = 14.99m, minimumQuantity = 1 });
-        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ResponseWrapper<ListPartsResponseDto>>())!.data.Parts;
         var created = allParts.Single(p => p.name == name);
 
         var deactivateResponse = await _client.PutAsJsonAsync("/api/part/Deactive", new { id = created.id });
@@ -111,7 +112,7 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         var name = $"Timing Belt {Guid.NewGuid():N}";
         await _client.PostAsJsonAsync("/api/part", new { name, unitPrice = 24.99m, minimumQuantity = 1 });
-        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ListPartsResponseDto>())!.Parts;
+        var allParts = (await (await _client.GetAsync("/api/part")).Content.ReadFromJsonAsync<ResponseWrapper<ListPartsResponseDto>>())!.data.Parts;
         var created = allParts.Single(p => p.name == name);
 
         var deleteResponse = await _client.DeleteAsync($"/api/part/{created.id}");
@@ -126,4 +127,5 @@ public class PartsEndpointTests : IClassFixture<ApiWebApplicationFactory>
     private record PartViewModelDto(Guid id, string name, int stockQuantity, decimal unitPrice);
 
     private record ListPartsResponseDto(List<PartViewModelDto> Parts);
+    private record ResponseWrapper<T>(T data, string error, bool success);
 }

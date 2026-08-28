@@ -36,12 +36,7 @@ public class UsersController(CreateUserUseCase _createUserUseCase,
     {
         var result = await _createUserUseCase.ExecuteAsync(request);
 
-        if (!result.success)
-        {
-            return Conflict(new { message = result.error });
-        }
-
-        return CreatedAtAction(nameof(GetById), new { id = result.data?.Id }, result.data);
+        return Response(result);
     }
 
     [HttpPut]

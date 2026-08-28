@@ -12,7 +12,7 @@ public class CreateVehicleUseCase(IUserRepository _userRepository, IVehicleRepos
         var customer = await _userRepository.GetByIdAsync(request.CustomerId);
         if (customer is null)
         {
-            return new BaseResponse<VehicleResponse?>(data: null, success: false, error: "Customer not found.");
+            return new BaseResponse<VehicleResponse?>(data: null, success: false, error: "Customer not found.", StatusCode: "404");
         }
 
         var existingVehicle = await _vehicleRepository.GetByLicensePlateAsync(request.LicensePlate);

@@ -13,14 +13,14 @@ public class CreateUserUseCase(IUserRepository _userRepository): BaseUseCase<Cre
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
         if (existingUser is not null)
         {
-            return new BaseResponse<UserResponse?>(data: null, success: false, error: "Username is already taken.");
+            return new BaseResponse<UserResponse?>(data: null, success: false, error: "Username is already taken.", StatusCode: "409");
         }
 
         try
         {
             var user = User.Create(request.Username, request.Password, request.Document, request.Email, request.Role, request.Phone);
             await _userRepository.AddAsync(user);
-            return new BaseResponse<UserResponse?>(UsersDTO.ToUserResponse(user));
+            return new BaseResponse<UserResponse?>(UsersDTO.ToUserResponse(user),StatusCode: "201");
         }
         catch (BusinessException ex)
         {

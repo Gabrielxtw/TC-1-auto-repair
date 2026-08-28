@@ -10,7 +10,7 @@ public class DeleteUserUseCase(IUserRepository _userRepository): BaseUseCase<Gui
         var user = await _userRepository.GetByIdAsync(id);
         if (user is null)
         {
-            return new BaseResponse<UserResponse?>(data: null, success: false, error: "User not found.");
+            return new BaseResponse<UserResponse?>(data: null, success: false, error: "User not found.",StatusCode: "404");
         }
 
         user.Delete();

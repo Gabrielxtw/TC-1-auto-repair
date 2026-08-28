@@ -23,7 +23,7 @@ public class BaseControllerTests
         var result = _controller.InvokeResponse(response);
 
         result.Should().BeOfType<OkObjectResult>()
-            .Which.Value.Should().Be("ok");
+            .Which.Value.Should().BeEquivalentTo(new { data = "ok", error = "", success = true });
     }
 
     [Fact]
@@ -47,6 +47,6 @@ public class BaseControllerTests
 
         var objectResult = result.Should().BeOfType<ObjectResult>().Subject;
         objectResult.StatusCode.Should().Be(int.Parse(statusCode));
-        objectResult.Value.Should().Be("boom");
+        objectResult.Value.Should().BeEquivalentTo(new { data = "", error = "boom", success = false });
     }
 }

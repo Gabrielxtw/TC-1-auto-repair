@@ -42,7 +42,7 @@ public class ServicesEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
 
-        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ResponseWrapper<ListServicesResponseDto>>())!.data.Services;
         var created = allServices.Single(s => s.name == name);
 
         var getResponse = await _client.GetAsync($"/api/services/{created.id}");
@@ -69,7 +69,7 @@ public class ServicesEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         var name = $"Wheel Alignment {Guid.NewGuid():N}";
         await _client.PostAsJsonAsync("/api/services", new { name, description = "Align wheels", price = 39.99m });
-        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ResponseWrapper<ListServicesResponseDto>>())!.data.Services;
         var created = allServices.Single(s => s.name == name);
 
         var firstDeactivate = await _client.PutAsJsonAsync("/api/services/Deactive", new { id = created.id });
@@ -96,7 +96,7 @@ public class ServicesEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         var name = $"Brake Fluid Flush {Guid.NewGuid():N}";
         await _client.PostAsJsonAsync("/api/services", new { name, description = "Flush brake fluid", price = 49.99m });
-        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ListServicesResponseDto>())!.Services;
+        var allServices = (await (await _client.GetAsync("/api/services")).Content.ReadFromJsonAsync<ResponseWrapper<ListServicesResponseDto>>())!.data.Services;
         var created = allServices.Single(s => s.name == name);
 
         var deleteResponse = await _client.DeleteAsync($"/api/services/{created.id}");
@@ -111,4 +111,5 @@ public class ServicesEndpointTests : IClassFixture<ApiWebApplicationFactory>
     private record ServiceViewModelDto(Guid id, string name, string description);
 
     private record ListServicesResponseDto(List<ServiceViewModelDto> Services);
+    private record ResponseWrapper<T>(T data, string error, bool success);
 }

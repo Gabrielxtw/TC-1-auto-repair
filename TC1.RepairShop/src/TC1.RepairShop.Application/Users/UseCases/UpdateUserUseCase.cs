@@ -11,7 +11,7 @@ public class UpdateUserUseCase(IUserRepository _userRepository): BaseUseCase<Upd
         var user = await _userRepository.GetByIdAsync(request.Id);
         if (user is null)
         {
-            return new BaseResponse<UserResponse?>(data: null, success: false, error: "User not found.");
+            return new BaseResponse<UserResponse?>(data: null, success: false, error: "User not found.",StatusCode:"404");
         }
 
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);

@@ -63,10 +63,10 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
 
-        var created = await createResponse.Content.ReadFromJsonAsync<CreateUserResultDto>();
+        var created = await createResponse.Content.ReadFromJsonAsync<ResponseWrapper<CreateUserResultDto>>();
         Assert.NotNull(created);
 
-        var getResponse = await _client.GetAsync($"/api/users/{created!.id}");
+        var getResponse = await _client.GetAsync($"/api/users/{created!.data.id}");
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
     }
 
@@ -95,18 +95,19 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var createResponse = await _client.PostAsJsonAsync(
             "/api/users",
             new { username = $"customer.{Guid.NewGuid():N}", password = "Passw0rd!", document = NextCpf(), email = "john@example.com", role = "Customer", phone = "11988887777" });
-        var created = await createResponse.Content.ReadFromJsonAsync<CreateUserResultDto>();
+        var created = await createResponse.Content.ReadFromJsonAsync<ResponseWrapper<CreateUserResultDto>>();
 
         var newUsername = $"customer.{Guid.NewGuid():N}";
         var updateResponse = await _client.PutAsJsonAsync(
             "/api/users",
-            new { id = created!.id, username = newUsername, role = "Customer" });
+            new { id = created!.data.id, username = newUsername, role = "Customer" });
 
         Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
 
-        var getResponse = await _client.GetAsync($"/api/users/{created.id}");
-        var updated = await getResponse.Content.ReadFromJsonAsync<GetUserResponseDto>();
-        Assert.Equal(newUsername, updated!.Username);
+        var getResponse = await _client.GetAsync($"/api/users/{created!.data.id}");
+        var wrapper = await getResponse.Content.ReadFromJsonAsync<ResponseWrapper<GetUserResponseDto>>();
+        var updated = wrapper!.data;
+        Assert.Equal(newUsername, updated.Username);
     }
 
     [Fact]
@@ -117,12 +118,12 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var createResponse = await _client.PostAsJsonAsync(
             "/api/users",
             new { username = $"customer.{Guid.NewGuid():N}", password = "Passw0rd!", document = NextCpf(), email = "john@example.com", role = "Customer", phone = "11988887777" });
-        var created = await createResponse.Content.ReadFromJsonAsync<CreateUserResultDto>();
+        var created = await createResponse.Content.ReadFromJsonAsync<ResponseWrapper<CreateUserResultDto>>();
 
-        var deleteResponse = await _client.DeleteAsync($"/api/users/{created!.id}");
+        var deleteResponse = await _client.DeleteAsync($"/api/users/{created!.data.id}");
         Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
-        var getResponse = await _client.GetAsync($"/api/users/{created.id}");
+        var getResponse = await _client.GetAsync($"/api/users/{created!.data.id}");
         Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
@@ -131,4 +132,6 @@ public class CustomersEndpointTests : IClassFixture<ApiWebApplicationFactory>
     private record CreateUserResultDto(Guid id, string username, string document, string email);
 
     private record GetUserResponseDto(Guid Id, string Username, string document, string email, string Role, string Status);
+
+    private record ResponseWrapper<T>(T data, string error, bool success);
 }
