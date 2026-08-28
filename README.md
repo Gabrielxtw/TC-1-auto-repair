@@ -51,7 +51,7 @@ Na raiz do projeto existe a pasta `docker/` contendo o `docker-compose.yml` e o 
 * Pré-requisitos
   * Docker Engine e Docker Compose instalados.
 * Execução
-  Para executar o `docker-coimpose.yml` basta abrir um terminal de comando na pasta `docker/` e executar o comando `docker-compose up -d`.
+  Para executar o `docker-coimpose.yml` basta abrir um terminal de comando na pasta raiz e executar o comando `docker compose -f .\TC1.RepairShop\docker\docker-compose.yml up`.
 
 ### Sem docker
 Garanta que:
