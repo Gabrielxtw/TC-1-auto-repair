@@ -33,6 +33,7 @@ public class GetAllPartUseCaseTests
         var result = await useCase.ExecuteAsync();
 
         result.success.Should().BeFalse();
-        result.data.Parts.Should().BeEmpty();
+        result.data.Should().BeNull();
+        result.error.Should().Be("db unavailable");
     }
 }

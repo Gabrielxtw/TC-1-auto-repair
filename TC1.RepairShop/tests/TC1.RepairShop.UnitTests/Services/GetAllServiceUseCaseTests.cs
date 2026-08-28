@@ -33,6 +33,6 @@ public class GetAllServiceUseCaseTests
         var result = await useCase.ExecuteAsync();
 
         result.success.Should().BeFalse();
-        result.data.Services.Should().BeEmpty();
+        result.data.Should().BeNull();
     }
 }

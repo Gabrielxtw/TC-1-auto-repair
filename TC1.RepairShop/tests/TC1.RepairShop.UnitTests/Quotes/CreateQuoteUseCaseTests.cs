@@ -52,6 +52,6 @@ public class CreateQuoteUseCaseTests
         var result = await useCase.ExecuteAsync(new CreateQuoteRequest(Guid.NewGuid(), 500m));
 
         result.success.Should().BeFalse();
-        result.error.Should().BeEmpty();
+        result.error.Should().Be("db unavailable");
     }
 }

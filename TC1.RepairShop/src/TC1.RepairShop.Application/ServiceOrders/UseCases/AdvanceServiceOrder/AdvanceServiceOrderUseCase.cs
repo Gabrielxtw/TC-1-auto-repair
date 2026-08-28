@@ -7,33 +7,18 @@ namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
 public record AdvanceServiceOrderRequest(Guid ServiceOrderId, string NewStatus);
 
-public class AdvanceServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository)
+public class AdvanceServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository) : BaseUseCase<AdvanceServiceOrderRequest, ServiceOrderListResponse?>
 {
-    public async Task<BaseResponse<ServiceOrderListResponse?>> ExecuteAsync(AdvanceServiceOrderRequest request)
+    protected override async Task<BaseResponse<ServiceOrderListResponse?>> HandleAsync(AdvanceServiceOrderRequest request)
     {
-        try
-        {
-            var order = await serviceOrderRepository.GetByIdDetailedAsync(request.ServiceOrderId);
-            if (order is null)
-                return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: "Service order not found.");
+        var order = await serviceOrderRepository.GetByIdDetailedAsync(request.ServiceOrderId);
+        if (order is null)
+            throw new BusinessException(BusinessErrors.ServiceOrderErrors.NotFound);
 
-            var newStatus = ServiceOrderStatus.FromName(request.NewStatus);
-            order.AdvanceTo(newStatus);
-            await serviceOrderRepository.UpdateAsync(order);
-            return new BaseResponse<ServiceOrderListResponse?>(ServiceOrdersDTO.ToListResponse(order));
-        }
-        catch (BusinessException ex)
-        {
-            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
-        }
-        catch (System.InvalidOperationException)
-        {
-            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: "Invalid Status");
-        }
-        catch (Exception ex)
-        {
-            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message);
-        }
+        var newStatus = ServiceOrderStatus.FromName(request.NewStatus);
+        order.AdvanceTo(newStatus);
+        await serviceOrderRepository.UpdateAsync(order);
+        return new BaseResponse<ServiceOrderListResponse?>(ServiceOrdersDTO.ToListResponse(order));
     }
 
 }

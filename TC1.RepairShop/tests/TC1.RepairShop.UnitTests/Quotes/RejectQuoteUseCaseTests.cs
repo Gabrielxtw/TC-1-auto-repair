@@ -49,6 +49,6 @@ public class RejectQuoteUseCaseTests
         var result = await useCase.ExecuteAsync(Guid.NewGuid());
 
         result.success.Should().BeFalse();
-        result.error.Should().BeEmpty();
+        result.error.Should().Be("db unavailable");
     }
 }

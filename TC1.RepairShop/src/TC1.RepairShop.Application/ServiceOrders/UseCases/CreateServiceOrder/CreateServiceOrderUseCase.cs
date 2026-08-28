@@ -8,19 +8,12 @@ public record CreateServiceOrderRequest(Guid UserId, Guid VehicleId);
 
 public record CreateServiceOrderResponse(Guid Id);
 
-public class CreateServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository)
+public class CreateServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository): BaseUseCase<CreateServiceOrderRequest, CreateServiceOrderResponse>
 {
-    public async Task<BaseResponse<CreateServiceOrderResponse>> ExecuteAsync(CreateServiceOrderRequest request)
+    protected override async Task<BaseResponse<CreateServiceOrderResponse>> HandleAsync(CreateServiceOrderRequest request)
     {
-        try
-        {
-            var order = ServiceOrder.Create(request.UserId, request.VehicleId);
-            await serviceOrderRepository.AddAsync(order);
-            return new BaseResponse<CreateServiceOrderResponse>(new CreateServiceOrderResponse(order.Id));
-        }
-        catch (Exception ex)
-        {
-            return new BaseResponse<CreateServiceOrderResponse>(data: new CreateServiceOrderResponse(Guid.Empty), success: false, error: ex.Message);
-        }
+        var order = ServiceOrder.Create(request.UserId, request.VehicleId);
+        await serviceOrderRepository.AddAsync(order);
+        return new BaseResponse<CreateServiceOrderResponse>(new CreateServiceOrderResponse(order.Id));
     }
 }

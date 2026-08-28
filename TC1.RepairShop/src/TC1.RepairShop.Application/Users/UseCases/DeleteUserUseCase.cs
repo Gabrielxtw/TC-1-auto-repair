@@ -1,3 +1,5 @@
+using System.Net;
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Users.UseCases;
@@ -5,18 +7,14 @@ namespace TC1.RepairShop.Application.Users.UseCases;
 
 public class DeleteUserUseCase(IUserRepository _userRepository): BaseUseCase<Guid, UserResponse?>
 {
-    public async Task<BaseResponse<UserResponse?>> ExecuteAsync(Guid id)
+    protected override async Task<BaseResponse<UserResponse?>> HandleAsync(Guid id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
-        if (user is null)
-        {
-            return new BaseResponse<UserResponse?>(data: null, success: false, error: "User not found.",StatusCode: "404");
-        }
+        var user = await _userRepository.GetByIdAsync(id) ?? throw new BusinessException(BusinessErrors.UserErrors.NotFound);
 
         user.Delete();
 
         await _userRepository.UpdateAsync(user);
 
-        return new BaseResponse<UserResponse?>(data: null, success: true, StatusCode: "204");
+        return new BaseResponse<UserResponse?>(data: null, success: true, StatusCode: HttpStatusCode.NoContent);
     }
 }

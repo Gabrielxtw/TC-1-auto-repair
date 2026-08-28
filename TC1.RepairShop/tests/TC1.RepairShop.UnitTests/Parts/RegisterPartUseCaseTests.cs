@@ -31,7 +31,7 @@ public class RegisterPartUseCaseTests
         var result = await useCase.ExecuteAsync(new CreatePartRequest("Brake Pad", 19.99m, 5));
 
         result.success.Should().BeFalse();
-        result.error.Should().Be("Peça já está cadastrada no sistema.");
+        result.error.Should().Be("Part is already registered.");
         repository.Verify(r => r.AddAsync(It.IsAny<Domain.Entities.Parts.Part>()), Times.Never);
     }
 
@@ -45,6 +45,6 @@ public class RegisterPartUseCaseTests
         var result = await useCase.ExecuteAsync(new CreatePartRequest("Brake Pad", 19.99m, 5));
 
         result.success.Should().BeFalse();
-        result.error.Should().Be("Ocorreu um erro ao criar a peça.");
+        result.error.Should().Be("db unavailable");
     }
 }

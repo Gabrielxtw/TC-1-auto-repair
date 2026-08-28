@@ -35,14 +35,7 @@ public class VehiclesController(CreateVehicleUseCase _createVehicleUseCase,
     {
         var result = await _createVehicleUseCase.ExecuteAsync(request);
 
-        if (!result.success)
-        {
-            return result.error == "Customer not found."
-                ? NotFound(new { message = result.error })
-                : Conflict(new { message = result.error });
-        }
-
-        return CreatedAtAction(nameof(GetById), new { id = result.data?.Id }, result.data);
+        return Response(result);
     }
 
     [HttpDelete("{id}")]

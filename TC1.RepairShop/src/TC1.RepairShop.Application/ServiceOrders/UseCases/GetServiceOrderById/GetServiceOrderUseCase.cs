@@ -1,22 +1,16 @@
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
-public class GetServiceOrderUseCase(IServiceOrderRepository _serviceOrderRepository)
+public class GetServiceOrderUseCase(IServiceOrderRepository _serviceOrderRepository): BaseUseCase<Guid, GetServiceOrderByIdResponse?>
 {
-    public async Task<BaseResponse<GetServiceOrderByIdResponse?>> ExecuteAsync(Guid id)
+    protected override async Task<BaseResponse<GetServiceOrderByIdResponse?>> HandleAsync(Guid id)
     {
-        try
-        {
-            var serviceOrder = await _serviceOrderRepository.GetByIdDetailedAsync(id);
-            if (serviceOrder is null)
-                return new BaseResponse<GetServiceOrderByIdResponse?>(data: null, success: false, error: "Service order not found.", StatusCode: "404");
-            return new BaseResponse<GetServiceOrderByIdResponse?>(GetServiceOrderByIdResponse.FromDomain(serviceOrder));
-        }
-        catch (Exception ex)
-        {
-            return new BaseResponse<GetServiceOrderByIdResponse?>(data: null, success: false, error: ex.Message);
-        }
+        var serviceOrder = await _serviceOrderRepository.GetByIdDetailedAsync(id);
+        if (serviceOrder is null)
+            throw new BusinessException(BusinessErrors.ServiceOrderErrors.NotFound);
+        return new BaseResponse<GetServiceOrderByIdResponse?>(GetServiceOrderByIdResponse.FromDomain(serviceOrder));
     }
 }

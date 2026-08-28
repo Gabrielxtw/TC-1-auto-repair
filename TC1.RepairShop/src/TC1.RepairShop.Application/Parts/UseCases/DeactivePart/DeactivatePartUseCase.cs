@@ -6,24 +6,14 @@ namespace TC1.RepairShop.Application.Parts.UseCases;
 
 public class DeactivatePartUseCase(IPartRepository _partRepository) : BaseUseCase<DeactivePartRequest, PartResponse?>
 {
-    public async Task<BaseResponse<PartResponse?>> ExecuteAsync(DeactivePartRequest request)
+    protected override async Task<BaseResponse<PartResponse?>> HandleAsync(DeactivePartRequest request)
     {
-        try
-        {
-            Part part = await _partRepository.GetByIdAsync(request.Id) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
+        Part part = await _partRepository.GetByIdAsync(request.Id) ?? throw new BusinessException(BusinessErrors.EntityErrors.NotFound);
 
-            part.Deactivate();
+        part.Deactivate();
 
-            await _partRepository.UpdateAsync(part);
+        await _partRepository.UpdateAsync(part);
 
-            return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
-        }
-        catch (BusinessException ex) {
-            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<PartResponse?>(data: null, success: false);
-        }
+        return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
     }
 }

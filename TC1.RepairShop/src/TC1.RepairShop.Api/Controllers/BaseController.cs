@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using TC1.RepairShop.Application;
 
 namespace TC1.RepairShop.Api.Controllers
@@ -13,23 +14,17 @@ namespace TC1.RepairShop.Api.Controllers
             {
                 var body = new { data = response.data, success = response.success, error = response.error };
 
-                if (int.TryParse(response.StatusCode, out var code))
+                return response.StatusCode switch
                 {
-                    return code switch
-                    {
-                        200 => Ok(body),
-                        204 => NoContent(),
-                        400 => BadRequest(body),
-                        401 => Unauthorized(),
-                        403 => Forbid(),
-                        404 => NotFound(body),
-                        500 => StatusCode(500, body),
-                        _ => StatusCode(code, body),
-                    };
-                }
-
-                // fallback
-                return BadRequest(body);
+                    HttpStatusCode.OK => Ok(body),
+                    HttpStatusCode.NoContent => NoContent(),
+                    HttpStatusCode.BadRequest => BadRequest(body),
+                    HttpStatusCode.Unauthorized => Unauthorized(),
+                    HttpStatusCode.Forbidden => Forbid(),
+                    HttpStatusCode.NotFound => NotFound(body),
+                    _ => StatusCode((int)response.StatusCode, body),
+                };
+                
             }
             catch (Exception ex)
             {

@@ -5,7 +5,7 @@ namespace TC1.RepairShop.Application.Users.UseCases;
 
 public class ListUsersUseCase(IUserRepository _userRepository) : BaseUseCase<ListUsersResponse>
 {
-    public async Task<BaseResponse<ListUsersResponse>> ExecuteAsync()
+    protected override async Task<BaseResponse<ListUsersResponse>> HandleAsync()
     {
         IEnumerable<User> users = await _userRepository.GetAllAsync();
 

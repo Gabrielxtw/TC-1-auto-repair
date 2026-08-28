@@ -6,27 +6,14 @@ using TC1.RepairShop.Domain.Interfaces;
 namespace TC1.RepairShop.Application.Quotes.UseCases;
 
 
-public class ApproveQuoteUseCase(IQuoteRepository quoteRepository)
+public class ApproveQuoteUseCase(IQuoteRepository quoteRepository): BaseUseCase<Guid, ApproveQuoteResult?>
 {
-    public async Task<BaseResponse<ApproveQuoteResult?>> ExecuteAsync(Guid request)
+    protected override async Task<BaseResponse<ApproveQuoteResult?>> HandleAsync(Guid request)
     {
-        try
-        {
-            var quote = await quoteRepository.GetByIdAsync(request);
-            if (quote is null)
-                return new BaseResponse<ApproveQuoteResult?>(data: null, success: false, error: "Quote not found.", StatusCode: "404");
+        var quote = await quoteRepository.GetByIdAsync(request) ?? throw new BusinessException(BusinessErrors.QuoteErrors.NotFound);
 
-            quote.Approve();
-            await quoteRepository.UpdateAsync(quote);
-            return new BaseResponse<ApproveQuoteResult?>(new ApproveQuoteResult(quote.Id, quote.Price, quote.QuoteStatusValue));
-        }
-        catch (BusinessException ex)
-        {
-            return new BaseResponse<ApproveQuoteResult?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<ApproveQuoteResult?>(data: null, success: false);
-        }
+        quote.Approve();
+        await quoteRepository.UpdateAsync(quote);
+        return new BaseResponse<ApproveQuoteResult?>(new ApproveQuoteResult(quote.Id, quote.Price, quote.QuoteStatusValue));
     }
 }

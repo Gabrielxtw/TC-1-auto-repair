@@ -6,24 +6,13 @@ namespace TC1.RepairShop.Application.Services.UseCases;
 
 public class GetAllServiceUseCase(IServiceRepository _serviceRepository) : BaseUseCase<ListServicesResponse>
 {
-    public async Task<BaseResponse<ListServicesResponse>> ExecuteAsync()
+    protected override async Task<BaseResponse<ListServicesResponse>> HandleAsync()
     {
-        try
-        {
-            IEnumerable<Service> services = await _serviceRepository.GetAllAsync();
+        IEnumerable<Service> services = await _serviceRepository.GetAllAsync();
 
-            return new BaseResponse<ListServicesResponse>(
-                data: ServicesDTO.ToListServicesResponse(services),
-                success: true
-            );
-        }
-        catch (BusinessException ex)
-        {
-            return new BaseResponse<ListServicesResponse>(data: new ListServicesResponse(new List<ServiceResponse>()), success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<ListServicesResponse>(data: new ListServicesResponse(new List<ServiceResponse>()), success: false);
-        }
+        return new BaseResponse<ListServicesResponse>(
+            data: ServicesDTO.ToListServicesResponse(services),
+            success: true
+        );
     }
 }

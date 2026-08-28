@@ -7,28 +7,17 @@ namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 
 public record CancelServiceOrderRequest(Guid id);
 
-public class CancelServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository)
+public class CancelServiceOrderUseCase(IServiceOrderRepository serviceOrderRepository): BaseUseCase<CancelServiceOrderRequest, ServiceOrderListResponse?>
 {
-    public async Task<BaseResponse<ServiceOrderListResponse?>> ExecuteAsync(CancelServiceOrderRequest request)
+    protected override async Task<BaseResponse<ServiceOrderListResponse?>> HandleAsync(CancelServiceOrderRequest request)
     {
-        try
-        {
-            var order = await serviceOrderRepository.GetByIdAsync(request.id);
-            if (order is null)
-                return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: "Service order not found.", StatusCode: "404");
+        var order = await serviceOrderRepository.GetByIdAsync(request.id);
+        if (order is null)
+            throw new BusinessException(BusinessErrors.ServiceOrderErrors.NotFound);
 
-            order.AdvanceTo(ServiceOrderStatus.Cancelled);
-            await serviceOrderRepository.UpdateAsync(order);
+        order.AdvanceTo(ServiceOrderStatus.Cancelled);
+        await serviceOrderRepository.UpdateAsync(order);
 
-            return new BaseResponse<ServiceOrderListResponse?>(ServiceOrdersDTO.ToListResponse(order));
-        }
-        catch (BusinessException ex)
-        {
-            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<ServiceOrderListResponse?>(data: null, success: false, error: "An unexpected error occurred.");
-        }
+        return new BaseResponse<ServiceOrderListResponse?>(ServiceOrdersDTO.ToListResponse(order));
     }
 }

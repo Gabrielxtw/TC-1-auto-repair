@@ -5,13 +5,9 @@ namespace TC1.RepairShop.Application.Users.UseCases;
 
 public class ChangeUserPasswordUseCase(IUserRepository _userRepository) : BaseUseCase<ChangeUserPasswordRequest, UserResponse?>
 {
-    public async Task<BaseResponse<UserResponse?>> ExecuteAsync(ChangeUserPasswordRequest request)
+    protected override async Task<BaseResponse<UserResponse?>> HandleAsync(ChangeUserPasswordRequest request)
     {
-        var user = await _userRepository.GetByIdAsync(request.Id);
-        if (user is null)
-        {
-            return new BaseResponse<UserResponse?>(null,success: false, error: "User not found.",StatusCode: "404");
-        }
+        var user = await _userRepository.GetByIdAsync(request.Id) ?? throw new BusinessException(BusinessErrors.UserErrors.NotFound);
 
         user.ChangePassword(request.NewPassword);
 

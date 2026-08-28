@@ -20,7 +20,7 @@ public class DiagnosisConcludedEventHandler (
                 quote = await _quoteRepository.GetByIdAsync(domainEvent.QuoteId.Value);
                 if (quote is null)
                 {
-                    throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
+                    throw new BusinessException(BusinessErrors.EntityErrors.NotFound);
                 }
 
                 quote.UpdatePrice(domainEvent.Price);
@@ -32,7 +32,7 @@ public class DiagnosisConcludedEventHandler (
 
             var order = await _serviceOrderRepository.GetByIdAsync(domainEvent.ServiceOrderId);
             if (order is null)
-                throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
+                throw new BusinessException(BusinessErrors.EntityErrors.NotFound);
 
             quote = Quote.Create(domainEvent.ServiceOrderId, domainEvent.Price);
             order.AttachQuote(quote.Id);

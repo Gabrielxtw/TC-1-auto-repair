@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using TC1.RepairShop.Application.Services.UseCases;
 
 namespace TC1.RepairShop.Api.Controllers

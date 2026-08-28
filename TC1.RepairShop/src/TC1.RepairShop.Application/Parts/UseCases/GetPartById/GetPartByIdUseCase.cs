@@ -7,32 +7,13 @@ namespace TC1.RepairShop.Application.Parts.UseCases;
 
 public class GetPartByIdUseCase(IPartRepository _partRepository) : BaseUseCase<Guid, PartResponse?>
 {
-    public async Task<BaseResponse<PartResponse?>> ExecuteAsync(Guid id)
+    protected override async Task<BaseResponse<PartResponse?>> HandleAsync(Guid id)
     {
-        try
-        {
-            Part part = await _partRepository.GetByIdAsync(id) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
+        Part part = await _partRepository.GetByIdAsync(id) ?? throw new BusinessException(BusinessErrors.EntityErrors.NotFound);
 
-            return new BaseResponse<PartResponse?>(
-                data: PartDTO.ToPartResponse(part),
-                success: true
-            );
-        }
-        catch (BusinessException ex)
-        {
-            return new BaseResponse<PartResponse?>(
-                data: null,
-                success: false,
-                error: ex.Message,
-                StatusCode: ex.StatusCode.ToString()
-            );
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<PartResponse?>(
-                data: null,
-                success: false
-            );
-        }
+        return new BaseResponse<PartResponse?>(
+            data: PartDTO.ToPartResponse(part),
+            success: true
+        );
     }
 }

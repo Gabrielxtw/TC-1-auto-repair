@@ -22,7 +22,7 @@ public class PartReceivedEventHandler (
             part = await _partRepository.GetByIdAsync(domainEvent.PartId);
             if (part is null)
             {
-                throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
+                throw new BusinessException(BusinessErrors.EntityErrors.NotFound);
             }
             var orders = await _serviceOrderPartRepository.GetByPartIdAsync(domainEvent.PartId);
             string orderIds = string.Join(", ", 

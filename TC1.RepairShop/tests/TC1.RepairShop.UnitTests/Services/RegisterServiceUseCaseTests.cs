@@ -32,7 +32,7 @@ public class RegisterServiceUseCaseTests
         var result = await useCase.ExecuteAsync(new CreateServiceRequest("Oil Change", "Change engine oil", 59.99m));
 
         result.success.Should().BeFalse();
-        result.error.Should().Be("Serviço já está cadastrado no sistema.");
+        result.error.Should().Be("Service is already registered.");
         repository.Verify(r => r.AddAsync(It.IsAny<Service>()), Times.Never);
     }
 
@@ -46,6 +46,6 @@ public class RegisterServiceUseCaseTests
         var result = await useCase.ExecuteAsync(new CreateServiceRequest("Oil Change", "Change engine oil", 59.99m));
 
         result.success.Should().BeFalse();
-        result.error.Should().BeEmpty();
+        result.error.Should().Be("db unavailable");
     }
 }

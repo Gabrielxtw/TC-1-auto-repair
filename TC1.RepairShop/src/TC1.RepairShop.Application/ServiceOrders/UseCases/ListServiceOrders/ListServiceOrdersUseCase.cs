@@ -11,17 +11,10 @@ namespace TC1.RepairShop.Application.ServiceOrders.UseCases;
 public class ListServiceOrdersUseCase(IServiceOrderRepository serviceOrderRepository): BaseUseCase<ListServiceOrdersResponse>
 {
 
-    public async Task<BaseResponse<ListServiceOrdersResponse>> ExecuteAsync()
+    protected override async Task<BaseResponse<ListServiceOrdersResponse>> HandleAsync()
     {
-        try
-        {
-            var orders = await serviceOrderRepository.GetAllAsync();
-            var dto = ServiceOrdersDTO.ToListServiceOrdersResponse(orders);
-            return new BaseResponse<ListServiceOrdersResponse>(dto);
-        }
-        catch (Exception ex)
-        {
-            return new BaseResponse<ListServiceOrdersResponse>(new ListServiceOrdersResponse(Enumerable.Empty<ServiceOrderListResponse>()), success: false, error: ex.Message);
-        }
+        var orders = await serviceOrderRepository.GetAllAsync();
+        var dto = ServiceOrdersDTO.ToListServiceOrdersResponse(orders);
+        return new BaseResponse<ListServiceOrdersResponse>(dto);
     }
 }

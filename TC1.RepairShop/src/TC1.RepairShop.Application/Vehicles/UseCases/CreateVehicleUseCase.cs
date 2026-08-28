@@ -1,3 +1,5 @@
+using System.Net;
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Entities.Vehicles;
 using TC1.RepairShop.Domain.Interfaces;
 
@@ -7,24 +9,21 @@ public record CreateVehicleRequest(Guid CustomerId, string LicensePlate, string 
 
 public class CreateVehicleUseCase(IUserRepository _userRepository, IVehicleRepository _vehicleRepository) : BaseUseCase<CreateVehicleRequest, VehicleResponse?>
 {
-    public async Task<BaseResponse<VehicleResponse?>> ExecuteAsync(CreateVehicleRequest request)
+    protected override async Task<BaseResponse<VehicleResponse?>> HandleAsync(CreateVehicleRequest request)
     {
         var customer = await _userRepository.GetByIdAsync(request.CustomerId);
         if (customer is null)
-        {
-            return new BaseResponse<VehicleResponse?>(data: null, success: false, error: "Customer not found.", StatusCode: "404");
-        }
+            throw new BusinessException(BusinessErrors.UserErrors.NotFound);
 
         var existingVehicle = await _vehicleRepository.GetByLicensePlateAsync(request.LicensePlate);
         if (existingVehicle is not null)
-        {
-            return new BaseResponse<VehicleResponse?>(data: null, success: false, error: "License plate is already registered.");
-        }
+            throw new BusinessException(BusinessErrors.LicensePlateErrors.DuplicateLicensePlate);
+
 
         var vehicle = Vehicle.Create(request.CustomerId, request.LicensePlate, request.Brand, request.Model, request.Year);
 
         await _vehicleRepository.AddAsync(vehicle);
 
-        return new BaseResponse<VehicleResponse?>(data: VehiclesDTO.ToVehicleResponse(vehicle));
+        return new BaseResponse<VehicleResponse?>(data: VehiclesDTO.ToVehicleResponse(vehicle), StatusCode: HttpStatusCode.Created);
     }
 }

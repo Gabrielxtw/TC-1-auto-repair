@@ -42,7 +42,7 @@ public class VehicleUseCaseTests
         var result = await useCase.ExecuteAsync(new CreateVehicleRequest(Guid.NewGuid(), "ABC1234", "Toyota", "Corolla", 2022));
 
         Assert.False(result.success);
-        Assert.Equal("Customer not found.", result.error);
+        Assert.Equal("User not found.", result.error);
     }
 
     [Fact]
@@ -69,9 +69,9 @@ public class VehicleUseCaseTests
         var userId = await CreateUserAsync(userRepository);
 
         var useCase = new CreateVehicleUseCase(userRepository, vehicleRepository);
-        var act = () => useCase.ExecuteAsync(new CreateVehicleRequest(userId, "XYZ", "Toyota", "Corolla", 2022));
+        var result = await useCase.ExecuteAsync(new CreateVehicleRequest(userId, "XYZ", "Toyota", "Corolla", 2022));
 
-        await act.Should().ThrowAsync<BusinessException>()
-            .WithMessage("The license plate value must be a valid Brazilian license plate.");
+        Assert.False(result.success);
+        Assert.Equal("The license plate value must be a valid Brazilian license plate.", result.error);
     }
 }

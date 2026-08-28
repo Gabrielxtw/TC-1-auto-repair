@@ -79,7 +79,7 @@ public class AttachServiceUseCaseTests
         var result = await useCase.ExecuteAsync(new AttachServiceRequest(order.Id, service.Id, 59.99m));
 
         result.success.Should().BeFalse();
-        result.error.Should().Be("Service already attached to the service order.");
+        result.error.Should().Be("Service is already registered.");
         orderServiceRepository.Verify(r => r.AddAsync(It.IsAny<ServiceOrderService>()), Times.Never);
     }
 }

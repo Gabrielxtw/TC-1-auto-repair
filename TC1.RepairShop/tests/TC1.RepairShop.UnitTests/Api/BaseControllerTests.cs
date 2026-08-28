@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using TC1.RepairShop.Api.Controllers;
 using TC1.RepairShop.Application;
 using Xunit;
@@ -29,7 +30,7 @@ public class BaseControllerTests
     [Fact]
     public void Response_ShouldReturnUnauthorized_WhenStatusCodeIs401()
     {
-        var response = new BaseResponse<string>(data: "", success: false, error: "unauthorized", StatusCode: "401");
+        var response = new BaseResponse<string>(data: "", success: false, error: "unauthorized", StatusCode: HttpStatusCode.Unauthorized);
 
         var result = _controller.InvokeResponse(response);
 
@@ -37,16 +38,15 @@ public class BaseControllerTests
     }
 
     [Theory]
-    [InlineData("500")]
-    [InlineData("999")]
-    public void Response_ShouldReturnStatusCodeResult_ForUnmappedOrServerErrorStatusCodes(string statusCode)
+    [InlineData(HttpStatusCode.InternalServerError)]
+    public void Response_ShouldReturnStatusCodeResult_ForUnmappedOrServerErrorStatusCodes(HttpStatusCode statusCode)
     {
         var response = new BaseResponse<string>(data: "", success: false, error: "boom", StatusCode: statusCode);
 
         var result = _controller.InvokeResponse(response);
 
         var objectResult = result.Should().BeOfType<ObjectResult>().Subject;
-        objectResult.StatusCode.Should().Be(int.Parse(statusCode));
+        objectResult.StatusCode.Should().Be(((int)statusCode));
         objectResult.Value.Should().BeEquivalentTo(new { data = "", error = "boom", success = false });
     }
 }

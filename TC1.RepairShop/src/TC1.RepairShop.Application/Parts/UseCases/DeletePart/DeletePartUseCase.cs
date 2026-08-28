@@ -6,25 +6,14 @@ namespace TC1.RepairShop.Application.Parts.UseCases;
 
 public class DeletePartUseCase(IPartRepository _partRepository): BaseUseCase<Guid,PartResponse?>
 {
-    public async Task<BaseResponse<PartResponse?>> ExecuteAsync(Guid request)
+    protected override async Task<BaseResponse<PartResponse?>> HandleAsync(Guid request)
     {
-        try
-        {
-            Part part = await _partRepository.GetByIdAsync(request) ?? throw new BusinessException(BusinessErrors.RequestErrors.NotFound);
+        Part part = await _partRepository.GetByIdAsync(request) ?? throw new BusinessException(BusinessErrors.EntityErrors.NotFound);
 
-            part.Delete();
+        part.Delete();
 
-            await _partRepository.UpdateAsync(part);
+        await _partRepository.UpdateAsync(part);
 
-            return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
-        }
-        catch (BusinessException ex)
-        {
-            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<PartResponse?>(data: null, success: false, error: "Ocorreu um erro ao excluir a peça.");
-        }
+        return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
     }
 }

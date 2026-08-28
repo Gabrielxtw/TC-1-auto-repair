@@ -47,7 +47,7 @@ public class ListServiceOrdersUseCaseTests
         var result = await useCase.ExecuteAsync();
 
         result.success.Should().BeFalse();
-        result.data.Orders.Should().BeEmpty();
+        result.data.Should().BeNull();
         result.error.Should().Be("db unavailable");
     }
 }

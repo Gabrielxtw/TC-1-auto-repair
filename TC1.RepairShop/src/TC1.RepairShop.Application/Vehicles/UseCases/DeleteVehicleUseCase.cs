@@ -1,3 +1,4 @@
+using TC1.RepairShop.Domain.CustomExceptions;
 using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.Application.Vehicles.UseCases;
@@ -5,13 +6,12 @@ namespace TC1.RepairShop.Application.Vehicles.UseCases;
 
 public class DeleteVehicleUseCase(IVehicleRepository _vehicleRepository) : BaseUseCase<Guid, VehicleResponse?>
 {
-    public async Task<BaseResponse<VehicleResponse?>> ExecuteAsync(Guid id)
+    protected override async Task<BaseResponse<VehicleResponse?>> HandleAsync(Guid id)
     {
         var vehicle = await _vehicleRepository.GetByIdAsync(id);
         if (vehicle is null)
-        {
-            return new BaseResponse<VehicleResponse?>(data: null, success: false, error: "Vehicle not found.");
-        }
+            throw new BusinessException(BusinessErrors.VehicleErrors.NotFound);
+
 
         vehicle.Delete();
 

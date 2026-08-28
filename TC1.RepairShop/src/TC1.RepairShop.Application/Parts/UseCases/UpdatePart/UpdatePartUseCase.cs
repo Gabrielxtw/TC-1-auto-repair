@@ -6,27 +6,14 @@ namespace TC1.RepairShop.Application.Parts.UseCases;
 
 public class UpdatePartUseCase(IPartRepository _partRepository) : BaseUseCase<UpdatePartRequest, PartResponse?>
 {
-    public async Task<BaseResponse<PartResponse?>> ExecuteAsync(UpdatePartRequest request)
+    protected override async Task<BaseResponse<PartResponse?>> HandleAsync(UpdatePartRequest request)
     {
-        try
-        {
-            var part = await _partRepository.GetByIdAsync(request.Id);
-            if (part is null)
-                return new BaseResponse<PartResponse?>(data: null, success: false, error: "Part not found.");
+        var part = await _partRepository.GetByIdAsync(request.Id) ?? throw new BusinessException(BusinessErrors.PartErrors.NotFound);
 
-            part.Update(request.Name, request.Price);
+        part.Update(request.Name, request.Price);
 
-            await _partRepository.UpdateAsync(part);
+        await _partRepository.UpdateAsync(part);
 
-            return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
-        }
-        catch (BusinessException ex)
-        {
-            return new BaseResponse<PartResponse?>(data: null, success: false, error: ex.Message, StatusCode: ex.StatusCode.ToString());
-        }
-        catch (Exception)
-        {
-            return new BaseResponse<PartResponse?>(data: null, success: false);
-        }
+        return new BaseResponse<PartResponse?>(data: PartDTO.ToPartResponse(part), success: true);
     }
 }

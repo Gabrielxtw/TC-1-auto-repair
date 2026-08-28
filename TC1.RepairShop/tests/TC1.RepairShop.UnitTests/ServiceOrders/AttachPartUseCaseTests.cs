@@ -79,7 +79,7 @@ public class AttachPartUseCaseTests
         var result = await useCase.ExecuteAsync(new AttachPartRequest(order.Id, part.Id, 2, 19.99m, false));
 
         result.success.Should().BeFalse();
-        result.error.Should().Be("Part already attached to the service order.");
+        result.error.Should().Be("Part is already registered.");
         orderPartRepository.Verify(r => r.AddAsync(It.IsAny<ServiceOrderPart>()), Times.Never);
     }
 }

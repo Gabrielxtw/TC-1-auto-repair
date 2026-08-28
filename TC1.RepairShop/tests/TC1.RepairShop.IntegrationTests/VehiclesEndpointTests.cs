@@ -70,10 +70,10 @@ public class VehiclesEndpointTests : IClassFixture<ApiWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
 
-        var created = await createResponse.Content.ReadFromJsonAsync<VehicleResponseDto>();
+        var created = await createResponse.Content.ReadFromJsonAsync<ResponseWrapper<VehicleResponseDto>>();
         Assert.NotNull(created);
 
-        var getResponse = await _client.GetAsync($"/api/vehicles/{created!.Id}");
+        var getResponse = await _client.GetAsync($"/api/vehicles/{created!.data.Id}");
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
     }
 
@@ -133,12 +133,12 @@ public class VehiclesEndpointTests : IClassFixture<ApiWebApplicationFactory>
         var createResponse = await _client.PostAsJsonAsync(
             "/api/vehicles",
             new { customerId, licensePlate = NextPlate(), brand = "Toyota", model = "Corolla", year = 2022 });
-        var created = await createResponse.Content.ReadFromJsonAsync<VehicleResponseDto>();
+        var created = await createResponse.Content.ReadFromJsonAsync<ResponseWrapper<VehicleResponseDto>>();
 
-        var deleteResponse = await _client.DeleteAsync($"/api/vehicles/{created!.Id}");
+        var deleteResponse = await _client.DeleteAsync($"/api/vehicles/{created!.data.Id}");
         Assert.Equal(HttpStatusCode.OK, deleteResponse.StatusCode);
 
-        var getResponse = await _client.GetAsync($"/api/vehicles/{created.Id}");
+        var getResponse = await _client.GetAsync($"/api/vehicles/{created.data.Id}");
         Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 

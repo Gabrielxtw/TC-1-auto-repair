@@ -104,7 +104,7 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
             "/api/serviceorders/Advance",
             new { serviceOrderId = order!.Id, newStatus = "NotARealStatus" });
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<AdvanceServiceOrderResponseDto>();
         Assert.False(body!.success);
     }

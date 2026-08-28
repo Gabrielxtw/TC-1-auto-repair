@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Linq;
+using System;
 using TC1.RepairShop.Domain.Entities.Common;
 using TC1.RepairShop.Domain.Interfaces;
 using TC1.RepairShop.Infrastructure.Data;
@@ -36,12 +38,21 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
 
     public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
-        return await _set.AsNoTracking().ToListAsync();
+        IQueryable<T> query = _set.AsNoTracking();
+
+        if (typeof(BaseEntity).IsAssignableFrom(typeof(T)))
+        {
+            query = query.Where(x => EF.Property<DateTime?>(x, "DeletedAt") == null);
+        }
+
+        return await query.ToListAsync();
     }
 
     public virtual async Task<T?> GetByIdAsync(Guid id)
     {
-        return await _set.FindAsync(id);
+        IQueryable<T> query = _set;
+
+        return await query.FirstOrDefaultAsync(x => EF.Property<Guid>(x, "Id") == id);
     }
     //public virtual async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
     //{
@@ -68,7 +79,7 @@ public class GenericRepository<T> : IRepository<T, Guid> where T : class
 
     public virtual async Task Add(T entity)
     {
-        _set.Add(entity);
+        await _set.AddAsync(entity);
     }
     public virtual async Task Update(T entity)
     {

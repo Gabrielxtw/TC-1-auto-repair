@@ -10,17 +10,10 @@ namespace TC1.RepairShop.Application.Quotes.UseCases.ListQuotes;
 
 public class ListQuotesUseCase(IQuoteRepository _quoteRepository): BaseUseCase<ListQuotesResponse>
 {
-    public async Task<BaseResponse<ListQuotesResponse>> ExecuteAsync()
+    protected override async Task<BaseResponse<ListQuotesResponse>> HandleAsync()
     {
-        try
-        {
-            var quotes = await _quoteRepository.GetAllAsync();
-            var dto = QuotesDTO.ToListQuotesResponse(quotes);
-            return new BaseResponse<ListQuotesResponse>(dto);
-        }
-        catch (Exception ex)
-        {
-            return new BaseResponse<ListQuotesResponse>(new ListQuotesResponse(Enumerable.Empty<QuoteResponse>()), success: false, error: ex.Message);
-        }
+        var quotes = await _quoteRepository.GetAllAsync();
+        var dto = QuotesDTO.ToListQuotesResponse(quotes);
+        return new BaseResponse<ListQuotesResponse>(dto);
     }
 }
