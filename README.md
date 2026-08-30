@@ -17,6 +17,7 @@ O projeto visa solucionar os principais gargalos operacionais, por meio de funci
 - SQL Server 2022 (latest)
 - Coverlet Collector 10
 - Report Generator 5.5.11
+- Mediatr
 
 ## Documentação
 A concepção da solução seguiu a abordagem de Domain-Driven Design (DDD) para mapeamento do domínio e definição dos contextos delimitados (Bounded Contexts).
