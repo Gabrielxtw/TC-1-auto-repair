@@ -7,34 +7,84 @@ on:
     branches: [ "CI" ]
 
 jobs:
-  build-and-test:
+  build:
+    name: Build da Solução
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout do código
-      uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-    - name: Configurar o .NET 10 SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '10.0.x'
+      - name: Configurar o .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
 
-    - name: Restaurar dependências
-      run: dotnet restore TC1.RepairShop/TC1.RepairShop.slnx
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.slnx') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    - name: BUILD
-      run: dotnet build TC1.RepairShop/TC1.RepairShop.slnx --no-restore --configuration Release
+      - name: Restaurar dependências
+        run: dotnet restore TC1.RepairShop/TC1.RepairShop.slnx
 
-    - name: Executar testes com cobertura
-      run: dotnet test TC1.RepairShop/TC1.RepairShop.slnx --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+      - name: BUILD
+        run: dotnet build TC1.RepairShop/TC1.RepairShop.slnx --no-restore --configuration Release
 
-    - name: Instalar ReportGenerator
-      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+      - name: Salvar Cache dos Binários Compilados
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/bin/Release
+            **/obj/Release
+          key: build-binaries-${{ github.sha }}
 
-    - name: Validar cobertura mínima de 70%
-      run: |
-        reportgenerator \
-          "-reports:**/coverage.cobertura.xml" \
-          "-targetdir:coveragereport" \
-          "-reporttypes:Html;TextSummary" \
-          "-minimumCoverageThresholds:lineCoverage=70"
+  test-and-coverage:
+    name: Testes e Cobertura
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar o .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.slnx') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restaurar dependências
+        run: dotnet restore TC1.RepairShop/TC1.RepairShop.slnx
+
+      - name: Recuperar Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/bin/Release
+            **/obj/Release
+          key: build-binaries-${{ github.sha }}
+
+      - name: Executar testes
+        run: dotnet test TC1.RepairShop/TC1.RepairShop.slnx --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+
+      - name: Instalar ReportGenerator
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+      - name: Validar cobertura mínima
+        run: |
+          reportgenerator \
+            "-reports:**/coverage.cobertura.xml" \
+            "-targetdir:coveragereport" \
+            "-reporttypes:Html;TextSummary" \
+            "-minimumCoverageThresholds:lineCoverage=70"
