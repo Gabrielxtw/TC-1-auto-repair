@@ -20,13 +20,13 @@ jobs:
         dotnet-version: '10.0.x'
 
     - name: Restaurar dependências
-      run: dotnet restore
+      run: dotnet restore TC1.RepairShop/TC1.RepairShop.slnx
 
     - name: BUILD
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build TC1.RepairShop/TC1.RepairShop.slnx --no-restore --configuration Release
 
     - name: Executar testes com cobertura
-      run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test TC1.RepairShop/TC1.RepairShop.slnx --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
 
     - name: Instalar ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
