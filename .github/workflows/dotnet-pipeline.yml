@@ -1,0 +1,40 @@
+name: .NET 10 Pipeline
+
+on:
+  push:
+    branches: [ "CI" ]
+  pull_request:
+    branches: [ "CI" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Configurar o .NET 10 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restaurar dependências
+      run: dotnet restore
+
+    - name: BUILD
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Executar testes com cobertura
+      run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+
+    - name: Instalar ReportGenerator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+    - name: Validar cobertura mínima de 70%
+      run: |
+        reportgenerator \
+          "-reports:**/coverage.cobertura.xml" \
+          "-targetdir:coveragereport" \
+          "-reporttypes:Html;TextSummary" \
+          "-minimumCoverageThresholds:lineCoverage=70"
