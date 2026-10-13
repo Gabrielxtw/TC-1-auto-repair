@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TC1.RepairShop.Application.ServiceOrders.UseCases;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
 using TC1.RepairShop.Domain.Entities.Users;
+using TC1.RepairShop.Domain.Enums;
 using static TC1.RepairShop.Api.Controllers.UsersController;
 
 namespace TC1.RepairShop.Api.Controllers;
@@ -20,9 +21,26 @@ public class ServiceOrdersController(CreateServiceOrderUseCase _createServiceOrd
 {
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] string? status,
+                                            [FromQuery] DateTime? openedFrom,
+                                            [FromQuery] DateTime? openedTo,
+                                            [FromQuery] bool descending = true)
     {
-        var result = await _listServiceOrdersUseCase.ExecuteAsync();
+        ServiceOrderStatus? orderStatus = null;
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            try
+            {
+                orderStatus = ServiceOrderStatus.FromName(status);
+            }
+            catch (InvalidOperationException)
+            {
+                return BadRequest($"'{status}' is not a valid service order status.");
+            }
+        }
+
+        var request = new ListServiceOrdersRequest(orderStatus, openedFrom, openedTo, descending);
+        var result = await _listServiceOrdersUseCase.ExecuteAsync(request);
 
         return Response(result);
     }

@@ -25,10 +25,10 @@ public class ListServiceOrdersUseCaseTests
         var order = ServiceOrder.Create(user.Id, Guid.NewGuid());
         AttachUser(order, user);
         var repository = new Mock<IServiceOrderRepository>();
-        repository.Setup(r => r.GetAllAsync()).ReturnsAsync(new[] { order });
+        repository.Setup(r => r.GetFilteredAsync(null, null, null, true)).ReturnsAsync(new[] { order });
 
         var useCase = new ListServiceOrdersUseCase(repository.Object);
-        var result = await useCase.ExecuteAsync();
+        var result = await useCase.ExecuteAsync(new ListServiceOrdersRequest(null, null, null));
 
         result.success.Should().BeTrue();
         result.data.Orders.Should().ContainSingle(r =>
@@ -41,13 +41,29 @@ public class ListServiceOrdersUseCaseTests
     public async Task ExecuteAsync_ShouldReturnEmptyFailure_WhenRepositoryThrows()
     {
         var repository = new Mock<IServiceOrderRepository>();
-        repository.Setup(r => r.GetAllAsync()).ThrowsAsync(new Exception("db unavailable"));
+        repository.Setup(r => r.GetFilteredAsync(null, null, null, true)).ThrowsAsync(new Exception("db unavailable"));
 
         var useCase = new ListServiceOrdersUseCase(repository.Object);
-        var result = await useCase.ExecuteAsync();
+        var result = await useCase.ExecuteAsync(new ListServiceOrdersRequest(null, null, null));
 
         result.success.Should().BeFalse();
         result.data.Should().BeNull();
         result.error.Should().Be("db unavailable");
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShouldForwardFiltersAndSortDirectionToRepository()
+    {
+        var repository = new Mock<IServiceOrderRepository>();
+        var openedFrom = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var openedTo = new DateTime(2025, 1, 31, 23, 59, 59, DateTimeKind.Utc);
+        var request = new ListServiceOrdersRequest(ServiceOrderStatus.Received, openedFrom, openedTo, false);
+        repository.Setup(r => r.GetFilteredAsync(request.Status, openedFrom, openedTo, false))
+            .ReturnsAsync(Array.Empty<ServiceOrder>());
+
+        var useCase = new ListServiceOrdersUseCase(repository.Object);
+        await useCase.ExecuteAsync(request);
+
+        repository.Verify(r => r.GetFilteredAsync(ServiceOrderStatus.Received, openedFrom, openedTo, false), Times.Once);
     }
 }

@@ -43,7 +43,7 @@ public class ServiceOrdersEndpointTests : IClassFixture<ApiWebApplicationFactory
     [Fact]
     public async Task GetAll_WithoutToken_ShouldReturn401()
     {
-        var response = await _client.GetAsync("/api/serviceorders");
+        var response = await _client.GetAsync("/api/serviceorders?status=Received&descending=false");
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }

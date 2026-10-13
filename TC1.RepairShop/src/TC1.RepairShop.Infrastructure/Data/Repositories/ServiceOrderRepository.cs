@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TC1.RepairShop.Domain.Entities.Parts;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
+using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces;
 using TC1.RepairShop.Infrastructure.Data;
 
@@ -14,10 +15,30 @@ public class ServiceOrderRepository : GenericRepository<ServiceOrder>, IServiceO
 
     public override async Task<IEnumerable<ServiceOrder>> GetAllAsync()
     {
-        return await _context.ServiceOrders
+        return await GetFilteredAsync(null, null, null, true);
+    }
+
+    public async Task<IEnumerable<ServiceOrder>> GetFilteredAsync(ServiceOrderStatus? status, DateTime? openedFrom, DateTime? openedTo, bool descending)
+    {
+        var query = _context.ServiceOrders
             .Include(o => o.User)
             .AsNoTracking()
-            .ToListAsync();
+            .AsQueryable();
+
+        if (status is { } statusFilter)
+            query = query.Where(o => o.OrderStatusValue == statusFilter);
+
+        if (openedFrom.HasValue)
+            query = query.Where(o => o.OpenedAt >= openedFrom.Value);
+
+        if (openedTo.HasValue)
+            query = query.Where(o => o.OpenedAt <= openedTo.Value);
+
+        query = descending
+            ? query.OrderByDescending(o => o.OpenedAt)
+            : query.OrderBy(o => o.OpenedAt);
+
+        return await query.ToListAsync();
     }
 
     public async Task<ServiceOrder?> GetByIdDetailedAsync(Guid id)
