@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  ConnectionStrings__DefaultConnection: "Server=mssql-service,1433;Database=TC1;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"
+  Jwt__Secret: "__CHANGE_ME_USE_ENV_VAR_OR_USER_SECRETS__"
+  Jwt__Issuer: "TC1.RepairShop"
+  Jwt__Audience: "TC1.RepairShop.Clients"
+  Jwt__ExpirationMinutes: "15"
+  
+  SeedAdmin__Username: "teste"
+  SeedAdmin__Password: "123"
+  SeedAdmin__Email: "teste@teste.com"
+  SeedAdmin__Document: "23665844827"
+  SeedAdmin__Phone: "962154655"
+
+  SendGrid__ApiKey: 
+  SendGrid__FromEmail: 
