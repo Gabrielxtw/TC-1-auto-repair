@@ -69,3 +69,19 @@ Caso todos os tópicos estejam configurados corretamente, basta executar via sua
 Há um ferramenta para facilitar a geração do relatório de cobertura de código, automatizando as etapas para gerar um relatório pelo Report Generator.
 
 Para gerar o relatório basta executar o seguinte comando na raiz do projeto `dotnet run --project ./CoverageRunner`.
+
+
+### kubernetes
+- rode `kubectl apply -f .\TC1.RepairShop\k8s\` para iniciar o cluster kubernetes
+- `kubectl port-forward --address 127.0.0.1 service/dotnet-service 30100:8080` para expor a porta 8080 para o localhost
+- `kubectl port-forward --address 127.0.0.1 service/mssql-service 30101:1433` se quiser conectar ao DB com algum client
+
+### Infraestrutura na AWS (Terraform)
+A pasta `TC1.RepairShop/infra` provisiona, no AWS Academy Learner Lab, a rede (VPC), o cluster Kubernetes (EKS, com metrics-server para o HPA) e o banco SQL Server (em EC2). Arquitetura, recursos criados, custos e limitações estão em [TC1.RepairShop/infra/README.md](TC1.RepairShop/infra/README.md).
+
+Com as credenciais do lab configuradas, a partir de `TC1.RepairShop/infra` (bash/Git Bash):
+- crie o bucket do state, uma vez por conta (comandos no README da infra)
+- `terraform init -backend-config="bucket=tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)"`
+- `terraform plan -out=tfplan` e, depois de revisar o plano, `terraform apply tfplan`
+- `aws eks update-kubeconfig --region us-east-1 --name tc1-repairshop` para acessar o cluster
+- ao terminar, remova os recursos do Kubernetes e rode o destroy (detalhes no README da infra) para não consumir o crédito do lab
