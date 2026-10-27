@@ -1,0 +1,105 @@
+name: Infra (Terraform)
+
+on:
+  pull_request:
+    paths:
+      - "TC1.RepairShop/infra/**"
+      - ".github/workflows/infra.yml"
+  push:
+    branches: [main]
+    paths:
+      - "TC1.RepairShop/infra/**"
+      - ".github/workflows/infra.yml"
+  # Learner Lab credentials expire with each lab session, so changes to real infrastructure
+  # only run on demand; triggering the workflow is the explicit approval.
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Terraform action"
+        type: choice
+        options: [plan, apply, destroy]
+        default: plan
+
+permissions:
+  contents: read
+
+env:
+  TF_VERSION: "1.16.6"
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+  AWS_REGION: us-east-1
+
+defaults:
+  run:
+    working-directory: TC1.RepairShop/infra
+
+jobs:
+  validate:
+    name: Validate (no AWS credentials)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: Format
+        run: terraform fmt -check -recursive
+
+      - name: Init without backend
+        run: terraform init -backend=false
+
+      - name: Validate
+        run: terraform validate
+
+  terraform:
+    name: Terraform ${{ inputs.action }}
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    concurrency:
+      group: terraform
+      cancel-in-progress: false
+    env:
+      ACTION: ${{ inputs.action }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: Configure AWS credentials (Learner Lab session)
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      # The state bucket is named after the AWS account (see TC1.RepairShop/infra/README.md).
+      - name: Init
+        run: terraform init -backend-config="bucket=tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+
+      - name: Plan
+        run: |
+          if [ "$ACTION" = "destroy" ]; then
+            terraform plan -destroy -out=tfplan
+          else
+            terraform plan -out=tfplan
+          fi
+
+      - name: Apply
+        if: inputs.action != 'plan'
+        run: terraform apply tfplan
+
+      - name: Outputs
+        if: inputs.action == 'apply'
+        run: terraform output
