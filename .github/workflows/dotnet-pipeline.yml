@@ -89,3 +89,37 @@ jobs:
             "-targetdir:coveragereport" \
             "-reporttypes:Html;TextSummary" \
             "-minimumCoverageThresholds:lineCoverage=80"
+
+  Terraform:
+    name: Terraform
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      name: Setup
+      uses: hashicorp/setup-terraform@v4
+      with:
+          terraform_version: "1.16.6"
+          terraform_wrapper: false   # required: the wrapper adds extra text to terraform output
+
+      name: Configure AWS credentials (Learner Lab session)
+      uses: aws-actions/configure-aws-credentials@v6
+      with:
+        aws-region: us-east-1
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      name: Read Terraform outputs and create the DB Secret
+      working-directory: TC1.RepairShop/infra
+      run: |
+          terraform init -input=false -backend-config="bucket=tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+          aws eks update-kubeconfig --region us-east-1 --name "$(terraform output -raw cluster_name)"
+
+          CONN="$(terraform output -raw db_connection_string)"
+          echo "::add-mask::$CONN"   # hides the value if it ever shows up in the logs
+          kubectl create secret generic app-db \
+            --from-literal=ConnectionStrings__DefaultConnection="$CONN" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      name: Deploy manifests
+      run: kubectl apply -f TC1.RepairShop/k8s/
