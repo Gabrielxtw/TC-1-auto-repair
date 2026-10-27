@@ -69,3 +69,9 @@ Caso todos os tópicos estejam configurados corretamente, basta executar via sua
 Há um ferramenta para facilitar a geração do relatório de cobertura de código, automatizando as etapas para gerar um relatório pelo Report Generator.
 
 Para gerar o relatório basta executar o seguinte comando na raiz do projeto `dotnet run --project ./CoverageRunner`.
+
+
+### kubernetes
+- rode `kubectl apply -f .\TC1.RepairShop\k8s\` para iniciar o cluster kubernetes
+- `kubectl port-forward --address 127.0.0.1 service/dotnet-service 30100:8080` para expor a porta 8080 para o localhost
+- `kubectl port-forward --address 127.0.0.1 service/mssql-service 30101:1433` se quiser conectar ao DB com algum client

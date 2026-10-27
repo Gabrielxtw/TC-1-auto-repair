@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnet-deployment
+  labels:
+    app: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: enzodamatodev/tc-1-auto-repair:v1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: ConnectionStrings__DefaultConnection
+
+        - name: Jwt__Secret
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: Jwt__Secret
+
+        - name: Jwt__Issuer
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: Jwt__Issuer
+
+        - name: Jwt__Audience
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: Jwt__Audience
+
+        - name: Jwt__ExpirationMinutes
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: Jwt__ExpirationMinutes
+        
+        - name: SeedAdmin__Username
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SeedAdmin__Username
+
+        - name: SeedAdmin__Password
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SeedAdmin__Password
+        
+        - name: SeedAdmin__Email
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SeedAdmin__Email
+
+        - name: SeedAdmin__Document
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SeedAdmin__Document
+
+        - name: SeedAdmin__Phone
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SeedAdmin__Phone
+
+        - name: SendGrid__ApiKey
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SendGrid__ApiKey
+
+        - name: SendGrid__FromEmail
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SendGrid__FromEmail

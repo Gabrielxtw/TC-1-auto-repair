@@ -13,6 +13,11 @@ namespace TC1.RepairShop.UnitTests.Infrastructure;
 
 public class ServiceOrderRepositoryTests
 {
+    private static void SetOpenedAt(ServiceOrder order, DateTime openedAt)
+    {
+        typeof(ServiceOrder).GetProperty(nameof(ServiceOrder.OpenedAt))!.SetValue(order, openedAt);
+    }
+
     private static RepairShopDbContext CreateContext()
     {
         var options = new DbContextOptionsBuilder<RepairShopDbContext>()
@@ -64,6 +69,35 @@ public class ServiceOrderRepositoryTests
         var result = Assert.Single(all);
         Assert.NotNull(result.User);
         Assert.Equal(user.Id, result.User.Id);
+    }
+
+    [Fact]
+    public async Task GetFilteredAsync_ShouldFilterByStatusAndDateAndSortByOpenedAt()
+    {
+        await using var context = CreateContext();
+        var repository = new ServiceOrderRepository(context);
+        var (user, vehicle) = CreateUserAndVehicle();
+        context.Users.Add(user);
+        context.Vehicles.Add(vehicle);
+
+        var earlierOrder = ServiceOrder.Create(user.Id, vehicle.Id);
+        earlierOrder.AdvanceTo(ServiceOrderStatus.UnderDiagnosis);
+        SetOpenedAt(earlierOrder, new DateTime(2025, 1, 2, 0, 0, 0, DateTimeKind.Utc));
+        var laterOrder = ServiceOrder.Create(user.Id, vehicle.Id);
+        laterOrder.AdvanceTo(ServiceOrderStatus.UnderDiagnosis);
+        SetOpenedAt(laterOrder, new DateTime(2025, 1, 3, 0, 0, 0, DateTimeKind.Utc));
+        var otherStatusOrder = ServiceOrder.Create(user.Id, vehicle.Id);
+        SetOpenedAt(otherStatusOrder, new DateTime(2025, 1, 2, 12, 0, 0, DateTimeKind.Utc));
+        context.ServiceOrders.AddRange(earlierOrder, laterOrder, otherStatusOrder);
+        await context.SaveChangesAsync();
+
+        var results = await repository.GetFilteredAsync(
+            ServiceOrderStatus.UnderDiagnosis,
+            new DateTime(2025, 1, 2, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2025, 1, 3, 0, 0, 0, DateTimeKind.Utc),
+            descending: false);
+
+        Assert.Equal(new[] { earlierOrder.Id, laterOrder.Id }, results.Select(order => order.Id));
     }
 
     [Fact]

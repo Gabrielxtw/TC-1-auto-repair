@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using TC1.RepairShop.Domain.Entities.ServiceOrders;
+using TC1.RepairShop.Domain.Enums;
 using TC1.RepairShop.Domain.Interfaces;
 
 namespace TC1.RepairShop.IntegrationTests;
@@ -33,6 +34,22 @@ public class FakeServiceOrderRepository : IServiceOrderRepository
 
     public Task<IEnumerable<ServiceOrder>> GetAllAsync() =>
         Task.FromResult(ServiceOrders.Values.AsEnumerable());
+
+    public Task<IEnumerable<ServiceOrder>> GetFilteredAsync(ServiceOrderStatus? status, DateTime? openedFrom, DateTime? openedTo, bool descending)
+    {
+        IEnumerable<ServiceOrder> orders = ServiceOrders.Values;
+        if (status is not null)
+            orders = orders.Where(order => order.OrderStatusValue == status);
+        if (openedFrom.HasValue)
+            orders = orders.Where(order => order.OpenedAt >= openedFrom.Value);
+        if (openedTo.HasValue)
+            orders = orders.Where(order => order.OpenedAt <= openedTo.Value);
+
+        orders = descending
+            ? orders.OrderByDescending(order => order.OpenedAt)
+            : orders.OrderBy(order => order.OpenedAt);
+        return Task.FromResult(orders);
+    }
 
     public Task<ServiceOrder?> GetByIdAsync(Guid id)
     {
