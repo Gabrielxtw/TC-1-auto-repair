@@ -1,0 +1,18 @@
+# Local provider cache and state (the real state lives in the S3 bucket)
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Saved plans and crash logs
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+
+# Local-only overrides; never put secrets in versioned tfvars
+terraform.tfvars
+*.auto.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
