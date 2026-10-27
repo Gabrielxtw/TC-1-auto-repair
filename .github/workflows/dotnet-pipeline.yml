@@ -1,0 +1,128 @@
+name: .NET 10 Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar o .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.slnx') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restaurar dependências
+        run: dotnet restore TC1.RepairShop/TC1.RepairShop.slnx
+
+      - name: BUILD
+        run: dotnet build TC1.RepairShop/TC1.RepairShop.slnx --no-restore --configuration Release
+
+      - name: Salvar Cache dos Binários Compilados
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/bin/Release
+            **/obj/Release
+          key: build-binaries-${{ github.sha }}
+
+  test-and-coverage:
+    name: Validação dos testes e cobertura
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar o .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.slnx') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restaurar dependências
+        run: dotnet restore TC1.RepairShop/TC1.RepairShop.slnx
+
+      - name: Recuperar Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/bin/Release
+            **/obj/Release
+          key: build-binaries-${{ github.sha }}
+
+      - name: Executar testes
+        run: dotnet test TC1.RepairShop/TC1.RepairShop.slnx --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+
+      - name: Instalar ReportGenerator
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+      - name: Validar cobertura mínima
+        run: |
+          reportgenerator \
+            "-reports:**/coverage.cobertura.xml" \
+            "-targetdir:coveragereport" \
+            "-reporttypes:Html;TextSummary" \
+            "-minimumCoverageThresholds:lineCoverage=80"
+
+  terraform:
+    name: Terraform & Deploy
+    needs: test-and-coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.16.6"
+          terraform_wrapper: false
+
+      - name: Configure AWS credentials (Learner Lab session)
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      - name: Read Terraform outputs and create the DB Secret
+        working-directory: TC1.RepairShop/infra
+        run: |
+          terraform init -input=false -backend-config="bucket=tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+          aws eks update-kubeconfig --region us-east-1 --name "$(terraform output -raw cluster_name)"
+
+          CONN="$(terraform output -raw db_connection_string)"
+          echo "::add-mask::$CONN"
+          kubectl create secret generic app-db \
+            --from-literal=ConnectionStrings__DefaultConnection="$CONN" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy manifests
+        run: kubectl apply -f TC1.RepairShop/k8s/
