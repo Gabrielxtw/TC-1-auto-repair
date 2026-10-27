@@ -92,7 +92,7 @@ jobs:
 
   terraform:
     name: Terraform & Deploy
-    needs: build
+    needs: test-and-coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do código
