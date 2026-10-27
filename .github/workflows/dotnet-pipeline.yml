@@ -2,13 +2,14 @@ name: .NET 10 Pipeline
 
 on:
   push:
-    branches: [ "CI" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "CI" ]
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build da Solução
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +44,7 @@ jobs:
           key: build-binaries-${{ github.sha }}
 
   test-and-coverage:
-    name: Testes e Cobertura
+    name: Validação dos testes e cobertura
     needs: build
     runs-on: ubuntu-latest
 
@@ -87,4 +88,4 @@ jobs:
             "-reports:**/coverage.cobertura.xml" \
             "-targetdir:coveragereport" \
             "-reporttypes:Html;TextSummary" \
-            "-minimumCoverageThresholds:lineCoverage=70"
+            "-minimumCoverageThresholds:lineCoverage=80"
