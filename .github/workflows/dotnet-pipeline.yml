@@ -107,6 +107,21 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+      # Fails before creating anything if the app secrets are missing from the repository settings.
+      - name: Check the app secrets
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SEED_ADMIN_PASSWORD: ${{ secrets.SEED_ADMIN_PASSWORD }}
+        run: |
+          if [ "${#JWT_SECRET}" -lt 32 ]; then
+            echo "::error::Repository secret JWT_SECRET is missing or shorter than 32 characters (HMAC-SHA256 key)."
+            exit 1
+          fi
+          if [ -z "$SEED_ADMIN_PASSWORD" ]; then
+            echo "::error::Repository secret SEED_ADMIN_PASSWORD is missing."
+            exit 1
+          fi
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
         with:
@@ -141,16 +156,44 @@ jobs:
           terraform plan -out=tfplan
           terraform apply tfplan
 
-      - name: Create the DB Secret
+      # The API runs its database migrations at startup, so the first deploy waits until the
+      # SQL Server host finishes its first boot (installs Docker and pulls the image).
+      - name: Wait for the database
         working-directory: TC1.RepairShop/infra
         run: |
           aws eks update-kubeconfig --region us-east-1 --name "$(terraform output -raw cluster_name)"
+          DB_HOST="$(terraform output -raw db_host)"
+          kubectl delete job db-wait --ignore-not-found
+          kubectl create job db-wait --image=bash:5.2 -- \
+            bash -c "until (echo > /dev/tcp/$DB_HOST/1433) 2>/dev/null; do sleep 10; done"
+          kubectl wait --for=condition=complete job/db-wait --timeout=15m
+          kubectl delete job db-wait
 
+      - name: Create the app Secret
+        working-directory: TC1.RepairShop/infra
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SEED_ADMIN_PASSWORD: ${{ secrets.SEED_ADMIN_PASSWORD }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        run: |
+          # The API stops at startup with an empty SendGrid key; a placeholder keeps it running.
+          if [ -z "$SENDGRID_API_KEY" ]; then
+            echo "::warning::Repository secret SENDGRID_API_KEY is not set: the API runs, but e-mails are not sent."
+            SENDGRID_API_KEY="SG.not-configured"
+          fi
           CONN="$(terraform output -raw db_connection_string)"
           echo "::add-mask::$CONN"
-          kubectl create secret generic app-db \
+          kubectl create secret generic app-secrets \
             --from-literal=ConnectionStrings__DefaultConnection="$CONN" \
+            --from-literal=Jwt__Secret="$JWT_SECRET" \
+            --from-literal=SeedAdmin__Password="$SEED_ADMIN_PASSWORD" \
+            --from-literal=SendGrid__ApiKey="$SENDGRID_API_KEY" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy manifests
-        run: kubectl apply -f TC1.RepairShop/k8s/
+        run: |
+          kubectl apply -f TC1.RepairShop/k8s/
+          # Pods read Secrets only when they start, so restart them to pick up new values.
+          kubectl rollout restart deployment/dotnet-deployment
+          kubectl rollout status deployment/dotnet-deployment --timeout=5m
+          kubectl get service dotnet-service

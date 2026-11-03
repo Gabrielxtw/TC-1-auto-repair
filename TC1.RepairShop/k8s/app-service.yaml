@@ -1,10 +1,11 @@
-
 apiVersion: v1
 kind: Service
 metadata:
   name: dotnet-service
 spec:
-  type: NodePort
+  # On EKS this creates a public AWS load balancer (the API answers on port 8080).
+  # Delete this Service before terraform destroy, or the VPC cannot be removed.
+  type: LoadBalancer
   selector:
     app: webapp
   ports:

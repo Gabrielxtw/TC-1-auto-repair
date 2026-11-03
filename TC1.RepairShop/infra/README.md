@@ -61,27 +61,22 @@ Windows), a partir de `TC1.RepairShop/infra/`.
 
 ## Conectando a API ao banco
 
-A connection string, com a senha gerada, sai do output do Terraform e vira um Secret do Kubernetes.
-Funciona localmente ou na pipeline, depois do `terraform init`:
-
-```bash
-kubectl create secret generic app-db \
-  --from-literal=ConnectionStrings__DefaultConnection="$(terraform output -raw db_connection_string)" \
-  --dry-run=client -o yaml | kubectl apply -f -
-```
-
-No Deployment, leia `ConnectionStrings__DefaultConnection` com `secretKeyRef` (Secret `app-db`). Para
-a API ficar acessível de fora, o Service precisa ser `type: LoadBalancer`.
+A connection string, com a senha gerada, sai do output `db_connection_string` e vai para a chave
+`ConnectionStrings__DefaultConnection` do Secret `app-secrets`, que o Deployment da API lê. A pipeline
+faz isso a cada deploy; para fazer à mão, veja a seção *Deploy em Kubernetes → Amazon EKS* do
+[README principal](../../README.md).
 
 ## Pipeline
 
 - `.github/workflows/dotnet-pipeline.yml`, job *Terraform & Deploy* (push na `main`): cria o bucket
-  se precisar, roda o `terraform apply` (cluster e banco), cria o Secret do banco e aplica os manifests.
+  se precisar, roda o `terraform apply` (cluster e banco), espera o banco ficar pronto, cria o Secret
+  da aplicação e aplica os manifests.
 - `.github/workflows/infra.yml`: em PR roda `fmt` e `validate`; `plan`, `apply` e `destroy` são
   disparados manualmente (Actions → *Run workflow*). Use o `destroy` para parar o gasto.
 
 As duas precisam dos secrets `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` e `AWS_SESSION_TOKEN`,
-atualizados a cada sessão do lab.
+atualizados a cada sessão do lab. O deploy também usa `JWT_SECRET`, `SEED_ADMIN_PASSWORD` e
+`SENDGRID_API_KEY` (ver a seção CI/CD do README principal).
 
 ## Custos
 

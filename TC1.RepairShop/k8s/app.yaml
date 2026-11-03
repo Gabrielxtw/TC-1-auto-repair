@@ -5,7 +5,8 @@ metadata:
   labels:
     app: webapp
 spec:
-  replicas: 1
+  # No "replicas" here: the HorizontalPodAutoscaler (app-hpa.yaml) owns the replica count,
+  # and a fixed value would reset it on every kubectl apply.
   selector:
     matchLabels:
       app: webapp
@@ -19,20 +20,27 @@ spec:
         image: enzodamatodev/tc-1-auto-repair:v1.0
         ports:
         - containerPort: 8080
+        # The HPA measures CPU and memory usage as a percentage of these requests.
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            memory: 512Mi
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
 
         - name: ConnectionStrings__DefaultConnection
           valueFrom:
-            configMapKeyRef:
-              name: app-config
+            secretKeyRef:
+              name: app-secrets
               key: ConnectionStrings__DefaultConnection
 
         - name: Jwt__Secret
           valueFrom:
-            configMapKeyRef:
-              name: app-config
+            secretKeyRef:
+              name: app-secrets
               key: Jwt__Secret
 
         - name: Jwt__Issuer
@@ -52,7 +60,7 @@ spec:
             configMapKeyRef:
               name: app-config
               key: Jwt__ExpirationMinutes
-        
+
         - name: SeedAdmin__Username
           valueFrom:
             configMapKeyRef:
@@ -61,10 +69,10 @@ spec:
 
         - name: SeedAdmin__Password
           valueFrom:
-            configMapKeyRef:
-              name: app-config
+            secretKeyRef:
+              name: app-secrets
               key: SeedAdmin__Password
-        
+
         - name: SeedAdmin__Email
           valueFrom:
             configMapKeyRef:
@@ -85,8 +93,8 @@ spec:
 
         - name: SendGrid__ApiKey
           valueFrom:
-            configMapKeyRef:
-              name: app-config
+            secretKeyRef:
+              name: app-secrets
               key: SendGrid__ApiKey
 
         - name: SendGrid__FromEmail
