@@ -93,7 +93,16 @@ jobs:
   terraform:
     name: Terraform & Deploy
     needs: test-and-coverage
+    # Deploys only from main (push or manual run); pull requests stop after the tests.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    # Same group as infra.yml, so two Terraform runs never touch the state at the same time.
+    concurrency:
+      group: terraform
+      cancel-in-progress: false
+    env:
+      TF_IN_AUTOMATION: "true"
+      TF_INPUT: "false"
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
@@ -112,10 +121,29 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
-      - name: Read Terraform outputs and create the DB Secret
+      # Learner Lab does not let Terraform manage S3 buckets, so the state bucket is created here,
+      # once per AWS account (each lab is a different account).
+      - name: Ensure the Terraform state bucket exists
+        run: |
+          BUCKET="tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+          if ! aws s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
+            aws s3api create-bucket --bucket "$BUCKET" --region us-east-1
+            aws s3api wait bucket-exists --bucket "$BUCKET"
+          fi
+          aws s3api put-bucket-versioning --bucket "$BUCKET" --versioning-configuration Status=Enabled \
+            || echo "::warning::Could not enable versioning on $BUCKET"
+          echo "TF_STATE_BUCKET=$BUCKET" >> "$GITHUB_ENV"
+
+      - name: Terraform apply (cluster and database)
         working-directory: TC1.RepairShop/infra
         run: |
-          terraform init -input=false -backend-config="bucket=tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+          terraform init -backend-config="bucket=$TF_STATE_BUCKET"
+          terraform plan -out=tfplan
+          terraform apply tfplan
+
+      - name: Create the DB Secret
+        working-directory: TC1.RepairShop/infra
+        run: |
           aws eks update-kubeconfig --region us-east-1 --name "$(terraform output -raw cluster_name)"
 
           CONN="$(terraform output -raw db_connection_string)"

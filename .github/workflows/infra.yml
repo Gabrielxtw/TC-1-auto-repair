@@ -84,9 +84,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
-      # The state bucket is named after the AWS account (see TC1.RepairShop/infra/README.md).
+      # Learner Lab does not let Terraform manage S3 buckets, so the state bucket is created here,
+      # once per AWS account (each lab is a different account).
+      - name: Ensure the Terraform state bucket exists
+        run: |
+          BUCKET="tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+          if ! aws s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
+            aws s3api create-bucket --bucket "$BUCKET" --region us-east-1
+            aws s3api wait bucket-exists --bucket "$BUCKET"
+          fi
+          aws s3api put-bucket-versioning --bucket "$BUCKET" --versioning-configuration Status=Enabled \
+            || echo "::warning::Could not enable versioning on $BUCKET"
+          echo "TF_STATE_BUCKET=$BUCKET" >> "$GITHUB_ENV"
+
       - name: Init
-        run: terraform init -backend-config="bucket=tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+        run: terraform init -backend-config="bucket=$TF_STATE_BUCKET"
 
       - name: Plan
         run: |

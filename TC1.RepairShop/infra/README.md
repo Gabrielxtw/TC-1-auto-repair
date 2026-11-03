@@ -33,8 +33,8 @@ Windows), a partir de `TC1.RepairShop/infra/`.
 
 1. **Credenciais**: no Learner Lab, *Start Lab* → *AWS Details* → *AWS CLI: Show*, e copie as três
    linhas para `~/.aws/credentials`. Elas expiram a cada sessão (~4 h).
-2. **Bucket do state**, uma vez por conta (o lab bloqueia criar buckets pelo Terraform). Se o bucket
-   já existir, pule o `create-bucket`:
+2. **Bucket do state**, uma vez por conta (o lab bloqueia criar buckets pelo Terraform). As pipelines
+   já fazem isso sozinhas; localmente, se o bucket já existir, pule o `create-bucket`:
    ```bash
    BUCKET=tc1-repairshop-tfstate-$(aws sts get-caller-identity --query Account --output text)
    aws s3api create-bucket --bucket "$BUCKET" --region us-east-1
@@ -75,9 +75,13 @@ a API ficar acessível de fora, o Service precisa ser `type: LoadBalancer`.
 
 ## Pipeline
 
-`.github/workflows/infra.yml`: em PR roda `fmt` e `validate`; `plan`, `apply` e `destroy` são
-disparados manualmente (Actions → *Run workflow*). Precisa dos secrets `AWS_ACCESS_KEY_ID`,
-`AWS_SECRET_ACCESS_KEY` e `AWS_SESSION_TOKEN`, atualizados a cada sessão do lab.
+- `.github/workflows/dotnet-pipeline.yml`, job *Terraform & Deploy* (push na `main`): cria o bucket
+  se precisar, roda o `terraform apply` (cluster e banco), cria o Secret do banco e aplica os manifests.
+- `.github/workflows/infra.yml`: em PR roda `fmt` e `validate`; `plan`, `apply` e `destroy` são
+  disparados manualmente (Actions → *Run workflow*). Use o `destroy` para parar o gasto.
+
+As duas precisam dos secrets `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` e `AWS_SESSION_TOKEN`,
+atualizados a cada sessão do lab.
 
 ## Custos
 
